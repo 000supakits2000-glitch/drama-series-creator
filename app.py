@@ -5,14 +5,14 @@ import os
 from google import genai
 from google.genai import types
 
-# Custom CSS สำหรับแต่งดีไซน์หน้าเว็บให้พรีเมียม
+# Custom CSS พร้อมบังคับภาพพื้นหลังให้แสดงผล
 custom_css = """
-/* ตั้งค่าภาพพื้นหลังให้เว็บแอป */
-body {
-    background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.92)), url('https://image.pollinations.ai/prompt/cinematic%20film%20set,%20dramatic%20lighting,%20movie%20production,%20dark%20moody%20atmosphere,8k?width=1920&height=1080&nologo=true');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+/* บังคับภาพพื้นหลังเว็บแอป */
+.gradio-container {
+    background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.94)), url('https://image.pollinations.ai/prompt/cinematic%20film%20set,%20dramatic%20lighting,%20movie%20production,%20dark%20moody%20atmosphere,8k?width=1920&height=1080&nologo=true') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important;
 }
 
 /* ซ่อน Footer ของ Gradio */
@@ -25,15 +25,15 @@ footer {visibility: hidden}
     padding: 20px !important;
 }
 
-/* ตกแต่งหัวข้อเว็บ */
+/* ตกแต่งหัวข้อเว็บให้โปร่งแสงสวยงาม */
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(49, 46, 129, 0.9) 50%, rgba(67, 56, 202, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(49, 46, 129, 0.85) 50%, rgba(67, 56, 202, 0.85) 100%);
     padding: 25px;
     border-radius: 16px;
     margin-bottom: 25px;
     box-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
 }
 
@@ -193,11 +193,9 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
     except Exception as e:
         yield f"❌ เกิดข้อผิดพลาด: {str(e)}\n(โปรดตรวจสอบว่า Gemini API Key ถูกต้องหรือไม่)", None
 
-# ใช้ธีม Dark (Default Ocean/Base) พร้อม custom CSS
 with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
     
     with gr.Column(elem_classes="main-container"):
-        # Header ตกแต่งสวยงาม
         gr.HTML("""
         <div class="header-box">
             <h1 class="header-title">🎬 AI Drama Series Creator</h1>
@@ -206,7 +204,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         """)
         
         with gr.Row():
-            # ฝั่งซ้าย: ตั้งค่า
             with gr.Column(scale=4):
                 with gr.Group():
                     api_key_input = gr.Textbox(
@@ -246,7 +243,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
                     submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                     
-            # ฝั่งขวา: แสดงผลลัพธ์
             with gr.Column(scale=5):
                 image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=350)
                 output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts")
