@@ -7,6 +7,14 @@ from google.genai import types
 
 # Custom CSS สำหรับแต่งดีไซน์หน้าเว็บให้พรีเมียม
 custom_css = """
+/* ตั้งค่าภาพพื้นหลังให้เว็บแอป */
+body {
+    background-image: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.92)), url('https://image.pollinations.ai/prompt/cinematic%20film%20set,%20dramatic%20lighting,%20movie%20production,%20dark%20moody%20atmosphere,8k?width=1920&height=1080&nologo=true');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
 /* ซ่อน Footer ของ Gradio */
 footer {visibility: hidden}
 
@@ -20,12 +28,13 @@ footer {visibility: hidden}
 /* ตกแต่งหัวข้อเว็บ */
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(49, 46, 129, 0.9) 50%, rgba(67, 56, 202, 0.9) 100%);
     padding: 25px;
     border-radius: 16px;
     margin-bottom: 25px;
     box-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
 }
 
 .header-title {
