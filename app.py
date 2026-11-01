@@ -5,19 +5,16 @@ import os
 from google import genai
 from google.genai import types
 
-# Custom CSS บังคับ Dark Mode ให้กล่องผลลัพธ์และทุกบล็อกแสดงผลชัดเจน
+# Custom CSS ตกแต่งหน้าตาเว็บทั่วไป
 custom_css = """
-/* ซ่อน Footer ของ Gradio */
 footer {visibility: hidden}
 
-/* ปรับแต่ง Container หลัก */
 .main-container {
     max-width: 1250px !important;
     margin: auto !important;
     padding: 20px !important;
 }
 
-/* ตกแต่งหัวข้อเว็บ */
 .header-box {
     text-align: center;
     background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(49, 46, 129, 0.95) 50%, rgba(67, 56, 202, 0.95) 100%);
@@ -33,62 +30,18 @@ footer {visibility: hidden}
     font-size: 2.2rem !important;
     font-weight: 800 !important;
     margin-bottom: 8px !important;
-    letter-spacing: 0.5px;
 }
 
 .header-subtitle {
     color: #c7d2fe !important;
     font-size: 1.05rem !important;
-    font-weight: 400 !important;
-}
-
-/* 📌 บังคับเปลี่ยนพื้นหลังกล่องผลลัพธ์ฝั่งขวาให้เป็นสีเข้ม (Dark Mode) */
-div[data-testid="column"] {
-    background-color: transparent !important;
-}
-
-/* กล่อง Markdown และ Image ฝั่งขวาให้มีพื้นหลังเข้มหรูหรา */
-div[data-testid="block-container"], .gr-box, .gr-panel {
-    background-color: #0f172a !important;
-    border: 1px solid #334155 !important;
-    border-radius: 12px !important;
-    padding: 15px !important;
-}
-
-/* สีตัวหนังสือในกล่องผลลัพธ์เป็นสีขาวสว่าง */
-.markdown-text, .markdown-text *, div[data-testid="markdown"] * {
-    color: #f8fafc !important;
-}
-
-div[data-testid="markdown"] h1, 
-div[data-testid="markdown"] h2, 
-div[data-testid="markdown"] h3 {
-    color: #38bdf8 !important;
-    font-weight: 700 !important;
-}
-
-div[data-testid="markdown"] code {
-    background-color: #1e293b !important;
-    color: #4ade80 !important;
-    border: 1px solid #334155 !important;
-    border-radius: 6px !important;
-    padding: 2px 6px !important;
-}
-
-div[data-testid="markdown"] pre code {
-    display: block !important;
-    padding: 12px !important;
-    white-space: pre-wrap !important;
-    word-break: break-word !important;
 }
 
 label span, div[data-testid="block-label"] {
     color: #e2e8f0 !important;
     font-weight: 600 !important;
-    font-size: 0.95rem !important;
 }
 
-/* ปุ่ม Submit โทนสีนีออน */
 .primary-btn {
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
     border: none !important;
@@ -98,23 +51,26 @@ label span, div[data-testid="block-label"] {
     padding: 12px 24px !important;
     border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
-    transition: all 0.3s ease !important;
-}
-
-.primary-btn:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6) !important;
 }
 """
 
 def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoided_topics):
     if not api_key or api_key.strip() == "":
-        yield "❌ **กรุณากรอก Gemini API Key ของคุณในช่องด้านซ้ายก่อนเริ่มใช้งานครับ**", None
-        return
+        err_html = """
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px;">
+            <p style="color: #f87171; font-size: 1.1rem;">❌ <b>กรุณากรอก Gemini API Key ของคุณในช่องด้านซ้ายก่อนเริ่มใช้งานครับ</b></p>
+        </div>
+        """
+        return err_html, None
         
     try:
         num_episodes = int(ep_count)
-        yield f"⏳ **กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละครสุดเข้มข้น... กรุณารอสักครู่ครับ**", None
+        loading_html = f"""
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px;">
+            <p style="color: #38bdf8; font-size: 1.1rem;">⏳ <b>กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละครสุดเข้มข้น... กรุณารอสักครู่ครับ</b></p>
+        </div>
+        """
+        yield loading_html, None
         
         client = genai.Client(api_key=api_key.strip())
         
@@ -193,42 +149,59 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         
         data = json.loads(response.text)
         
-        yield f"⏳ **ดึงข้อมูลสำเร็จ! กำลังเรนเดอร์ภาพ Master Reference ตัวละครหลัก...**", None
-        
         main_char = data.get('main_characters', [{}])[0]
         char_prompt = main_char.get('visual_prompt_en', 'Cinematic portrait of main character, 8k')
         encoded_prompt = urllib.parse.quote(f"cinematic character portrait, {char_prompt}, 8k resolution, photorealistic")
         image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=768&height=1024&nologo=true"
 
-        output_text = f"# 🎬 **ซีรีส์เรื่อง:** {data.get('series_title', '')}\n"
-        output_text += f"📌 **แนวเรื่อง:** {data.get('genre', '')} (จำนวน {data.get('total_episodes', num_episodes)} ตอน | 4-5 ซีนต่อตอน)\n"
-        output_text += f"💡 **Logline:** {data.get('logline_th', '')}\n\n"
-        output_text += "---\n\n"
+        # สร้าง HTML สำหรับแสดงผลบทซีรีส์ในธีมดาร์กโมเดลสุดหรู
+        html_out = f"""
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: sans-serif; line-height: 1.6; max-height: 700px; overflow-y: auto;">
+            <h2 style="color: #38bdf8; margin-top: 0;">🎬 ซีรีส์เรื่อง: {data.get('series_title', '')}</h2>
+            <p><b>📌 แนวเรื่อง:</b> {data.get('genre', '')} (จำนวน {data.get('total_episodes', num_episodes)} ตอน)</p>
+            <p><b>💡 Logline:</b> {data.get('logline_th', '')}</p>
+            <hr style="border-color: #334155; margin: 20px 0;">
+            
+            <h3 style="color: #a855f7;">👥 คลังตัวละครหลัก (Character Bible)</h3>
+        """
         
-        output_text += "## 👥 **คลังตัวละครหลัก (Character Bible):**\n"
         for char in data.get('main_characters', []):
-            output_text += f"* 🎭 **{char.get('name_th', '')} ({char.get('role_th', '')}):** {char.get('personality_th', '')}\n"
-            output_text += f"  - *Visual Prompt:* `{char.get('visual_prompt_en', '')}`\n\n"
-        
-        output_text += "---\n\n"
+            html_out += f"""
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #6366f1;">
+                <b>🎭 {char.get('name_th', '')} ({char.get('role_th', '')}):</b> {char.get('personality_th', '')}<br>
+                <span style="color: #94a3b8; font-size: 0.9rem;">Visual Prompt: <code>{char.get('visual_prompt_en', '')}</code></span>
+            </div>
+            """
+            
+        html_out += "<hr style='border-color: #334155; margin: 20px 0;'>"
         
         for ep in data.get('episodes', []):
-            output_text += f"## 📺 **EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}**\n"
-            output_text += f"📖 **เรื่องย่อ:** {ep.get('ep_synopsis_th', '')}\n\n"
+            html_out += f"<h3 style='color: #38bdf8;'>📺 EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}</h3>"
+            html_out += f"<p><b>📖 เรื่องย่อ:</b> {ep.get('ep_synopsis_th', '')}</p>"
             
             for scene in ep.get('scenes', []):
-                output_text += f"🎥 **Scene {scene.get('scene_number', 1)}**\n"
-                output_text += f"🎬 **มุมกล้อง/การแสดง:** {scene.get('camera_and_action_th', '')}\n"
-                output_text += f"🗣️ **บทพากย์ไทย:** {scene.get('voiceover_th', '')}\n"
-                output_text += f"✨ **Video Prompt (วางใน Google Flow):**\n"
-                output_text += "```\n" + scene.get('video_prompt_en', '') + "\n```\n"
-                output_text += "–"*30 + "\n"
-            output_text += "\n" + "="*40 + "\n\n"
+                html_out += f"""
+                <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #334155;">
+                    <b style="color: #fbbf24;">🎥 Scene {scene.get('scene_number', 1)}</b><br>
+                    🎬 <b>มุมกล้อง/การแสดง:</b> {scene.get('camera_and_action_th', '')}<br>
+                    🗣️ <b>บทพากย์ไทย:</b> {scene.get('voiceover_th', '')}<br>
+                    ✨ <b>Video Prompt (วางใน Google Flow):</b><br>
+                    <pre style="background: #090d16; color: #4ade80; padding: 10px; border-radius: 6px; white-space: pre-wrap; word-break: break-word; margin-top: 5px;">{scene.get('video_prompt_en', '')}</pre>
+                </div>
+                """
+            html_out += "<br>"
             
-        yield output_text, image_url
+        html_out += "</div>"
+            
+        yield html_out, image_url
         
     except Exception as e:
-        yield f"❌ เกิดข้อผิดพลาด: {str(e)}\n(โปรดตรวจสอบว่า Gemini API Key ถูกต้องหรือไม่)", None
+        err_html = f"""
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #334155;">
+            <p style="color: #f87171;">❌ เกิดข้อผิดพลาด: {str(e)}<br>(โปรดตรวจสอบว่า Gemini API Key ถูกต้องหรือไม่)</p>
+        </div>
+        """
+        yield err_html, None
 
 with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
     
@@ -281,19 +254,19 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
                     submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                     
-            # ฝั่งขวา: แสดงผลลัพธ์
+            # ฝั่งขวา: แสดงผลลัพธ์ (ใช้ gr.HTML ควบคุมธีมดาร์กโมเดลเอง 100%)
             with gr.Column(scale=5):
-                image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=350)
-                output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts", elem_classes="markdown-text")
+                image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=320)
+                output_html = gr.HTML(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">ผลลัพธ์บทซีรีส์และ Prompt จะแสดงที่นี่หลังกด Submit</div>')
 
     submit_btn.click(
         fn=generate_dynamic_series,
         inputs=[api_key_input, genre_input, ep_count_input, detail_input, avoid_input],
-        outputs=[output_text, image_output]
+        outputs=[output_html, image_output]
     )
     
-    clear_btn.click(fn=lambda: ("", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "5", "", "", None, None), 
-                    outputs=[api_key_input, genre_input, ep_count_input, detail_input, avoid_input, output_text, image_output])
+    clear_btn.click(fn=lambda: ("", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "5", "", "", '<div style="background-color: #0f172a; color: #94a3b8; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">ผลลัพธ์บทซีรีส์และ Prompt จะแสดงที่นี่หลังกด Submit</div>', None), 
+                    outputs=[api_key_input, genre_input, ep_count_input, detail_input, avoid_input, output_html, image_output])
 
 port = int(os.environ.get("PORT", 7860))
 app.launch(server_name="0.0.0.0", server_port=port)
