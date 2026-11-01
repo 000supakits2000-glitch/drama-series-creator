@@ -7,14 +7,6 @@ from google.genai import types
 
 # Custom CSS พร้อมบังคับภาพพื้นหลังให้แสดงผล
 custom_css = """
-/* บังคับภาพพื้นหลังเว็บแอป */
-.gradio-container {
-    background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.94)), url('https://image.pollinations.ai/prompt/cinematic%20film%20set,%20dramatic%20lighting,%20movie%20production,%20dark%20moody%20atmosphere,8k?width=1920&height=1080&nologo=true') !important;
-    background-size: cover !important;
-    background-position: center !important;
-    background-attachment: fixed !important;
-}
-
 /* ซ่อน Footer ของ Gradio */
 footer {visibility: hidden}
 
@@ -195,6 +187,18 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
 
 with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
     
+    # บังคับใส่ภาพพื้นหลังเต็มจอแบบชัวร์ 100% ผ่าน HTML/CSS Style ตรงนี้
+    gr.HTML("""
+    <style>
+        body, html, .gradio-container {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.94)), url('https://image.pollinations.ai/prompt/cinematic%20film%20set,%20dramatic%20lighting,%20movie%20production,%20dark%20moody%20atmosphere,8k?width=1920&height=1080&nologo=true') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-attachment: fixed !important;
+        }
+    </style>
+    """)
+
     with gr.Column(elem_classes="main-container"):
         gr.HTML("""
         <div class="header-box">
@@ -202,50 +206,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             <p class="header-subtitle">ระบบเจเนอเรตบทซีรีส์มินิละครสั้น คลังตัวละคร และ Video Prompt สำหรับ Google Flow</p>
         </div>
         """)
-        
-        with gr.Row():
-            with gr.Column(scale=4):
-                with gr.Group():
-                    api_key_input = gr.Textbox(
-                        type="password",
-                        placeholder="วาง Gemini API Key ของคุณที่นี่ (เช่น AIzaSy...)",
-                        label="🔑 Gemini API Key (จำเป็นต้องใส่)",
-                        info="รับ API Key ฟรีได้ที่ Google AI Studio"
-                    )
-                    genre_input = gr.Dropdown(
-                        choices=[
-                            "ดราม่าโรแมนติก / ซึ้งกินใจ",
-                            "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
-                            "คอมเมดี้ / ตลก / ฮาๆ",
-                            "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
-                            "แฟนตาซี / ย้อนยุค / ไซไฟ"
-                        ],
-                        value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
-                        label="🎭 เลือกแนวซีรีส์"
-                    )
-                    ep_count_input = gr.Dropdown(
-                        choices=["3", "5", "8", "10"],
-                        value="5",
-                        label="📺 เลือกจำนวนตอน (Episodes)"
-                    )
-                    detail_input = gr.Textbox(
-                        lines=3,
-                        placeholder="ระบุพล็อตหรือไอเดียหลักที่อยากให้เกิดขึ้นในซีรีส์เรื่องนี้...",
-                        label="💡 ไอเดียหรือพล็อตหลัก (Optional)"
-                    )
-                    avoid_input = gr.Textbox(
-                        lines=2,
-                        placeholder="พิมพ์พล็อตเรื่องที่เคยทำไปแล้ว เพื่อห้ามไม่ให้ AI ซ้ำ...",
-                        label="🚫 พล็อตที่เคยทำแล้ว (ห้ามซ้ำเด็ดขาด)"
-                    )
-                
-                with gr.Row():
-                    clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
-                    submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
-                    
-            with gr.Column(scale=5):
-                image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=350)
-                output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts")
 
     submit_btn.click(
         fn=generate_dynamic_series,
