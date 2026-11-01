@@ -5,14 +5,70 @@ import os
 from google import genai
 from google.genai import types
 
+# Custom CSS สำหรับแต่งดีไซน์หน้าเว็บให้พรีเมียม
+custom_css = """
+/* ซ่อน Footer ของ Gradio */
+footer {visibility: hidden}
+
+/* ปรับแต่ง Container หลัก */
+.main-container {
+    max-width: 1200px !important;
+    margin: auto !important;
+    padding: 20px !important;
+}
+
+/* ตกแต่งหัวข้อเว็บ */
+.header-box {
+    text-align: center;
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-title {
+    color: #ffffff !important;
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 8px !important;
+    letter-spacing: 0.5px;
+}
+
+.header-subtitle {
+    color: #c7d2fe !important;
+    font-size: 1.05rem !important;
+    font-weight: 400 !important;
+}
+
+/* ปุ่ม Submit โทนสีนีออน */
+.primary-btn {
+    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6) !important;
+}
+"""
+
 def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoided_topics):
     if not api_key or api_key.strip() == "":
-        yield "❌ กรุณากรอก Gemini API Key ของคุณในช่องด้านบนก่อนเริ่มใช้งานครับ", None
+        yield "❌ **กรุณากรอก Gemini API Key ของคุณในช่องด้านซ้ายก่อนเริ่มใช้งานครับ**", None
         return
         
     try:
         num_episodes = int(ep_count)
-        yield f"⏳ **กำลังคิดพล็อตซีรีส์ {num_episodes} ตอน (อัดแน่น 4-5 ซีนต่อตอน) และตั้งชื่อตัวละคร... กรุณารอสักครู่ครับ**", None
+        yield f"⏳ **กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละครสุดเข้มข้น... กรุณารอสักครู่ครับ**", None
         
         client = genai.Client(api_key=api_key.strip())
         
@@ -39,57 +95,41 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         Total Episodes Required: EXACTLY {num_episodes} EPISODES (from Episode 1 to Episode {num_episodes}).
         
         CRITICAL SCENE REQUIREMENT:
-        Each episode MUST contain EXACTLY 4 to 5 detailed scenes (Scene 1, Scene 2, Scene 3, Scene 4, and Scene 5) to ensure a rich, immersive, and well-paced narrative. Avoid short or rushed episodes.
+        Each episode MUST contain EXACTLY 4 to 5 detailed scenes (Scene 1 to Scene 5) to ensure a rich narrative.
 
         Additional Details: {custom_detail if custom_detail else 'Create a unique, emotional, and well-paced multi-episode storyline.'}
         
         {avoid_instruction}
         
-        CRITICAL CHARACTER & NAME REQUIREMENT:
-        Create at least 3 distinct, highly diverse characters. 
-        Ensure their Thai full names and nicknames are creative, modern, highly diverse, natural, and non-generic. Provide detailed English visual prompts for each.
+        CRITICAL CHARACTER REQUIREMENT:
+        Create at least 3 distinct characters. Provide Thai names and detailed English visual prompts for each.
 
-        Provide the response strictly in this exact JSON format:
+        Provide the response strictly in JSON format matching the standard drama structure.
         {{
           "series_title": "Title in Thai (English Title)",
           "genre": "{selected_genre}",
           "total_episodes": {num_episodes},
-          "logline_th": "Logline of the whole series in Thai",
+          "logline_th": "Logline in Thai",
           "main_characters": [
             {{
-              "name_th": "ชื่อ-นามสกุล และชื่อเล่นตัวละคร 1 (ไทย)",
+              "name_th": "ชื่อ-นามสกุล และชื่อเล่นตัวละคร 1",
               "role_th": "บทบาท",
               "personality_th": "นิสัย/จุดเด่น",
               "visual_prompt_en": "Detailed English visual prompt: age, ethnicity, facial expression, hairstyle, unique clothing, cinematic lighting"
-            }},
-            {{
-              "name_th": "ชื่อ-นามสกุล และชื่อเล่นตัวละคร 2 (ไทย)",
-              "role_th": "บทบาท",
-              "personality_th": "นิสัย/จุดเด่น",
-              "visual_prompt_en": "Detailed English visual prompt: age, distinct facial features, outfit, lighting"
-            }},
-            {{
-              "name_th": "ชื่อ-นามสกุล และชื่อเล่นตัวละคร 3 (ไทย)",
-              "role_th": "บทบาท",
-              "personality_th": "นิสัย/จุดเด่น",
-              "visual_prompt_en": "Detailed English visual prompt: age, distinct outfit, expressive look"
             }}
           ],
           "episodes": [
             {{
               "ep_number": 1,
-              "ep_title_th": "ชื่อตอนที่ 1 (ภาษาไทย)",
+              "ep_title_th": "ชื่อตอนที่ 1",
               "ep_synopsis_th": "เรื่องย่อตอนที่ 1",
               "scenes": [
                 {{
                   "scene_number": 1,
-                  "camera_and_action_th": "รายละเอียดการแสดงและมุมกล้องภาษาไทย",
-                  "voiceover_th": "บทพากย์/บทพูดภาษาไทย",
+                  "camera_and_action_th": "รายละเอียดการแสดงและมุมกล้อง",
+                  "voiceover_th": "บทพากย์/บทพูด",
                   "video_prompt_en": "Complete cinematic video prompt in English"
-                }},
-                {{ "scene_number": 2, "camera_and_action_th": "...", "voiceover_th": "...", "video_prompt_en": "..." }},
-                {{ "scene_number": 3, "camera_and_action_th": "...", "voiceover_th": "...", "video_prompt_en": "..." }},
-                {{ "scene_number": 4, "camera_and_action_th": "...", "voiceover_th": "...", "video_prompt_en": "..." }}
+                }}
               ]
             }}
           ]
@@ -107,7 +147,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         
         data = json.loads(response.text)
         
-        yield f"⏳ **บทซีรีส์ {num_episodes} ตอนพร้อมแล้ว! กำลังเจนรูป Master ตัวละครหลัก...**, ", None
+        yield f"⏳ **ดึงข้อมูลสำเร็จ! กำลังเรนเดอร์ภาพ Master Reference ตัวละครหลัก...**, ", None
         
         main_char = data.get('main_characters', [{}])[0]
         char_prompt = main_char.get('visual_prompt_en', 'Cinematic portrait of main character, 8k')
@@ -117,13 +157,14 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         output_text = f"# 🎬 **ซีรีส์เรื่อง:** {data.get('series_title', '')}\n"
         output_text += f"📌 **แนวเรื่อง:** {data.get('genre', '')} (จำนวน {data.get('total_episodes', num_episodes)} ตอน | 4-5 ซีนต่อตอน)\n"
         output_text += f"💡 **Logline:** {data.get('logline_th', '')}\n\n"
+        output_text += "---\n\n"
         
-        output_text += "## 👥 **คลังตัวละครและชื่อที่หลากหลาย (Diverse Character Bible):**\n"
+        output_text += "## 👥 **คลังตัวละครหลัก (Character Bible):**\n"
         for char in data.get('main_characters', []):
             output_text += f"* 🎭 **{char.get('name_th', '')} ({char.get('role_th', '')}):** {char.get('personality_th', '')}\n"
             output_text += f"  - *Visual Prompt:* `{char.get('visual_prompt_en', '')}`\n\n"
         
-        output_text += "\n" + "="*60 + "\n\n"
+        output_text += "---\n\n"
         
         for ep in data.get('episodes', []):
             output_text += f"## 📺 **EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}**\n"
@@ -134,59 +175,72 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
                 output_text += f"🎬 **มุมกล้อง/การแสดง:** {scene.get('camera_and_action_th', '')}\n"
                 output_text += f"🗣️ **บทพากย์ไทย:** {scene.get('voiceover_th', '')}\n"
                 output_text += f"✨ **Video Prompt (วางใน Google Flow):**\n`{scene.get('video_prompt_en', '')}`\n\n"
-                output_text += "-"*40 + "\n"
-            output_text += "\n" + "="*60 + "\n\n"
+                output_text += "```\n" + scene.get('video_prompt_en', '') + "\n```\n"
+                output_text += "–"*30 + "\n"
+            output_text += "\n" + "="*40 + "\n\n"
             
         yield output_text, image_url
         
     except Exception as e:
         yield f"❌ เกิดข้อผิดพลาด: {str(e)}\n(โปรดตรวจสอบว่า Gemini API Key ถูกต้องหรือไม่)", None
 
-with gr.Blocks(theme=gr.themes.Soft()) as app:
-    gr.Markdown("# 🎬 ระบบสร้างซีรีส์ละครยาวอัตโนมัติ (AI Drama Series Creator)")
-    gr.Markdown("เครื่องมือสร้างบทซีรีส์มินิละครสั้น คลังตัวละคร และ Video Prompt สำหรับผู้ผลิตคอนเทนต์")
+# ใช้ธีม Dark (Default Ocean/Base) พร้อม custom CSS
+with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
     
-    with gr.Row():
-        with gr.Column(scale=1):
-            api_key_input = gr.Textbox(
-                type="password",
-                placeholder="วาง Gemini API Key ของคุณที่นี่ (เช่น AIzaSy...)",
-                label="🔑 Gemini API Key (จำเป็นต้องใส่)",
-                info="รับ API Key ฟรีได้ที่ Google AI Studio (aistudio.google.com)"
-            )
-            genre_input = gr.Dropdown(
-                choices=[
-                    "ดราม่าโรแมนติก / ซึ้งกินใจ",
-                    "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
-                    "คอมเมดี้ / ตลก / ฮาๆ",
-                    "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
-                    "แฟนตาซี / ย้อนยุค / ไซไฟ"
-                ],
-                value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
-                label="🎭 เลือกแนวซีรีส์"
-            )
-            ep_count_input = gr.Dropdown(
-                choices=["3", "5", "8", "10"],
-                value="5",
-                label="📺 เลือกจำนวนตอน (Episodes)"
-            )
-            detail_input = gr.Textbox(
-                lines=3,
-                placeholder="ระบุพล็อตหรือไอเดียหลักที่อยากให้เกิดขึ้นในซีรีส์เรื่องนี้...",
-                label="💡 ไอเดียหรือพล็อตหลักของเรื่องนี้ (Optional)"
-            )
-            avoid_input = gr.Textbox(
-                lines=2,
-                placeholder="พิมพ์พล็อตเรื่องที่เคยทำไปแล้ว เพื่อห้ามไม่ให้ AI ซ้ำ...",
-                label="🚫 พล็อตหรือเนื้อหาที่เคยทำแล้ว (ห้ามซ้ำเด็ดขาด)"
-            )
-            with gr.Row():
-                clear_btn = gr.Button("Clear")
-                submit_btn = gr.Button("Submit (สร้างซีรีส์)", variant="primary")
+    with gr.Column(elem_classes="main-container"):
+        # Header ตกแต่งสวยงาม
+        gr.HTML("""
+        <div class="header-box">
+            <h1 class="header-title">🎬 AI Drama Series Creator</h1>
+            <p class="header-subtitle">ระบบเจเนอเรตบทซีรีส์มินิละครสั้น คลังตัวละคร และ Video Prompt สำหรับ Google Flow</p>
+        </div>
+        """)
+        
+        with gr.Row():
+            # ฝั่งซ้าย: ตั้งค่า
+            with gr.Column(scale=4):
+                with gr.Group():
+                    api_key_input = gr.Textbox(
+                        type="password",
+                        placeholder="วาง Gemini API Key ของคุณที่นี่ (เช่น AIzaSy...)",
+                        label="🔑 Gemini API Key (จำเป็นต้องใส่)",
+                        info="รับ API Key ฟรีได้ที่ Google AI Studio"
+                    )
+                    genre_input = gr.Dropdown(
+                        choices=[
+                            "ดราม่าโรแมนติก / ซึ้งกินใจ",
+                            "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
+                            "คอมเมดี้ / ตลก / ฮาๆ",
+                            "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
+                            "แฟนตาซี / ย้อนยุค / ไซไฟ"
+                        ],
+                        value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
+                        label="🎭 เลือกแนวซีรีส์"
+                    )
+                    ep_count_input = gr.Dropdown(
+                        choices=["3", "5", "8", "10"],
+                        value="5",
+                        label="📺 เลือกจำนวนตอน (Episodes)"
+                    )
+                    detail_input = gr.Textbox(
+                        lines=3,
+                        placeholder="ระบุพล็อตหรือไอเดียหลักที่อยากให้เกิดขึ้นในซีรีส์เรื่องนี้...",
+                        label="💡 ไอเดียหรือพล็อตหลัก (Optional)"
+                    )
+                    avoid_input = gr.Textbox(
+                        lines=2,
+                        placeholder="พิมพ์พล็อตเรื่องที่เคยทำไปแล้ว เพื่อห้ามไม่ให้ AI ซ้ำ...",
+                        label="🚫 พล็อตที่เคยทำแล้ว (ห้ามซ้ำเด็ดขาด)"
+                    )
                 
-        with gr.Column(scale=1):
-            image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)")
-            output_text = gr.Markdown(label="📄 โครงเรื่อง คลังตัวละคร และบทละครรายตอน")
+                with gr.Row():
+                    clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
+                    submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
+                    
+            # ฝั่งขวา: แสดงผลลัพธ์
+            with gr.Column(scale=5):
+                image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=350)
+                output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts")
 
     submit_btn.click(
         fn=generate_dynamic_series,
