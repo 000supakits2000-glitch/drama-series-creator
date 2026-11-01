@@ -44,21 +44,19 @@ footer {visibility: hidden}
 
 /* 📌 แก้ไขสีข้อความฝั่งผลลัพธ์ (Output Markdown) ให้อ่านง่าย ชัดเจน */
 .markdown-text, .markdown-text *, div[data-testid="markdown"] * {
-    color: #f8fafc !important; /* สีขาวสว่าง */
+    color: #f8fafc !important;
 }
 
-/* ตกแต่งหัวข้อใน Markdown */
 div[data-testid="markdown"] h1, 
 div[data-testid="markdown"] h2, 
 div[data-testid="markdown"] h3 {
-    color: #38bdf8 !important; /* สีฟ้าสว่างสดใส */
+    color: #38bdf8 !important;
     font-weight: 700 !important;
 }
 
-/* ตกแต่งกล่องข้อความ Prompts (Code block) */
 div[data-testid="markdown"] code {
     background-color: #1e293b !important;
-    color: #4ade80 !important; /* สีเขียวนีออนสำหรับ Prompt */
+    color: #4ade80 !important;
     border: 1px solid #334155 !important;
     border-radius: 6px !important;
     padding: 2px 6px !important;
@@ -71,7 +69,6 @@ div[data-testid="markdown"] pre code {
     word-break: break-word !important;
 }
 
-/* ปรับสี Label/ป้ายชื่อหัวข้อทุกช่องให้อ่านง่าย */
 label span, div[data-testid="block-label"] {
     color: #e2e8f0 !important;
     font-weight: 600 !important;
@@ -231,7 +228,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         """)
         
         with gr.Row():
-            # ฝั่งตั้งค่า
+            # ฝั่งซ้าย: ตั้งค่า
             with gr.Column(scale=4):
                 with gr.Group():
                     api_key_input = gr.Textbox(
@@ -271,10 +268,10 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
                     submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                     
-            # ฝั่งแสดงผลลัพธ์
+            # ฝั่งขวา: แสดงผลลัพธ์
             with gr.Column(scale=5):
                 image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=350)
-                output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts, elem_classes='markdown-text'")
+                output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts", elem_classes="markdown-text")
 
     submit_btn.click(
         fn=generate_dynamic_series,
