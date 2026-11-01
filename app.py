@@ -5,7 +5,7 @@ import os
 from google import genai
 from google.genai import types
 
-# Custom CSS ตกแต่งหน้าตาเว็บ + แก้ไขสีข้อความให้อ่านง่าย ชัดเจน
+# Custom CSS บังคับ Dark Mode ให้กล่องผลลัพธ์และทุกบล็อกแสดงผลชัดเจน
 custom_css = """
 /* ซ่อน Footer ของ Gradio */
 footer {visibility: hidden}
@@ -42,7 +42,20 @@ footer {visibility: hidden}
     font-weight: 400 !important;
 }
 
-/* 📌 แก้ไขสีข้อความฝั่งผลลัพธ์ (Output Markdown) ให้อ่านง่าย ชัดเจน */
+/* 📌 บังคับเปลี่ยนพื้นหลังกล่องผลลัพธ์ฝั่งขวาให้เป็นสีเข้ม (Dark Mode) */
+div[data-testid="column"] {
+    background-color: transparent !important;
+}
+
+/* กล่อง Markdown และ Image ฝั่งขวาให้มีพื้นหลังเข้มหรูหรา */
+div[data-testid="block-container"], .gr-box, .gr-panel {
+    background-color: #0f172a !important;
+    border: 1px solid #334155 !important;
+    border-radius: 12px !important;
+    padding: 15px !important;
+}
+
+/* สีตัวหนังสือในกล่องผลลัพธ์เป็นสีขาวสว่าง */
 .markdown-text, .markdown-text *, div[data-testid="markdown"] * {
     color: #f8fafc !important;
 }
