@@ -5,28 +5,27 @@ import os
 from google import genai
 from google.genai import types
 
-# Custom CSS พร้อมบังคับภาพพื้นหลังให้แสดงผล
+# Custom CSS ตกแต่งหน้าตาเว็บ + แก้ไขสีข้อความให้อ่านง่าย ชัดเจน
 custom_css = """
 /* ซ่อน Footer ของ Gradio */
 footer {visibility: hidden}
 
 /* ปรับแต่ง Container หลัก */
 .main-container {
-    max-width: 1200px !important;
+    max-width: 1250px !important;
     margin: auto !important;
     padding: 20px !important;
 }
 
-/* ตกแต่งหัวข้อเว็บให้โปร่งแสงสวยงาม */
+/* ตกแต่งหัวข้อเว็บ */
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(49, 46, 129, 0.85) 50%, rgba(67, 56, 202, 0.85) 100%);
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(49, 46, 129, 0.95) 50%, rgba(67, 56, 202, 0.95) 100%);
     padding: 25px;
     border-radius: 16px;
     margin-bottom: 25px;
     box-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.4);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
 }
 
 .header-title {
@@ -41,6 +40,42 @@ footer {visibility: hidden}
     color: #c7d2fe !important;
     font-size: 1.05rem !important;
     font-weight: 400 !important;
+}
+
+/* 📌 แก้ไขสีข้อความฝั่งผลลัพธ์ (Output Markdown) ให้อ่านง่าย ชัดเจน */
+.markdown-text, .markdown-text *, div[data-testid="markdown"] * {
+    color: #f8fafc !important; /* สีขาวสว่าง */
+}
+
+/* ตกแต่งหัวข้อใน Markdown */
+div[data-testid="markdown"] h1, 
+div[data-testid="markdown"] h2, 
+div[data-testid="markdown"] h3 {
+    color: #38bdf8 !important; /* สีฟ้าสว่างสดใส */
+    font-weight: 700 !important;
+}
+
+/* ตกแต่งกล่องข้อความ Prompts (Code block) */
+div[data-testid="markdown"] code {
+    background-color: #1e293b !important;
+    color: #4ade80 !important; /* สีเขียวนีออนสำหรับ Prompt */
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+    padding: 2px 6px !important;
+}
+
+div[data-testid="markdown"] pre code {
+    display: block !important;
+    padding: 12px !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+
+/* ปรับสี Label/ป้ายชื่อหัวข้อทุกช่องให้อ่านง่าย */
+label span, div[data-testid="block-label"] {
+    color: #e2e8f0 !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
 }
 
 /* ปุ่ม Submit โทนสีนีออน */
@@ -148,7 +183,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         
         data = json.loads(response.text)
         
-        yield f"⏳ **ดึงข้อมูลสำเร็จ! กำลังเรนเดอร์ภาพ Master Reference ตัวละครหลัก...**, ", None
+        yield f"⏳ **ดึงข้อมูลสำเร็จ! กำลังเรนเดอร์ภาพ Master Reference ตัวละครหลัก...**", None
         
         main_char = data.get('main_characters', [{}])[0]
         char_prompt = main_char.get('visual_prompt_en', 'Cinematic portrait of main character, 8k')
@@ -175,7 +210,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
                 output_text += f"🎥 **Scene {scene.get('scene_number', 1)}**\n"
                 output_text += f"🎬 **มุมกล้อง/การแสดง:** {scene.get('camera_and_action_th', '')}\n"
                 output_text += f"🗣️ **บทพากย์ไทย:** {scene.get('voiceover_th', '')}\n"
-                output_text += f"✨ **Video Prompt (วางใน Google Flow):**\n`{scene.get('video_prompt_en', '')}`\n\n"
+                output_text += f"✨ **Video Prompt (วางใน Google Flow):**\n"
                 output_text += "```\n" + scene.get('video_prompt_en', '') + "\n```\n"
                 output_text += "–"*30 + "\n"
             output_text += "\n" + "="*40 + "\n\n"
@@ -187,18 +222,6 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
 
 with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
     
-    # บังคับใส่ภาพพื้นหลังเต็มจอแบบชัวร์ 100% ผ่าน HTML/CSS Style ตรงนี้
-    gr.HTML("""
-    <style>
-        body, html, .gradio-container {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.94)), url('https://image.pollinations.ai/prompt/cinematic%20film%20set,%20dramatic%20lighting,%20movie%20production,%20dark%20moody%20atmosphere,8k?width=1920&height=1080&nologo=true') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            background-attachment: fixed !important;
-        }
-    </style>
-    """)
-
     with gr.Column(elem_classes="main-container"):
         gr.HTML("""
         <div class="header-box">
@@ -206,6 +229,52 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             <p class="header-subtitle">ระบบเจเนอเรตบทซีรีส์มินิละครสั้น คลังตัวละคร และ Video Prompt สำหรับ Google Flow</p>
         </div>
         """)
+        
+        with gr.Row():
+            # ฝั่งตั้งค่า
+            with gr.Column(scale=4):
+                with gr.Group():
+                    api_key_input = gr.Textbox(
+                        type="password",
+                        placeholder="วาง Gemini API Key ของคุณที่นี่ (เช่น AIzaSy...)",
+                        label="🔑 Gemini API Key (จำเป็นต้องใส่)",
+                        info="รับ API Key ฟรีได้ที่ Google AI Studio"
+                    )
+                    genre_input = gr.Dropdown(
+                        choices=[
+                            "ดราม่าโรแมนติก / ซึ้งกินใจ",
+                            "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
+                            "คอมเมดี้ / ตลก / ฮาๆ",
+                            "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
+                            "แฟนตาซี / ย้อนยุค / ไซไฟ"
+                        ],
+                        value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ",
+                        label="🎭 เลือกแนวซีรีส์"
+                    )
+                    ep_count_input = gr.Dropdown(
+                        choices=["3", "5", "8", "10"],
+                        value="5",
+                        label="📺 เลือกจำนวนตอน (Episodes)"
+                    )
+                    detail_input = gr.Textbox(
+                        lines=3,
+                        placeholder="ระบุพล็อตหรือไอเดียหลักที่อยากให้เกิดขึ้นในซีรีส์เรื่องนี้...",
+                        label="💡 ไอเดียหรือพล็อตหลัก (Optional)"
+                    )
+                    avoid_input = gr.Textbox(
+                        lines=2,
+                        placeholder="พิมพ์พล็อตเรื่องที่เคยทำไปแล้ว เพื่อห้ามไม่ให้ AI ซ้ำ...",
+                        label="🚫 พล็อตที่เคยทำแล้ว (ห้ามซ้ำเด็ดขาด)"
+                    )
+                
+                with gr.Row():
+                    clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
+                    submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
+                    
+            # ฝั่งแสดงผลลัพธ์
+            with gr.Column(scale=5):
+                image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=350)
+                output_text = gr.Markdown(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts, elem_classes='markdown-text'")
 
     submit_btn.click(
         fn=generate_dynamic_series,
