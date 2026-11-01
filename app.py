@@ -1,30 +1,20 @@
-# 1. ติดตั้งไลบรารีที่จำเป็น
-!pip install -q gradio google-genai
-
 import gradio as gr
 import json
 import urllib.parse
 import os
 from google import genai
 from google.genai import types
-from google.colab import userdata
 
-# ดึง API Key จาก Secrets (รูปแม่กุญแจด้านซ้าย) อัตโนมัติ
-try:
-    MY_GEMINI_KEY = userdata.get('GEMINI_API_KEY')
-except:
-    MY_GEMINI_KEY = os.environ.get("GEMINI_API_KEY", "")
-
-def generate_dynamic_series(genre_choice, ep_count, custom_detail, avoided_topics):
-    if not MY_GEMINI_KEY:
-        yield "❌ ไม่พบ GEMINI_API_KEY ใน Secrets (รูปแม่กุญแจด้านซ้าย) กรุณาตั้งค่าก่อนครับ", None
+def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoided_topics):
+    if not api_key or api_key.strip() == "":
+        yield "❌ กรุณากรอก Gemini API Key ของคุณในช่องด้านบนก่อนเริ่มใช้งานครับ", None
         return
         
     try:
         num_episodes = int(ep_count)
-        yield f"⏳ **กำลังคิดพล็อตซีรีส์ {num_episodes} ตอน (อัดแน่น 4-5 ซีนต่อตอน) กำลังเขียนบท... กรุณารอสักครู่ครับ**", None
+        yield f"⏳ **กำลังคิดพล็อตซีรีส์ {num_episodes} ตอน (อัดแน่น 4-5 ซีนต่อตอน) และตั้งชื่อตัวละคร... กรุณารอสักครู่ครับ**", None
         
-        client = genai.Client(api_key=MY_GEMINI_KEY)
+        client = genai.Client(api_key=api_key.strip())
         
         genre_map = {
             "ดราม่าโรแมนติก / ซึ้งกินใจ": "Romance Drama",
@@ -102,14 +92,12 @@ def generate_dynamic_series(genre_choice, ep_count, custom_detail, avoided_topic
                 {{ "scene_number": 4, "camera_and_action_th": "...", "voiceover_th": "...", "video_prompt_en": "..." }}
               ]
             }}
-            /* MUST generate all episodes up to ep_number {num_episodes} in sequence, each with 4-5 scenes */
           ]
         }}
         """
 
-        # ใช้โมเดล gemini-3.8-flash ล่าสุด
         response = client.models.generate_content(
-            model="gemini-3.8-flash",
+            model="gemini-2.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
@@ -119,15 +107,13 @@ def generate_dynamic_series(genre_choice, ep_count, custom_detail, avoided_topic
         
         data = json.loads(response.text)
         
-        yield f"⏳ **บทซีรีส์ {num_episodes} ตอน (ซีนแน่นๆ) พร้อมแล้ว! กำลังเจนรูป Master ตัวละครหลัก...**, ", None
+        yield f"⏳ **บทซีรีส์ {num_episodes} ตอนพร้อมแล้ว! กำลังเจนรูป Master ตัวละครหลัก...**, ", None
         
-        # เจนรูป Master ตัวละครหลักคนแรก
         main_char = data.get('main_characters', [{}])[0]
         char_prompt = main_char.get('visual_prompt_en', 'Cinematic portrait of main character, 8k')
         encoded_prompt = urllib.parse.quote(f"cinematic character portrait, {char_prompt}, 8k resolution, photorealistic")
         image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=768&height=1024&nologo=true"
 
-        # จัดฟอร์แมตข้อความ
         output_text = f"# 🎬 **ซีรีส์เรื่อง:** {data.get('series_title', '')}\n"
         output_text += f"📌 **แนวเรื่อง:** {data.get('genre', '')} (จำนวน {data.get('total_episodes', num_episodes)} ตอน | 4-5 ซีนต่อตอน)\n"
         output_text += f"💡 **Logline:** {data.get('logline_th', '')}\n\n"
@@ -139,7 +125,6 @@ def generate_dynamic_series(genre_choice, ep_count, custom_detail, avoided_topic
         
         output_text += "\n" + "="*60 + "\n\n"
         
-        # แสดงบทละครตามจำนวนตอนและซีนที่แน่นขึ้น
         for ep in data.get('episodes', []):
             output_text += f"## 📺 **EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}**\n"
             output_text += f"📖 **เรื่องย่อ:** {ep.get('ep_synopsis_th', '')}\n\n"
@@ -155,15 +140,20 @@ def generate_dynamic_series(genre_choice, ep_count, custom_detail, avoided_topic
         yield output_text, image_url
         
     except Exception as e:
-        yield f"❌ เกิดข้อผิดพลาด: {str(e)}", None
+        yield f"❌ เกิดข้อผิดพลาด: {str(e)}\n(โปรดตรวจสอบว่า Gemini API Key ถูกต้องหรือไม่)", None
 
-# หน้าจอ UI Gradio
 with gr.Blocks(theme=gr.themes.Soft()) as app:
-    gr.Markdown("# 🎬 ระบบสร้างซีรีส์ละครยาว (Rich Scenes Edition - 4-5 Scenes/EP)")
-    gr.Markdown("เลือกแนวเรื่อง จำนวนตอน (แต่ละตอนจะมี 4-5 ซีนสมบูรณ์) แล้วกด **Submit** ได้เลยครับ!")
+    gr.Markdown("# 🎬 ระบบสร้างซีรีส์ละครยาวอัตโนมัติ (AI Drama Series Creator)")
+    gr.Markdown("เครื่องมือสร้างบทซีรีส์มินิละครสั้น คลังตัวละคร และ Video Prompt สำหรับผู้ผลิตคอนเทนต์")
     
     with gr.Row():
         with gr.Column(scale=1):
+            api_key_input = gr.Textbox(
+                type="password",
+                placeholder="วาง Gemini API Key ของคุณที่นี่ (เช่น AIzaSy...)",
+                label="🔑 Gemini API Key (จำเป็นต้องใส่)",
+                info="รับ API Key ฟรีได้ที่ Google AI Studio (aistudio.google.com)"
+            )
             genre_input = gr.Dropdown(
                 choices=[
                     "ดราม่าโรแมนติก / ซึ้งกินใจ",
@@ -192,7 +182,7 @@ with gr.Blocks(theme=gr.themes.Soft()) as app:
             )
             with gr.Row():
                 clear_btn = gr.Button("Clear")
-                submit_btn = gr.Button("Submit (สร้างซีรีส์ ซีนแน่นๆ)", variant="primary")
+                submit_btn = gr.Button("Submit (สร้างซีรีส์)", variant="primary")
                 
         with gr.Column(scale=1):
             image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)")
@@ -200,10 +190,12 @@ with gr.Blocks(theme=gr.themes.Soft()) as app:
 
     submit_btn.click(
         fn=generate_dynamic_series,
-        inputs=[genre_input, ep_count_input, detail_input, avoid_input],
+        inputs=[api_key_input, genre_input, ep_count_input, detail_input, avoid_input],
         outputs=[output_text, image_output]
     )
     
-    clear_btn.click(fn=lambda: ("", "5", "", "", None, None), outputs=[detail_input, ep_count_input, avoid_input, output_text, image_output])
+    clear_btn.click(fn=lambda: ("", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "5", "", "", None, None), 
+                    outputs=[api_key_input, genre_input, ep_count_input, detail_input, avoid_input, output_text, image_output])
 
-app.launch(share=True, debug=False, inline=False)
+port = int(os.environ.get("PORT", 7860))
+app.launch(server_name="0.0.0.0", server_port=port)
