@@ -5,7 +5,7 @@ import os
 from google import genai
 from google.genai import types
 
-# Custom CSS ตกแต่งหน้าตาเว็บทั่วไป
+# Custom CSS สำหรับแต่งดีไซน์ภาพรวม
 custom_css = """
 footer {visibility: hidden}
 
@@ -57,8 +57,8 @@ label span, div[data-testid="block-label"] {
 def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoided_topics):
     if not api_key or api_key.strip() == "":
         err_html = """
-        <div style="background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px;">
-            <p style="color: #f87171; font-size: 1.1rem;">❌ <b>กรุณากรอก Gemini API Key ของคุณในช่องด้านซ้ายก่อนเริ่มใช้งานครับ</b></p>
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">
+            <p style="color: #f87171; font-size: 1.1rem; text-align: center;">❌ <b>กรุณากรอก Gemini API Key ของคุณในช่องด้านซ้ายก่อนเริ่มใช้งานครับ</b></p>
         </div>
         """
         return err_html, None
@@ -66,8 +66,8 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
     try:
         num_episodes = int(ep_count)
         loading_html = f"""
-        <div style="background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px;">
-            <p style="color: #38bdf8; font-size: 1.1rem;">⏳ <b>กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละครสุดเข้มข้น... กรุณารอสักครู่ครับ</b></p>
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">
+            <p style="color: #38bdf8; font-size: 1.1rem; text-align: center;">⏳ <b>กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละครสุดเข้มข้น... กรุณารอสักครู่ครับ</b></p>
         </div>
         """
         yield loading_html, None
@@ -154,7 +154,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         encoded_prompt = urllib.parse.quote(f"cinematic character portrait, {char_prompt}, 8k resolution, photorealistic")
         image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=768&height=1024&nologo=true"
 
-        # สร้าง HTML สำหรับแสดงผลบทซีรีส์ในธีมดาร์กโมเดลสุดหรู
+        # สร้าง HTML แสดงผลบทซีรีส์ ตัวหนังสือสีขาวและสีฟ้าชัดเจนบนพื้นหลังดำ
         html_out = f"""
         <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: sans-serif; line-height: 1.6; max-height: 700px; overflow-y: auto;">
             <h2 style="color: #38bdf8; margin-top: 0;">🎬 ซีรีส์เรื่อง: {data.get('series_title', '')}</h2>
@@ -167,7 +167,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         
         for char in data.get('main_characters', []):
             html_out += f"""
-            <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #6366f1;">
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #6366f1; color: #f8fafc;">
                 <b>🎭 {char.get('name_th', '')} ({char.get('role_th', '')}):</b> {char.get('personality_th', '')}<br>
                 <span style="color: #94a3b8; font-size: 0.9rem;">Visual Prompt: <code>{char.get('visual_prompt_en', '')}</code></span>
             </div>
@@ -181,7 +181,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
             
             for scene in ep.get('scenes', []):
                 html_out += f"""
-                <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #334155;">
+                <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #334155; color: #f8fafc;">
                     <b style="color: #fbbf24;">🎥 Scene {scene.get('scene_number', 1)}</b><br>
                     🎬 <b>มุมกล้อง/การแสดง:</b> {scene.get('camera_and_action_th', '')}<br>
                     🗣️ <b>บทพากย์ไทย:</b> {scene.get('voiceover_th', '')}<br>
@@ -197,7 +197,7 @@ def generate_dynamic_series(api_key, genre_choice, ep_count, custom_detail, avoi
         
     except Exception as e:
         err_html = f"""
-        <div style="background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #334155;">
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155;">
             <p style="color: #f87171;">❌ เกิดข้อผิดพลาด: {str(e)}<br>(โปรดตรวจสอบว่า Gemini API Key ถูกต้องหรือไม่)</p>
         </div>
         """
@@ -214,7 +214,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         """)
         
         with gr.Row():
-            # ฝั่งซ้าย: ตั้งค่า
             with gr.Column(scale=4):
                 with gr.Group():
                     api_key_input = gr.Textbox(
@@ -254,10 +253,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     clear_btn = gr.Button("🔄 ล้างข้อมูล", variant="secondary")
                     submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                     
-            # ฝั่งขวา: แสดงผลลัพธ์ (ใช้ gr.HTML ควบคุมธีมดาร์กโมเดลเอง 100%)
             with gr.Column(scale=5):
                 image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=320)
-                output_html = gr.HTML(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">ผลลัพธ์บทซีรีส์และ Prompt จะแสดงที่นี่หลังกด Submit</div>')
+                output_html = gr.HTML(label="📄 บทซีรีส์ คลังตัวละคร และ Video Prompts", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">ผลลัพธ์บทซีรีส์และ Prompt จะแสดงที่นี่หลังกด Submit</div>')
 
     submit_btn.click(
         fn=generate_dynamic_series,
@@ -265,7 +263,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[output_html, image_output]
     )
     
-    clear_btn.click(fn=lambda: ("", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "5", "", "", '<div style="background-color: #0f172a; color: #94a3b8; padding: 20px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">ผลลัพธ์บทซีรีส์และ Prompt จะแสดงที่นี่หลังกด Submit</div>', None), 
+    clear_btn.click(fn=lambda: ("", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "5", "", "", '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">ผลลัพธ์บทซีรีส์และ Prompt จะแสดงที่นี่หลังกด Submit</div>', None), 
                     outputs=[api_key_input, genre_input, ep_count_input, detail_input, avoid_input, output_html, image_output])
 
 port = int(os.environ.get("PORT", 7860))
