@@ -3,9 +3,13 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-body, .gradio-container {
-    background: url('file/bg-drama.png') no-repeat center center fixed !important;
+/* บังคับดึงภาพ bg-drama.png มาเป็นพื้นหลังเต็มจอและตรึงไว้ตลอด */
+html, body, .gradio-container {
+    background-image: url('file/bg-drama.png') !important;
     background-size: cover !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
     font-family: 'Prompt', sans-serif !important;
     color: #f8fafc !important;
 }
@@ -19,12 +23,13 @@ body, .gradio-container {
 
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(49, 46, 129, 0.85) 50%, rgba(67, 56, 202, 0.85) 100%);
     padding: 30px 20px;
     border-radius: 18px;
     margin-bottom: 25px;
     box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
     font-family: 'Prompt', sans-serif !important;
 }
 
@@ -34,7 +39,7 @@ body, .gradio-container {
     font-weight: 800 !important;
     letter-spacing: -0.5px;
     margin-bottom: 8px !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     font-family: 'Prompt', sans-serif !important;
 }
 
@@ -46,13 +51,13 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* กรอบการ์ดใหญ่ชิ้นเดียว (Unified Card) */
+/* กรอบการ์ดใหญ่ (Unified Card) ปรับความโปร่งใสให้เห็นภาพพื้นหลังด้านหลังสวยๆ */
 .unified-card {
-    background: rgba(30, 41, 59, 0.82) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    background: rgba(15, 23, 42, 0.78) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
     border-radius: 20px !important;
     padding: 30px !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(14px);
 }
 
