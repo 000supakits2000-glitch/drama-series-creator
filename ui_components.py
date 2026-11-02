@@ -141,22 +141,29 @@ input[type="range"] {
     pointer-events: auto !important;
 }
 
-/* ล็อกตำแหน่งช่องดรอปดาวน์ให้เป็นจุดอ้างอิงหลัก */
-.gr-dropdown {
-    position: relative !important;
+/* ปลดล็อกให้กล่องการ์ดและฟอร์มแสดงผลเนื้อหาที่ลอยออกมาได้เต็มที่ ไม่โดนตัดขอบ */
+.unified-card, .unified-card div {
+    overflow: visible !important;
 }
 
-/* ให้เมนูดรอปดาวน์กางลงมาแนบชิดติดกับปุ่มที่กดพอดี ไม่มีช่องว่างห่าง */
+/* ล็อกตำแหน่งช่องดรอปดาวน์ */
+.gr-dropdown {
+    position: relative !important;
+    z-index: 50 !important;
+}
+
+/* ให้รายการดรอปดาวน์กางออกมาเต็มๆ ไม่โดนตัด และอยู่บนสุด */
 .gr-dropdown ul, .gr-dropdown-options, .options {
     position: absolute !important;
     top: 100% !important;
     left: 0 !important;
     width: 100% !important;
-    margin-top: 2px !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
     z-index: 99999 !important;
     background-color: #1f2937 !important;
     border: 1px solid #374151 !important;
     border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
 }
 """
