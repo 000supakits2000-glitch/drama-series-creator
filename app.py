@@ -83,9 +83,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         
         data = json.loads(response.text)
         main_char = data.get('main_characters', [{}])[0]
-        char_prompt = main_char.get('visual_prompt_en', 'Cinematic portrait, 8k')
-        encoded_prompt = urllib.parse.quote(f"cinematic character portrait, {char_prompt}, 8k resolution")
-        image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=768&height=1024&nologo=true"
+        
 
         html_out = f"""
         <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 650px; overflow-y: auto;">
@@ -113,10 +111,10 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
                     <pre style="background: #090d16; color: #4ade80; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{scene.get('video_prompt_en', '')}</pre></div>"""
         html_out += "</div>"
         
-        yield html_out, image_url
+        yield html_out
         
     except Exception as e:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>"
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
