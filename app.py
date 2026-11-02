@@ -2,183 +2,16 @@ import gradio as gr
 import json
 import urllib.parse
 import os
-import sqlite3
 from google import genai
 from google.genai import types
 
-# --- 1. ตั้งค่าฐานข้อมูลสมาชิก (SQLite) ---
-def init_db():
-    conn = sqlite3.connect("users.db", check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            username TEXT PRIMARY KEY,
-            password TEXT NOT NULL,
-            credits INTEGER DEFAULT 10
-        )
-    ''')
-    conn.commit()
-    conn.close()
+from database import init_db, register_user, verify_user, get_or_create_admin, check_and_deduct_credit
+from ui_components import CUSTOM_CSS
 
+# เริ่มต้นฐานข้อมูล
 init_db()
 
-# ฟังก์ชันสมัครสมาชิก
-def register(username, password):
-    if not username or not password:
-        return "❌ กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน"
-    try:
-        conn = sqlite3.connect("users.db", check_same_thread=False)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (username, password, credits) VALUES (?, ?, 10)", (username, password))
-        conn.commit()
-        conn.close()
-        return "✅ สมัครสมาชิกสำเร็จ! (ได้รับฟรี 10 เครดิต) สามารถสลับไปแท็บ 'เข้าสู่ระบบ' ได้เลยครับ"
-    except sqlite3.IntegrityError:
-        return "❌ ชื่อผู้ใช้นี้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
-
-# ฟังก์ชันเข้าสู่ระบบปกติ
-def login(username, password):
-    if not username or not password:
-        return gr.update(visible=False), gr.update(visible=True), "❌ กรุณากรอกข้อมูลให้ครบ", username, 0
-    
-    conn = sqlite3.connect("users.db", check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute("SELECT credits FROM users WHERE username = ? AND password = ?", (username, password))
-    row = cursor.fetchone()
-    conn.close()
-    
-    if row:
-        credits = row[0]
-        return gr.update(visible=False), gr.update(visible=True), f"🎉 ยินดีต้อนรับคุณ {username} (เครดิตคงเหลือ: {credits} ครั้ง)", username, credits
-    else:
-        return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
-
-# 👑 ฟังก์ชันปุ่มลัดแอดมิน
-def admin_login():
-    admin_name = "GodAdmin"
-    conn = sqlite3.connect("users.db", check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute("SELECT credits FROM users WHERE username = ?", (admin_name,))
-    row = cursor.fetchone()
-    if not row:
-        cursor.execute("INSERT OR REPLACE INTO users (username, password, credits) VALUES (?, ?, ?)", (admin_name, "godpass123", 999))
-        conn.commit()
-    else:
-        cursor.execute("UPDATE users SET credits = 999 WHERE username = ?", (admin_name,))
-        conn.commit()
-    conn.close()
-    
-    return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", admin_name, 999
-
-# ฟังก์ชันเช็กและหักเครดิต
-def deduct_credit(username):
-    if username == "GodAdmin":
-        return True, 999
-        
-    conn = sqlite3.connect("users.db", check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute("SELECT credits FROM users WHERE username = ?", (username,))
-    row = cursor.fetchone()
-    if row and row[0] > 0:
-        new_credits = row[0] - 1
-        cursor.execute("UPDATE users SET credits = ? WHERE username = ?", (new_credits, username))
-        conn.commit()
-        conn.close()
-        return True, new_credits
-    conn.close()
-    return False, 0
-
-
-# --- 2. Custom CSS ตกแต่งเว็บแอปแบบเบ็ดเสร็จ (Unified Design System) ---
-custom_css = """
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
-
-footer {visibility: hidden}
-
-body, .gradio-container {
-    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #111827 100%) !important;
-    font-family: 'Prompt', sans-serif !important;
-    color: #f8fafc !important;
-}
-
-.main-container { 
-    max-width: 1250px !important; 
-    margin: auto !important; 
-    padding: 20px !important; 
-    font-family: 'Prompt', sans-serif !important; 
-}
-
-.header-box {
-    text-align: center;
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
-    padding: 30px 20px;
-    border-radius: 18px;
-    margin-bottom: 25px;
-    box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-family: 'Prompt', sans-serif !important;
-}
-
-.header-title {
-    color: #ffffff !important;
-    font-size: 2.4rem !important;
-    font-weight: 800 !important;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    font-family: 'Prompt', sans-serif !important;
-}
-
-.header-subtitle {
-    color: #cbd5e1 !important;
-    font-size: 1.1rem !important;
-    font-weight: 400 !important;
-    letter-spacing: 0.2px;
-    font-family: 'Prompt', sans-serif !important;
-}
-
-/* กรอบการ์ดใหญ่เชื่อมต่อกันชิ้นเดียว (Unified Card) ทั่วระบบ */
-.unified-card {
-    background: rgba(30, 41, 59, 0.75) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 20px !important;
-    padding: 30px !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(12px);
-}
-
-/* คุมสีหัวข้อภายในหน้าแรกและหน้าแอปให้เป็นสีฟ้าสว่างเด่นชัด */
-.auth-title h3, .auth-title span, .welcome-text h3 {
-    color: #38bdf8 !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 700 !important;
-}
-
-/* ป้าย Label ของช่องกรอกข้อมูลทั้งหมด */
-label span, div[data-testid="block-label"] span { 
-    color: #38bdf8 !important; 
-    font-weight: 600 !important; 
-    font-family: 'Prompt', sans-serif !important; 
-}
-
-.primary-btn {
-    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
-    border: none !important; color: white !important; font-weight: 700 !important;
-    font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-    font-family: 'Prompt', sans-serif !important;
-}
-.admin-btn {
-    background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
-    border: none !important; color: white !important; font-weight: 700 !important;
-    font-size: 1.05rem !important; padding: 10px 20px !important; border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-    font-family: 'Prompt', sans-serif !important;
-}
-"""
-
-
-# --- 3. ฟังก์ชันหลักสร้างซีรีส์ ---
+# ฟังก์ชันหลักสร้างซีรีส์
 def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custom_detail, avoided_topics):
     if not current_user:
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
@@ -188,7 +21,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
         return
         
-    has_credit, remaining = deduct_credit(current_user)
+    has_credit, remaining = check_and_deduct_credit(current_user)
     if not has_credit:
         yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
         return
@@ -286,14 +119,13 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
 
 
-# --- 4. โครงสร้างหน้าเว็บ Gradio ---
-with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
+# --- โครงสร้างหน้าเว็บ Gradio ---
+with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
     
     logged_in_user = gr.State("")
     user_credits = gr.State(0)
 
     with gr.Column(elem_classes="main-container"):
-        # Header หลัก
         gr.HTML("""
         <div class="header-box">
             <h1 class="header-title">🎬 AI Drama Series Creator</h1>
@@ -349,11 +181,18 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=280)
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
 
-    # เชื่อมโยงปุ่มกดระบบสมาชิก
-    reg_btn.click(fn=register, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
+    # เชื่อมโยงระบบล็อกอิน
+    reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
     
+    def handle_login(u, p):
+        success, credits = verify_user(u, p)
+        if success:
+            return gr.update(visible=False), gr.update(visible=True), f"🎉 ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)", u, credits
+        else:
+            return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
+
     login_btn.click(
-        fn=login,
+        fn=handle_login,
         inputs=[login_user_input, login_pass_input],
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
@@ -362,8 +201,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[user_welcome_label]
     )
 
+    def handle_admin():
+        u, c = get_or_create_admin()
+        return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", u, c
+
     admin_btn.click(
-        fn=admin_login,
+        fn=handle_admin,
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
         fn=lambda u, c: f"### 👑 ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | 💳 เครดิต: **ไม่จำกัด (999)** ครั้ง",
