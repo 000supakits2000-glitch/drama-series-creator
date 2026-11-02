@@ -150,7 +150,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
-    with gr.Row():
+        with gr.Row():
         with gr.Column(elem_classes="auth-title"):
             gr.Markdown("### เข้าสู่ระบบ (Login)")
             login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
