@@ -224,4 +224,4 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
-app.launch(server_name="0.0.0.0", server_port=port,allowed_paths=["."])
+app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
