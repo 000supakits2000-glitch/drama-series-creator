@@ -97,4 +97,11 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important;
     font-weight: 600 !important;
 }
+
+/* จัดรูปแบบข้อความต้อนรับและเครดิตผู้ใช้ให้เป็นสีฟ้าและฟอนต์ Prompt เดียวกัน */
+.welcome-text, .welcome-text * {
+    color: #38bdf8 !important;
+    font-family: 'Prompt', sans-serif !important;
+    font-weight: 600 !important;
+}
 """
