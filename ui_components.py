@@ -166,4 +166,11 @@ input[type="range"] {
     border-radius: 8px !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
 }
+
+/* บังคับให้ปุ่มลูกศรขึ้น-ลงของช่องตัวเลขแสดงขึ้นมาเวลาเอาเมาส์ไปชี้ */
+.gr-number input::-webkit-inner-spin-button,
+.gr-number input::-webkit-outer-spin-button {
+    opacity: 1 !important;
+    cursor: pointer !important;
+}
 """
