@@ -157,7 +157,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
                     toggle_login_btn = gr.Button("👁️", elem_id="toggle_login_btn")
 toggle_login_btn.click(None, None, None, js="() => togglePasswordVisibility('login_pass')")
-                    gr.Markdown("""
+                    
     <div style="text-align: right; margin-top: 6px; margin-bottom: 12px;">
         <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">Forgot Password?</a>
     </div>
