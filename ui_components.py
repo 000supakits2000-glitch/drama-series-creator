@@ -141,14 +141,14 @@ input[type="range"] {
     pointer-events: auto !important;
 }
 
-/* เพิ่มระยะห่างระหว่างช่องกรอกข้อมูล ป้องกันดรอปดาวน์บังช่องถัดไป */
-.unified-card .gr-form > *, 
-.unified-card .block {
-    margin-bottom: 14px !important;
+/* ลดระยะห่างระหว่างตัวเลือกแนวซีรีส์ให้ชิดและกระชับขึ้น */
+.gr-radio label {
+    margin-bottom: 4px !important;
+    padding: 4px 8px !important;
 }
 
-/* จัดระยะกล่องดรอปดาวน์ให้มีพื้นที่หายใจ */
-.gr-dropdown {
+/* ลดระยะห่างระหว่างบล็อกฟอร์มด้านล่างให้ไม่ห่างจนเกินไป */
+.unified-card .block {
     margin-bottom: 8px !important;
 }
 """
