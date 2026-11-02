@@ -137,13 +137,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         with gr.Column(elem_classes="unified-card") as auth_section:
     with gr.Tabs():
         # แท็บที่ 1: หน้าเข้าสู่ระบบ
-        with gr.Tab("🔑 เข้าสู่ระบบ"):
+            with gr.Tab("🔑 เข้าสู่ระบบ"):
             login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
             login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
             login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
             
         # แท็บที่ 2: หน้าสมัครสมาชิก
-        with gr.Tab("📝 สมัครสมาชิกใหม่"):
+            with gr.Tab("📝 สมัครสมาชิกใหม่"):
             reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
             reg_pass_input = gr.Textbox(label="ตั้งรหัสผ่าน (Password)", type="password")
             reg_btn = gr.Button("✨ ยืนยันการสมัครสมาชิก (รับฟรี 10 เครดิต)", variant="secondary")
