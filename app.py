@@ -156,7 +156,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     reg_pass_input = gr.Textbox(label="ตั้งรหัสผ่าน (Password)", type="password")
                     reg_btn = gr.Button("✨ สมัครสมาชิก", variant="secondary")
             
-            auth_status = gr.Markdown("")
+            auth_status = gr.Markdown("", elem_classes="auth-status")
 
         # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False, elem_classes="unified-card") as app_section:
