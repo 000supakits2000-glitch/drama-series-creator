@@ -141,8 +141,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
                     gr.Markdown("""
-    <div style="text-align: right; margin-top: -5px; margin-bottom: 10px;">
-        <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">ลืม รหัส ผ่าน ?</a>
+    <div style="text-align: right; margin-top: -6px; margin-bottom: 12px;">
+        <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">Forgot Password?</a>
     </div>
     """)
                     login_btn = gr.Button("🚀 เข้าสู่ระบบ", elem_classes="primary-btn")
