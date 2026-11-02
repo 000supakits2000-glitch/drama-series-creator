@@ -175,12 +175,18 @@ input[type="range"] {
     cursor: pointer !important;
 }
 
-/* บังคับให้ปุ่มเพิ่ม/ลด (Stepper) ของช่องตัวเลขทุกช่องแสดงผลขึ้นมาครบถ้วน */
+/* บังคับให้ปุ่มเพิ่ม/ลด และไอคอนลูกศรด้านในของช่องตัวเลขทุกช่องแสดงผลครบถ้วน */
 .gr-number button, 
-.gr-number .increment-button, 
-.gr-number .decrement-button,
-div[data-testid="number"] button {
+.gr-number .wrap button,
+.gr-input-row button {
     display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.gr-number button svg,
+.gr-number .wrap button svg {
+    display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
 }
