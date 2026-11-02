@@ -141,13 +141,18 @@ input[type="range"] {
     pointer-events: auto !important;
 }
 
-/* ปรับให้กล่องการ์ดหลักยอมให้เมนูดรอปดาวน์แสดงผลลอยพ้นขอบได้ปกติ */
+/* ตั้งให้การ์ดหลักเป็นกรอบอ้างอิง */
 .unified-card {
-    overflow: visible !important;
+    position: relative !important;
 }
 
-/* จัดลำดับชั้นการแสดงผลของเมนูดรอปดาวน์ให้อยู่บนสุดเสมอ */
+/* ให้รายการดรอปดาวน์ลอยทับขึ้นมาข้างบนโดยไม่ดันกล่องอื่น */
 .gr-dropdown-options, .options {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    width: 100% !important;
     z-index: 99999 !important;
+    background-color: #1f2937 !important;
 }
 """
