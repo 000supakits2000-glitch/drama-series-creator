@@ -150,35 +150,35 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
-        with gr.Row():
-        with gr.Column(elem_classes="auth-title"):
-            gr.Markdown("### เข้าสู่ระบบ (Login)")
-            login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
-            login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-            toggle_login_btn = gr.Button("👁", elem_id="toggle_login_btn")
-            toggle_login_btn.click(None, None, None, js="() => togglePasswordVisibility('login_pass')")
+            with gr.Row():
+                with gr.Column(elem_classes="auth-title"):
+                    gr.Markdown("### เข้าสู่ระบบ (Login)")
+                    login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
+                    login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                    toggle_login_btn = gr.Button("👁", elem_id="toggle_login_btn")
+                    toggle_login_btn.click(None, None, None, js="() => togglePasswordVisibility('login_pass')")
             
-            gr.HTML("""
-            <div style="text-align: right; margin-top: 6px; margin-bottom: 12px;">
-                <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">Forgot Password?</a>
-            </div>
-            """)
+                    gr.HTML("""
+                    <div style="text-align: right; margin-top: 6px; margin-bottom: 12px;">
+                    <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">Forgot Password?</a>
+                    </div>
+                    """)
             
-            login_btn = gr.Button("เข้าสู่ระบบ", elem_classes="primary-btn")
+                    login_btn = gr.Button("เข้าสู่ระบบ", elem_classes="primary-btn")
             
-            gr.Markdown("---")
-            admin_btn = gr.Button("เข้าสู่ระบบในฐานะผู้ดูแล (Admin Bypass)", elem_classes="admin-btn")
-            gr.Markdown("---")
+                    gr.Markdown("---")
+                    admin_btn = gr.Button("เข้าสู่ระบบในฐานะผู้ดูแล (Admin Bypass)", elem_classes="admin-btn")
+                    gr.Markdown("---")
 
-    with gr.Column(elem_classes="auth-title"):
-        gr.Markdown("### สมัครสมาชิก (Register - ฟรี 18 เครดิต)")
-        reg_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
-        reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-        toggle_reg_btn = gr.Button("👁", elem_id="toggle_reg_btn")
-        toggle_reg_btn.click(None, None, None, js="() => togglePasswordVisibility('reg_pass')")
-        reg_btn = gr.Button("สมัครสมาชิก", variant="secondary")
+            with gr.Column(elem_classes="auth-title"):
+                gr.Markdown("### สมัครสมาชิก (Register - ฟรี 18 เครดิต)")
+                reg_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
+                reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                toggle_reg_btn = gr.Button("👁", elem_id="toggle_reg_btn")
+                toggle_reg_btn.click(None, None, None, js="() => togglePasswordVisibility('reg_pass')")
+                reg_btn = gr.Button("สมัครสมาชิก", variant="secondary")
 
-    auth_status = gr.Markdown("")
+            auth_status = gr.Markdown("")
 
 # --- หน้าที่ 2: หน้าแอปหลัก ---
 with gr.Column(visible=False, elem_classes="unified-card") as app_section:
