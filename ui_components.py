@@ -130,4 +130,14 @@ label span, div[data-testid="block-label"] span {
     color: #38bdf8 !important;
     border-bottom: 2px solid #38bdf8 !important;
 }
+
+/* บังคับให้แถบเลื่อน Slider สามารถคลิกและลากได้ปกติ */
+input[type="range"] {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.gr-slider {
+    pointer-events: auto !important;
+}
 """
