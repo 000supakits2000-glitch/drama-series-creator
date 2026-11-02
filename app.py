@@ -178,7 +178,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                         
                 with gr.Column(scale=5):
-                    image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=280)
+                    
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
 
     # เชื่อมโยงระบบล็อกอิน
@@ -222,7 +222,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     submit_btn.click(
         fn=generate_dynamic_series,
         inputs=[logged_in_user, api_key_input, genre_input, ep_count_input, detail_input, avoid_input],
-        outputs=[output_html, image_output]
+        outputs=[output_html]
     )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
