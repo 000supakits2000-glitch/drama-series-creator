@@ -89,7 +89,7 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป (แก้ไขสีข้อความต้อนรับและ Label ให้แสดงผลชัดเจน) ---
+# --- 2. Custom CSS ตกแต่งเว็บแอป ---
 custom_css = """
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap');
 
@@ -137,7 +137,7 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* 🌟 กรอบการ์ดใหญ่ชิ้นเดียว (Unified Card) */
+/* กรอบการ์ดใหญ่ชิ้นเดียว */
 .unified-card {
     background: rgba(30, 41, 59, 0.7) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -147,14 +147,20 @@ body, .gradio-container {
     backdrop-filter: blur(10px);
 }
 
-/* 🌟 กำหนดสีเฉพาะ Label ของช่องกรอกข้อมูลให้เป็นสีฟ้าสว่าง */
+/* 🌟 แก้ไขสีหัวข้อภายในหน้าแรกให้เด่นชัด (สีฟ้าสว่าง) */
+.auth-title h3, .auth-title span {
+    color: #38bdf8 !important;
+    font-family: 'Prompt', sans-serif !important;
+    font-weight: 700 !important;
+}
+
+/* ป้าย Label ของช่องกรอกข้อมูล */
 label span, div[data-testid="block-label"] span { 
     color: #38bdf8 !important; 
     font-weight: 600 !important; 
     font-family: 'Prompt', sans-serif !important; 
 }
 
-/* 🌟 กำหนดสีข้อความต้อนรับและสถานะผู้ใช้งานให้สว่างชัดเจน */
 .welcome-text h3 {
     color: #f8fafc !important;
     font-family: 'Prompt', sans-serif !important;
@@ -304,7 +310,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
             with gr.Row():
-                with gr.Column():
+                with gr.Column(elem_classes="auth-title"):
                     gr.Markdown("### 🔑 เข้าสู่ระบบ (Login)")
                     login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
@@ -313,7 +319,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     gr.Markdown("---")
                     admin_btn = gr.Button("👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
                 
-                with gr.Column():
+                with gr.Column(elem_classes="auth-title"):
                     gr.Markdown("### 📝 สมัครสมาชิกใหม่ (Register - ฟรี 10 เครดิต)")
                     reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
                     reg_pass_input = gr.Textbox(label="ตั้งรหัสผ่าน (Password)", type="password")
