@@ -196,7 +196,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         inputs=[login_user_input, login_pass_input],
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
-        fn=lambda u, c: f"### 👤 ผู้ใช้งาน: **{u}** | 💳 เครดิตคงเหลือ: **{c}** ครั้ง",
+        fn=lambda u, c: f"<span style='color: #38bdf8; font-weight: 600;'>👤 ผู้ใช้งาน: {u} | 💳 เครดิตคงเหลือ: {c} ครั้ง</span>",
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
