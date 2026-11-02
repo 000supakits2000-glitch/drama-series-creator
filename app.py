@@ -89,13 +89,12 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป (เปลี่ยนพื้นหลังภาพรวมทั้งหมดเป็นโทนสีมืดพรีเมียม และล็อกฟอนต์ Prompt) ---
+# --- 2. Custom CSS ตกแต่งเว็บแอป (รวมกรอบเป็นชิ้นเดียว และคุมสีข้อความให้เป็นโทนเดียวกัน) ---
 custom_css = """
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap');
 
 footer {visibility: hidden}
 
-/* 🌟 เปลี่ยนพื้นหลังภาพรวมทั้งหมดเป็นโทนสีมืดพรีเมียม */
 body, .gradio-container {
     background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #111827 100%) !important;
     font-family: 'Prompt', sans-serif !important;
@@ -138,8 +137,22 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* ปรับแต่งกล่อง input และ Label ให้กลมกลืนกับธีมมืด */
-label span, div[data-testid="block-label"] { color: #cbd5e1 !important; font-weight: 600 !important; font-family: 'Prompt', sans-serif !important; }
+/* 🌟 รวมกรอบทั้งหมดให้เชื่อมต่อกันเป็นบล็อกการ์ดใหญ่ชิ้นเดียว */
+.unified-card {
+    background: rgba(30, 41, 59, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    padding: 30px !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+/* 🌟 คุมสีข้อความและ Label ทั้งหมดให้เป็นโทนเดียวกัน (สีฟ้าอ่อนสะอาดตา) */
+label span, div[data-testid="block-label"], .gradio-container h3, .gradio-container span, .gradio-container label { 
+    color: #38bdf8 !important; 
+    font-weight: 600 !important; 
+    font-family: 'Prompt', sans-serif !important; 
+}
 
 .primary-btn {
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
@@ -281,8 +294,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         </div>
         """)
         
-        # --- หน้าที่ 1: หน้า Login / Register ---
-        with gr.Column(visible=True) as auth_section:
+        # --- หน้าที่ 1: หน้า Login / Register (ครอบด้วยกรอบใหญ่ชิ้นเดียวกัน) ---
+        with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
             with gr.Row():
                 with gr.Column():
                     gr.Markdown("### 🔑 เข้าสู่ระบบ (Login)")
