@@ -142,13 +142,20 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
                     gr.Markdown("""
     <div style="text-align: right; margin-top: -5px; margin-bottom: 10px;">
-        <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">ลืมรหัสผ่าน?</a>
+        <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">ลืม รหัส ผ่าน ?</a>
     </div>
     """)
                     login_btn = gr.Button("🚀 เข้าสู่ระบบ", elem_classes="primary-btn")
                     
                     gr.Markdown("---")
                     admin_btn = gr.Button("👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
+                    gr.Markdown("""
+    <div style="text-align: center; margin-top: 25px; margin-bottom: 15px;">
+        <span style="color: #64748b; font-size: 0.85rem; font-family: 'Prompt', sans-serif; background: rgba(15, 23, 42, 0.6); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08);">
+            AI Drama Series Creator • v1.0.0 Production
+        </span>
+    </div>
+    """)
                 
                 with gr.Column(elem_classes="auth-title"):
                     gr.Markdown("### 📝 สมัครสมาชิกใหม่ (Register - ฟรี 10 เครดิต)")
@@ -231,11 +238,4 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
-gr.Markdown("""
-    <div style="text-align: center; margin-top: 25px; margin-bottom: 15px;">
-        <span style="color: #64748b; font-size: 0.85rem; font-family: 'Prompt', sans-serif; background: rgba(15, 23, 42, 0.6); padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08);">
-            AI Drama Series Creator • v1.0.0 Production
-        </span>
-    </div>
-    """)
 app.launch(server_name="0.0.0.0", server_port=port)
