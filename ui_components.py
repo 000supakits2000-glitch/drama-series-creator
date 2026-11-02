@@ -1,86 +1,42 @@
+# ui_components.py
+
 CUSTOM_CSS = """
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
-
-footer {visibility: hidden}
-
+/* ตั้งค่าภาพพื้นหลังหลัก bg-drama.png */
 body, .gradio-container {
-    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #111827 100%) !important;
-    font-family: 'Prompt', sans-serif !important;
-    color: #f8fafc !important;
+    background-image: url('file/bg-drama.png') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
 }
 
-.main-container { 
-    max-width: 1250px !important; 
-    margin: auto !important; 
-    padding: 20px !important; 
-    font-family: 'Prompt', sans-serif !important; 
-}
-
-.header-box {
-    text-align: center;
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
-    padding: 30px 20px;
-    border-radius: 18px;
-    margin-bottom: 25px;
-    box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    font-family: 'Prompt', sans-serif !important;
-}
-
-.header-title {
-    color: #ffffff !important;
-    font-size: 2.4rem !important;
-    font-weight: 800 !important;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    font-family: 'Prompt', sans-serif !important;
-}
-
-.header-subtitle {
-    color: #cbd5e1 !important;
-    font-size: 1.1rem !important;
-    font-weight: 400 !important;
-    letter-spacing: 0.2px;
-    font-family: 'Prompt', sans-serif !important;
-}
-
-/* กรอบการ์ดใหญ่ชิ้นเดียว (Unified Card) */
+/* ปรับแต่งกล่องการ์ดให้มีความโปร่งใสและเบลอฉากหลังนิดๆ เพื่อให้อ่านตัวหนังสือชัดเจน */
 .unified-card {
-    background: rgba(30, 41, 59, 0.75) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    border-radius: 20px !important;
-    padding: 30px !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(12px);
+    background: rgba(15, 23, 42, 0.75) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+    padding: 24px;
+    margin: 0 auto;
 }
 
-/* สีหัวข้อและป้าย Label */
-.auth-title h3, .auth-title span, .welcome-text h3 {
-    color: #38bdf8 !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 700 !important;
+/* จัดสไตล์หัวข้อ */
+.auth-title {
+    text-align: center;
+    margin-bottom: 15px;
 }
 
-label span, div[data-testid="block-label"] span { 
-    color: #38bdf8 !important; 
-    font-weight: 600 !important; 
-    font-family: 'Prompt', sans-serif !important; 
-}
-
+/* ปรับแต่งปุ่มกด */
 .primary-btn {
-    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
-    border: none !important; color: white !important; font-weight: 700 !important;
-    font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-    font-family: 'Prompt', sans-serif !important;
+    background-color: #6366f1 !important;
+    color: white !important;
+    border-radius: 8px !important;
 }
 
 .admin-btn {
-    background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
-    border: none !important; color: white !important; font-weight: 700 !important;
-    font-size: 1.05rem !important; padding: 10px 20px !important; border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-    font-family: 'Prompt', sans-serif !important;
+    background-color: #f97316 !important;
+    color: white !important;
+    border-radius: 8px !important;
 }
 """
