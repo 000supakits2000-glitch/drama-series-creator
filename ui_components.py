@@ -3,15 +3,16 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* บังคับดึงภาพ bg-drama.png มาเป็นพื้นหลังเต็มจอและตรึงไว้ตลอด */
+/* ใช้รูปแบบ route ของ Gradio คือ file=bg-drama.png ครับ */
 html, body, .gradio-container {
-    background-image: url('file/bg-drama.png') !important;
+    background-image: url('file=bg-drama.png') !important;
     background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     font-family: 'Prompt', sans-serif !important;
     color: #f8fafc !important;
+}
 }
 
 .main-container { 
