@@ -161,12 +161,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                 with gr.Column(scale=4):
                     with gr.Group():
                         api_key_input = gr.Textbox(type="password", placeholder="วาง Gemini API Key ที่นี่...", label="🔑 Gemini API Key")
-                        genre_input = gr.Dropdown(
+                        genre_input = gr.Radio(
                             choices=[
                                 "ดราม่าโรแมนติก / ซึ้งกินใจ", "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
                                 "คอมเมดี้ / ตลก / ฮาๆ", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"
                             ],
-                            value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", label="🎭 เลือกแนวซีรีส์"
+                            value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", label="🎬 เลือกแนวซีรีส์"
                         )
                         ep_count_input = gr.Number(value=3, label="🎬 จำนวนตอน", minimum=1, maximum=10, step=1)
                         scenes_per_episode_input = gr.Dropdown(choices=["1", "2", "3", "4", "5"], value="3", label="🎬 จำนวนฉากต่อตอน")
