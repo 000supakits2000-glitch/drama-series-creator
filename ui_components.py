@@ -3,10 +3,10 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* 🌟 ปรับพื้นหลังภาพรวมทั้งหมดให้มีมิติ พร้อมลวดลายภาพตัวละครแนวซีรีส์แบบเบลอพรีเมียม */
+/* 🌟 ดึงภาพคอลลาจที่เพิ่งอัปโหลดมาเป็นพื้นหลังหน้าแรก */
 body, .gradio-container {
-    background: linear-gradient(135deg, rgba(9, 13, 22, 0.92) 0%, rgba(15, 23, 42, 0.88) 50%, rgba(17, 24, 39, 0.92) 100%),
-                url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920&auto=format&fit=crop') !important;
+    background: linear-gradient(135deg, rgba(9, 13, 22, 0.82) 0%, rgba(15, 23, 42, 0.78) 50%, rgba(17, 24, 39, 0.82) 100%),
+                url('file=คอลลาจเงาจันทร์และรักลึกลับ.png') !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
@@ -23,13 +23,13 @@ body, .gradio-container {
 
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, rgba(30, 27, 75, 0.9) 0%, rgba(49, 46, 129, 0.9) 50%, rgba(67, 56, 202, 0.9) 100%);
+    background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(49, 46, 129, 0.85) 50%, rgba(67, 56, 202, 0.85) 100%);
     padding: 30px 20px;
     border-radius: 18px;
     margin-bottom: 25px;
     box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px);
     font-family: 'Prompt', sans-serif !important;
 }
 
@@ -39,7 +39,7 @@ body, .gradio-container {
     font-weight: 800 !important;
     letter-spacing: -0.5px;
     margin-bottom: 8px !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     font-family: 'Prompt', sans-serif !important;
 }
 
@@ -51,13 +51,13 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* กรอบการ์ดใหญ่ชิ้นเดียว (Unified Card) โปร่งแสงนิดๆ ให้เห็นพื้นหลังตัวละครรางๆ */
+/* กรอบการ์ดใหญ่โปร่งแสงโมเดิร์น */
 .unified-card {
-    background: rgba(15, 23, 42, 0.82) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
     border-radius: 20px !important;
     padding: 30px !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 10px 15px -5px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(16px);
 }
 
