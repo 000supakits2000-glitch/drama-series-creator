@@ -89,12 +89,25 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป (กำหนดฟอนต์ชุดเดียวกันทั้ง Header) ---
+# --- 2. Custom CSS ตกแต่งเว็บแอป (เปลี่ยนพื้นหลังภาพรวมทั้งหมดเป็นโทนสีมืดพรีเมียม และล็อกฟอนต์ Prompt) ---
 custom_css = """
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap');
 
 footer {visibility: hidden}
-.main-container { max-width: 1250px !important; margin: auto !important; padding: 20px !important; font-family: 'Prompt', sans-serif !important; }
+
+/* 🌟 เปลี่ยนพื้นหลังภาพรวมทั้งหมดเป็นโทนสีมืดพรีเมียม */
+body, .gradio-container {
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #111827 100%) !important;
+    font-family: 'Prompt', sans-serif !important;
+    color: #f8fafc !important;
+}
+
+.main-container { 
+    max-width: 1250px !important; 
+    margin: auto !important; 
+    padding: 20px !important; 
+    font-family: 'Prompt', sans-serif !important; 
+}
 
 .header-box {
     text-align: center;
@@ -125,19 +138,22 @@ footer {visibility: hidden}
     font-family: 'Prompt', sans-serif !important;
 }
 
-label span, div[data-testid="block-label"] { color: #e2e8f0 !important; font-weight: 600 !important; }
+/* ปรับแต่งกล่อง input และ Label ให้กลมกลืนกับธีมมืด */
+label span, div[data-testid="block-label"] { color: #cbd5e1 !important; font-weight: 600 !important; font-family: 'Prompt', sans-serif !important; }
 
 .primary-btn {
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
     border: none !important; color: white !important; font-weight: 700 !important;
     font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    font-family: 'Prompt', sans-serif !important;
 }
 .admin-btn {
     background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
     border: none !important; color: white !important; font-weight: 700 !important;
     font-size: 1.05rem !important; padding: 10px 20px !important; border-radius: 12px !important;
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    font-family: 'Prompt', sans-serif !important;
 }
 """
 
@@ -257,7 +273,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     user_credits = gr.State(0)
 
     with gr.Column(elem_classes="main-container"):
-        # 🌟 ปรับปรุง Header ใช้ฟอนต์ Prompt ชุดเดียวกันทั้งหมด
+        # Header หลัก
         gr.HTML("""
         <div class="header-box">
             <h1 class="header-title">🎬 AI Drama Series Creator</h1>
