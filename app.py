@@ -53,19 +53,17 @@ def login(username, password):
     else:
         return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
 
-# 👑 ฟังก์ชันปุ่มลัดแอดมิน (เข้าใช้งานทันที พร้อมเครดิตพิเศษ 999 ครั้ง)
+# 👑 ฟังก์ชันปุ่มลัดแอดมิน
 def admin_login():
     admin_name = "GodAdmin"
     conn = sqlite3.connect("users.db", check_same_thread=False)
     cursor = conn.cursor()
-    # ตรวจสอบว่ามีไอเดียแอดมินหรือยัง ถ้ายังให้สร้างอัตโนมัติ
     cursor.execute("SELECT credits FROM users WHERE username = ?", (admin_name,))
     row = cursor.fetchone()
     if not row:
         cursor.execute("INSERT OR REPLACE INTO users (username, password, credits) VALUES (?, ?, ?)", (admin_name, "godpass123", 999))
         conn.commit()
     else:
-        # เติมเครดิตให้แอดมินเต็มเสมอ
         cursor.execute("UPDATE users SET credits = 999 WHERE username = ?", (admin_name,))
         conn.commit()
     conn.close()
@@ -75,7 +73,7 @@ def admin_login():
 # ฟังก์ชันเช็กและหักเครดิต
 def deduct_credit(username):
     if username == "GodAdmin":
-        return True, 999  # แอดมินเครดิตไม่จำกัด
+        return True, 999
         
     conn = sqlite3.connect("users.db", check_same_thread=False)
     cursor = conn.cursor()
@@ -121,17 +119,22 @@ label span, div[data-testid="block-label"] { color: #e2e8f0 !important; font-wei
 # --- 3. ฟังก์ชันหลักสร้างซีรีส์ ---
 def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custom_detail, avoided_topics):
     if not current_user:
-        return """<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
+        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
+        return
         
     if not api_key or api_key.strip() == "":
-        return """<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
+        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
+        return
         
     has_credit, remaining = deduct_credit(current_user)
     if not has_credit:
-        return f"""<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
+        return
 
     try:
         num_episodes = int(ep_count)
+        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", None
+
         client = genai.Client(api_key=api_key.strip())
         
         genre_map = {
@@ -190,7 +193,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=768&height=1024&nologo=true"
 
         html_out = f"""
-        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: sans-serif; line-height: 1.6; max-height: 700px; overflow-y: auto;">
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: sans-serif; line-height: 1.6; max-height: 650px; overflow-y: auto;">
             <h2 style="color: #38bdf8; margin-top: 0;">🎬 ซีรีส์: {data.get('series_title', '')}</h2>
             <p><b>📌 แนวเรื่อง:</b> {data.get('genre', '')} | <b>เครดิตคงเหลือ:</b> {remaining} ครั้ง</p>
             <p><b>💡 Logline:</b> {data.get('logline_th', '')}</p>
@@ -214,10 +217,11 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
                     ✨ <b>Google Flow Prompt:</b><br>
                     <pre style="background: #090d16; color: #4ade80; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{scene.get('video_prompt_en', '')}</pre></div>"""
         html_out += "</div>"
-        return html_out, image_url
+        
+        yield html_out, image_url
         
     except Exception as e:
-        return f"""<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
 
 
 # --- 4. โครงสร้างหน้าเว็บ Gradio ---
@@ -244,7 +248,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     login_btn = gr.Button("🚀 เข้าสู่ระบบ", elem_classes="primary-btn")
                     
                     gr.Markdown("---")
-                    # 👑 ปุ่มลัดแอดมินพิเศษ
                     admin_btn = gr.Button("👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
                 
                 with gr.Column():
@@ -280,8 +283,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                         
                 with gr.Column(scale=5):
-                    image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=320)
-                    output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 400px; display: flex; align-items: center; justify-content: center;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
+                    image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=280)
+                    output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
 
     # เชื่อมโยงปุ่มกดระบบสมาชิก
     reg_btn.click(fn=register, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
@@ -296,7 +299,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[user_welcome_label]
     )
 
-    # 👑 เชื่อมโยงปุ่มลัดแอดมิน
     admin_btn.click(
         fn=admin_login,
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
@@ -306,13 +308,11 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[user_welcome_label]
     )
 
-    # ปุ่มออกจากระบบ
     logout_btn.click(
         fn=lambda: (gr.update(visible=True), gr.update(visible=False), "", 0),
         outputs=[auth_section, app_section, logged_in_user, user_credits]
     )
 
-    # ปุ่มสร้างซีรีส์
     submit_btn.click(
         fn=generate_dynamic_series,
         inputs=[logged_in_user, api_key_input, genre_input, ep_count_input, detail_input, avoid_input],
