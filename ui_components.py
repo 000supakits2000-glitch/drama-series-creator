@@ -3,10 +3,10 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* 🌟 ดึงภาพคอลลาจที่เพิ่งอัปโหลดมาเป็นพื้นหลังหน้าแรก */
+/* 🌟 ดึงภาพพื้นหลังผ่าน Raw URL ของ GitHub ตรงๆ */
 body, .gradio-container {
     background: linear-gradient(135deg, rgba(9, 13, 22, 0.82) 0%, rgba(15, 23, 42, 0.78) 50%, rgba(17, 24, 39, 0.82) 100%),
-                url('file=คอลลาจเงาจันทร์และรักลึกลับ.png') !important;
+                url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/%E0%B8%84%E0%B8%AD%E0%B8%A5%E0%B8%A5%E0%B8%B2%E0%B8%88%E0%B4%B3%E0%B4%87%E0%B4%B2%E0%B4%98%E0%B4%B1%E0%B4%8D%E0%B4%9E%E0%B4%8D.png') !important;
     background-size: cover !important;
     background-position: center !important;
     background-attachment: fixed !important;
