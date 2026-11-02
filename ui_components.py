@@ -174,4 +174,14 @@ input[type="range"] {
     display: block !important;
     cursor: pointer !important;
 }
+
+/* บังคับให้ปุ่มเพิ่ม/ลด (Stepper) ของช่องตัวเลขทุกช่องแสดงผลขึ้นมาครบถ้วน */
+.gr-number button, 
+.gr-number .increment-button, 
+.gr-number .decrement-button,
+div[data-testid="number"] button {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
 """
