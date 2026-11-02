@@ -3,11 +3,11 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* 🌟 ปรับขนาดภาพพื้นหลังให้จัดกึ่งกลางและเต็มจอพอดี ไม่โดนตัดขอบน่าเกลียด */
+/* 🌟 ปรับให้ภาพแสดงผลเต็มจอแบบ Cover และห้ามทำซ้ำ (no-repeat) เพื่อไม่ให้ภาพชนกันขวาจอ */
 body, .gradio-container {
     background: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
                 url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama.png') !important;
-    background-size: 100% 100% !important;
+    background-size: cover !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
