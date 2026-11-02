@@ -90,7 +90,6 @@ label span, div[data-testid="block-label"] span {
     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
     font-family: 'Prompt', sans-serif !important;
 }
-"""
 
 /* จัดรูปแบบข้อความแจ้งเตือนสถานะให้เป็นฟอนต์และสีเดียวกับหัวข้อล็อกอิน */
 .auth-status, .auth-status * {
@@ -98,3 +97,4 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important;
     font-weight: 600 !important;
 }
+"""
