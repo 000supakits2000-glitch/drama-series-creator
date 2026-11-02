@@ -89,7 +89,7 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป (เชื่อมกรอบเป็นชิ้นเดียว คุมโทนสีข้อความและฟอนต์ Prompt) ---
+# --- 2. Custom CSS ตกแต่งเว็บแอป (แก้ไขสีข้อความต้อนรับและ Label ให้แสดงผลชัดเจน) ---
 custom_css = """
 @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap');
 
@@ -137,7 +137,7 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* 🌟 กรอบการ์ดใหญ่เชื่อมต่อกันชิ้นเดียว (Unified Card) ทั้งระบบ */
+/* 🌟 กรอบการ์ดใหญ่ชิ้นเดียว (Unified Card) */
 .unified-card {
     background: rgba(30, 41, 59, 0.7) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -147,11 +147,18 @@ body, .gradio-container {
     backdrop-filter: blur(10px);
 }
 
-/* 🌟 คุมสีข้อความและ Label ทั้งหมดให้เป็นโทนสีฟ้าสว่างเดียวกัน */
-label span, div[data-testid="block-label"], .gradio-container h3, .gradio-container span, .gradio-container label { 
+/* 🌟 กำหนดสีเฉพาะ Label ของช่องกรอกข้อมูลให้เป็นสีฟ้าสว่าง */
+label span, div[data-testid="block-label"] span { 
     color: #38bdf8 !important; 
     font-weight: 600 !important; 
     font-family: 'Prompt', sans-serif !important; 
+}
+
+/* 🌟 กำหนดสีข้อความต้อนรับและสถานะผู้ใช้งานให้สว่างชัดเจน */
+.welcome-text h3 {
+    color: #f8fafc !important;
+    font-family: 'Prompt', sans-serif !important;
+    font-weight: 700 !important;
 }
 
 .primary-btn {
@@ -314,9 +321,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             
             auth_status = gr.Markdown("")
 
-        # --- หน้าที่ 2: หน้าแอปหลัก (ครอบด้วยกรอบการ์ดใหญ่เชื่อมต่อกันเป็นชิ้นเดียว) ---
+        # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False, elem_classes="unified-card") as app_section:
-            with gr.Row():
+            with gr.Row(elem_classes="welcome-text"):
                 user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
             
             with gr.Row():
