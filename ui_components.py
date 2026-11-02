@@ -3,16 +3,16 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* ใช้รูปแบบ route ของ Gradio คือ file=bg-drama.png ครับ */
-html, body, .gradio-container {
-    background-image: url('file=bg-drama.png') !important;
-    background-size: cover !important;
+/* 🌟 ตัดปัญหาเรื่อง cover แอบทับ โดยการแยกคำสั่ง background ให้ชัดเจน */
+body, .gradio-container {
+    background-image: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
+                      url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama-v2.png') !important;
+    background-size: 100% 100% !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     font-family: 'Prompt', sans-serif !important;
     color: #f8fafc !important;
-}
 }
 
 .main-container { 
@@ -52,14 +52,14 @@ html, body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* กรอบการ์ดใหญ่ (Unified Card) ปรับความโปร่งใสให้เห็นภาพพื้นหลังด้านหลังสวยๆ */
+/* กรอบการ์ดใหญ่โปร่งแสงโมเดิร์น */
 .unified-card {
     background: rgba(15, 23, 42, 0.78) !important;
-    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 20px !important;
     padding: 30px !important;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(14px);
+    box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 10px 15px -5px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
 }
 
 /* สีหัวข้อและป้าย Label */
