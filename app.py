@@ -114,7 +114,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         yield html_out
         
     except Exception as e:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>"
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>"""
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
@@ -124,12 +124,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     user_credits = gr.State(0)
 
     with gr.Column(elem_classes="main-container"):
-        gr.HTML('
+        gr.HTML('''
         <div class="header-box">
             <h1 class="header-title">AI Drama Series Creator</h1>
             <p class="header-subtitle">ระบบสมาชิกและเจเนอเรตบทซีรีส์มินิละครสั้นระดับโปรสำหรับ Google Flow</p>
         </div>
-        ')
+        ''')
         
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
