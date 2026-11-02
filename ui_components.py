@@ -140,4 +140,14 @@ input[type="range"] {
 .gr-slider {
     pointer-events: auto !important;
 }
+
+/* ปรับให้กล่องการ์ดหลักยอมให้เมนูดรอปดาวน์แสดงผลลอยพ้นขอบได้ปกติ */
+.unified-card {
+    overflow: visible !important;
+}
+
+/* จัดลำดับชั้นการแสดงผลของเมนูดรอปดาวน์ให้อยู่บนสุดเสมอ */
+.gr-dropdown-options, .options {
+    z-index: 99999 !important;
+}
 """
