@@ -14,17 +14,21 @@ def init_db():
     conn.close()
 
 def register_user(username, password):
-    if not username or not password:
-        return "❌ กรุณากรอกชื่อผู้ใช้และรหัสผ่านให้ครบถ้วน"
+    # เพิ่มความเข้มงวด: ตรวจสอบความยาวและรูปแบบข้อมูล
+    if not username or len(username.strip()) < 3:
+        return "❌ ชื่อผู้ใช้ (Username) ต้องมีความยาวอย่างน้อย 3 ตัวอักษรขึ้นไปครับ"
+    if not password or len(password.strip()) < 6:
+        return "❌ รหัสผ่าน (Password) ต้องมีความยาวอย่างน้อย 6 ตัวอักษรขึ้นไปครับ"
+    
     try:
         conn = sqlite3.connect("users.db", check_same_thread=False)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (username, password, credits) VALUES (?, ?, 10)", (username, password))
+        cursor.execute("INSERT INTO users (username, password, credits) VALUES (?, ?, 10)", (username.strip(), password))
         conn.commit()
         conn.close()
         return "✅ สมัครสมาชิกสำเร็จ! (ได้รับฟรี 10 เครดิต) สามารถสลับไปแท็บ 'เข้าสู่ระบบ' ได้เลยครับ"
     except sqlite3.IntegrityError:
-        return "❌ ชื่อผู้ใช้นี้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
+        return "❌ ชื่อผู้ใช้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
 
 def verify_user(username, password):
     if not username or not password:
