@@ -124,12 +124,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     user_credits = gr.State(0)
 
     with gr.Column(elem_classes="main-container"):
-        gr.HTML("""
+        gr.HTML('
         <div class="header-box">
             <h1 class="header-title">AI Drama Series Creator</h1>
             <p class="header-subtitle">ระบบสมาชิกและเจเนอเรตบทซีรีส์มินิละครสั้นระดับโปรสำหรับ Google Flow</p>
         </div>
-        """)
+        ')
         
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
