@@ -168,8 +168,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                             ],
                             value="สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", label="🎬 เลือกแนวซีรีส์"
                         )
-                        ep_count_input = gr.Number(value=3, label="🎬 จำนวนตอน", minimum=1, maximum=10, step=1)
-                        scenes_per_episode_input = gr.Dropdown(choices=["1", "2", "3", "4", "5"], value="3", label="🎬 จำนวนฉากต่อตอน")
+                        ep_count_input = gr.Number(value=3, label="🎬 จำนวนตอน", minimum=1, maximum=6, step=1)
+                        scenes_per_episode_input = gr.Number(value=3, label="🎬 จำนวนฉากต่อตอน", minimum=1, maximum=5, step=1)
                         detail_input = gr.Textbox(lines=3, placeholder="ไอเดียหรือพล็อตหลัก...", label="💡 พล็อตหลัก (Optional)")
                         avoid_input = gr.Textbox(lines=2, placeholder="พล็อตที่ห้ามซ้ำ...", label="🚫 พล็อตที่เคยทำแล้ว")
                     
