@@ -89,10 +89,12 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป (ปรับดีไซน์ส่วน Header ให้พรีเมียมยิ่งขึ้น) ---
+# --- 2. Custom CSS ตกแต่งเว็บแอป (กำหนดฟอนต์ชุดเดียวกันทั้ง Header) ---
 custom_css = """
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap');
+
 footer {visibility: hidden}
-.main-container { max-width: 1250px !important; margin: auto !important; padding: 20px !important; font-family: 'Inter', sans-serif !important; }
+.main-container { max-width: 1250px !important; margin: auto !important; padding: 20px !important; font-family: 'Prompt', sans-serif !important; }
 
 .header-box {
     text-align: center;
@@ -102,22 +104,25 @@ footer {visibility: hidden}
     margin-bottom: 25px;
     box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.18);
+    font-family: 'Prompt', sans-serif !important;
 }
 
 .header-title {
     color: #ffffff !important;
-    font-size: 2.5rem !important;
-    font-weight: 900 !important;
+    font-size: 2.4rem !important;
+    font-weight: 800 !important;
     letter-spacing: -0.5px;
-    margin-bottom: 10px !important;
+    margin-bottom: 8px !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    font-family: 'Prompt', sans-serif !important;
 }
 
 .header-subtitle {
-    color: #e0e7ff !important;
-    font-size: 1.15rem !important;
-    font-weight: 500 !important;
+    color: #cbd5e1 !important;
+    font-size: 1.1rem !important;
+    font-weight: 400 !important;
     letter-spacing: 0.2px;
+    font-family: 'Prompt', sans-serif !important;
 }
 
 label span, div[data-testid="block-label"] { color: #e2e8f0 !important; font-weight: 600 !important; }
@@ -140,21 +145,21 @@ label span, div[data-testid="block-label"] { color: #e2e8f0 !important; font-wei
 # --- 3. ฟังก์ชันหลักสร้างซีรีส์ ---
 def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custom_detail, avoided_topics):
     if not current_user:
-        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
+        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
         return
         
     if not api_key or api_key.strip() == "":
-        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
+        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
         return
         
     has_credit, remaining = deduct_credit(current_user)
     if not has_credit:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
         return
 
     try:
         num_episodes = int(ep_count)
-        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", None
 
         client = genai.Client(api_key=api_key.strip())
         
@@ -214,7 +219,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         image_url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=768&height=1024&nologo=true"
 
         html_out = f"""
-        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: sans-serif; line-height: 1.6; max-height: 650px; overflow-y: auto;">
+        <div style="background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 650px; overflow-y: auto;">
             <h2 style="color: #38bdf8; margin-top: 0;">🎬 ซีรีส์: {data.get('series_title', '')}</h2>
             <p><b>📌 แนวเรื่อง:</b> {data.get('genre', '')} | <b>เครดิตคงเหลือ:</b> {remaining} ครั้ง</p>
             <p><b>💡 Logline:</b> {data.get('logline_th', '')}</p>
@@ -242,7 +247,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         yield html_out, image_url
         
     except Exception as e:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
 
 
 # --- 4. โครงสร้างหน้าเว็บ Gradio ---
@@ -252,7 +257,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     user_credits = gr.State(0)
 
     with gr.Column(elem_classes="main-container"):
-        # 🌟 ปรับปรุง Header ให้สวยงามพรีเมียมตามเรฟ
+        # 🌟 ปรับปรุง Header ใช้ฟอนต์ Prompt ชุดเดียวกันทั้งหมด
         gr.HTML("""
         <div class="header-box">
             <h1 class="header-title">🎬 AI Drama Series Creator</h1>
@@ -306,7 +311,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         
                 with gr.Column(scale=5):
                     image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=280)
-                    output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
+                    output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
 
     # เชื่อมโยงปุ่มกดระบบสมาชิก
     reg_btn.click(fn=register, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
@@ -341,5 +346,5 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[output_html, image_output]
     )
 
-port = int(os.environ.0.get("PORT", 7860)) if "PORT" in os.environ else 7860
+port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
 app.launch(server_name="0.0.0.0", server_port=port)
