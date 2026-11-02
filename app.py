@@ -137,7 +137,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
             with gr.Row():
                 with gr.Column(elem_classes="auth-title"):
-                    gr.Markdown("### 🔑 เข้าสู่ระบบ (Login)")
+                    gr.Markdown("""
+<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+    <h3 style="color: #38bdf8 !important; margin: 0; font-weight: 700;">🔑 เข้าสู่ระบบ (Login)</h3>
+    <a href="#" style="color: #38bdf8 !important; text-decoration: none; font-size: 0.95rem; font-weight: 600;">ลืมรหัสผ่าน</a>
+</div>
+""")
                     login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
                     login_btn = gr.Button("🚀 เข้าสู่ระบบ", elem_classes="primary-btn")
