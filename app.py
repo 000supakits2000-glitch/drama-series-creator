@@ -36,7 +36,7 @@ def register(username, password):
     except sqlite3.IntegrityError:
         return "❌ ชื่อผู้ใช้นี้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
 
-# ฟังก์ชันเข้าสู่ระบบ
+# ฟังก์ชันเข้าสู่ระบบปกติ
 def login(username, password):
     if not username or not password:
         return gr.update(visible=False), gr.update(visible=True), "❌ กรุณากรอกข้อมูลให้ครบ", username, 0
@@ -49,13 +49,34 @@ def login(username, password):
     
     if row:
         credits = row[0]
-        # สำเร็จ: ซ่อนหน้า Login, เปิดหน้า App หลัก
         return gr.update(visible=False), gr.update(visible=True), f"🎉 ยินดีต้อนรับคุณ {username} (เครดิตคงเหลือ: {credits} ครั้ง)", username, credits
     else:
         return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
 
+# 👑 ฟังก์ชันปุ่มลัดแอดมิน (เข้าใช้งานทันที พร้อมเครดิตพิเศษ 999 ครั้ง)
+def admin_login():
+    admin_name = "GodAdmin"
+    conn = sqlite3.connect("users.db", check_same_thread=False)
+    cursor = conn.cursor()
+    # ตรวจสอบว่ามีไอเดียแอดมินหรือยัง ถ้ายังให้สร้างอัตโนมัติ
+    cursor.execute("SELECT credits FROM users WHERE username = ?", (admin_name,))
+    row = cursor.fetchone()
+    if not row:
+        cursor.execute("INSERT OR REPLACE INTO users (username, password, credits) VALUES (?, ?, ?)", (admin_name, "godpass123", 999))
+        conn.commit()
+    else:
+        # เติมเครดิตให้แอดมินเต็มเสมอ
+        cursor.execute("UPDATE users SET credits = 999 WHERE username = ?", (admin_name,))
+        conn.commit()
+    conn.close()
+    
+    return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", admin_name, 999
+
 # ฟังก์ชันเช็กและหักเครดิต
 def deduct_credit(username):
+    if username == "GodAdmin":
+        return True, 999  # แอดมินเครดิตไม่จำกัด
+        
     conn = sqlite3.connect("users.db", check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute("SELECT credits FROM users WHERE username = ?", (username,))
@@ -89,6 +110,11 @@ label span, div[data-testid="block-label"] { color: #e2e8f0 !important; font-wei
     border: none !important; color: white !important; font-weight: 700 !important;
     font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
 }
+.admin-btn {
+    background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
+    border: none !important; color: white !important; font-weight: 700 !important;
+    font-size: 1.05rem !important; padding: 10px 20px !important; border-radius: 12px !important;
+}
 """
 
 
@@ -100,10 +126,9 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
     if not api_key or api_key.strip() == "":
         return """<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
         
-    # เช็กเครดิตก่อนรัน
     has_credit, remaining = deduct_credit(current_user)
     if not has_credit:
-        return f"""<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ เครดิตของคุณหมดแล้ว! (เหลือ 0 ครั้ง) กรุณาเติมเครดิตเพื่อใช้งานต่อ</div>""", None
+        return f"""<div style="background-color: #0f172a; color: #f87171; padding: 20px; border-radius: 12px;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
 
     try:
         num_episodes = int(ep_count)
@@ -198,7 +223,6 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
 # --- 4. โครงสร้างหน้าเว็บ Gradio ---
 with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=custom_css) as app:
     
-    # State เก็บข้อมูลผู้ใช้ที่กำลังล็อกอินอยู่
     logged_in_user = gr.State("")
     user_credits = gr.State(0)
 
@@ -210,7 +234,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         </div>
         """)
         
-        # --- หน้าที่ 1: หน้า Login / Register (แสดงตอนยังไม่เข้าสู่ระบบ) ---
+        # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True) as auth_section:
             with gr.Row():
                 with gr.Column():
@@ -218,6 +242,10 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
                     login_btn = gr.Button("🚀 เข้าสู่ระบบ", elem_classes="primary-btn")
+                    
+                    gr.Markdown("---")
+                    # 👑 ปุ่มลัดแอดมินพิเศษ
+                    admin_btn = gr.Button("👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
                 
                 with gr.Column():
                     gr.Markdown("### 📝 สมัครสมาชิกใหม่ (Register - ฟรี 10 เครดิต)")
@@ -227,7 +255,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             
             auth_status = gr.Markdown("")
 
-        # --- หน้าที่ 2: หน้าแอปหลัก (แสดงหลังล็อกอินสำเร็จ) ---
+        # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False) as app_section:
             with gr.Row():
                 user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
@@ -249,7 +277,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     
                     with gr.Row():
                         logout_btn = gr.Button("🚪 ออกจากระบบ", variant="secondary")
-                        submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์ - ใช้ 1 เครดิต)", elem_classes="primary-btn")
+                        submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                         
                 with gr.Column(scale=5):
                     image_output = gr.Image(label="🖼️ ภาพตัวละครหลัก (Master Reference)", height=320)
@@ -264,6 +292,16 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
         fn=lambda u, c: f"### 👤 ผู้ใช้งาน: **{u}** | 💳 เครดิตคงเหลือ: **{c}** ครั้ง",
+        inputs=[logged_in_user, user_credits],
+        outputs=[user_welcome_label]
+    )
+
+    # 👑 เชื่อมโยงปุ่มลัดแอดมิน
+    admin_btn.click(
+        fn=admin_login,
+        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
+    ).then(
+        fn=lambda u, c: f"### 👑 ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | 💳 เครดิต: **ไม่จำกัด (999)** ครั้ง",
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
