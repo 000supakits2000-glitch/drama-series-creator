@@ -89,9 +89,9 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป ---
+# --- 2. Custom CSS ตกแต่งเว็บแอปแบบเบ็ดเสร็จ (Unified Design System) ---
 custom_css = """
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
 
 footer {visibility: hidden}
 
@@ -137,34 +137,28 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* กรอบการ์ดใหญ่ชิ้นเดียว */
+/* กรอบการ์ดใหญ่เชื่อมต่อกันชิ้นเดียว (Unified Card) ทั่วระบบ */
 .unified-card {
-    background: rgba(30, 41, 59, 0.7) !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(30, 41, 59, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 20px !important;
     padding: 30px !important;
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
 }
 
-/* 🌟 แก้ไขสีหัวข้อภายในหน้าแรกให้เด่นชัด (สีฟ้าสว่าง) */
-.auth-title h3, .auth-title span {
+/* คุมสีหัวข้อภายในหน้าแรกและหน้าแอปให้เป็นสีฟ้าสว่างเด่นชัด */
+.auth-title h3, .auth-title span, .welcome-text h3 {
     color: #38bdf8 !important;
     font-family: 'Prompt', sans-serif !important;
     font-weight: 700 !important;
 }
 
-/* ป้าย Label ของช่องกรอกข้อมูล */
+/* ป้าย Label ของช่องกรอกข้อมูลทั้งหมด */
 label span, div[data-testid="block-label"] span { 
     color: #38bdf8 !important; 
     font-weight: 600 !important; 
     font-family: 'Prompt', sans-serif !important; 
-}
-
-.welcome-text h3 {
-    color: #f8fafc !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 700 !important;
 }
 
 .primary-btn {
