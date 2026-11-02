@@ -3,10 +3,10 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* 🌟 ปรับขนาดภาพพื้นหลังให้พอดีหน้าจอเป๊ะๆ ไม่โดนซูมล้นขอบ */
+/* 🌟 ตัดปัญหาเรื่อง cover แอบทับ โดยการแยกคำสั่ง background ให้ชัดเจน */
 body, .gradio-container {
-    background: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
-                url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama-v2.png') !important;
+    background-image: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
+                      url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama-v2.png') !important;
     background-size: 100% 100% !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
