@@ -183,9 +183,10 @@ toggle_reg_btn.click(None, None, None, js="() => togglePasswordVisibility('reg_p
                     reg_btn = gr.Button("✨ สมัครสมาชิก", variant="secondary")
             
             auth_status = gr.Markdown("")
+
 # --- หน้าที่ 2: หน้าแอปหลัก ---
 with gr.Column(visible=False, elem_classes="unified-card") as app_section:
-    with gr.Row(elem_classes="welcome-text"):
+        with gr.Row(elem_classes="welcome-text"):
         user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
             
             with gr.Row():
