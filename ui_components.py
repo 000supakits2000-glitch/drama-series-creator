@@ -141,4 +141,14 @@ input[type="range"] {
     pointer-events: auto !important;
 }
 
+/* เพิ่มระยะห่างระหว่างช่องกรอกข้อมูล ป้องกันดรอปดาวน์บังช่องถัดไป */
+.unified-card .gr-form > *, 
+.unified-card .block {
+    margin-bottom: 14px !important;
+}
+
+/* จัดระยะกล่องดรอปดาวน์ให้มีพื้นที่หายใจ */
+.gr-dropdown {
+    margin-bottom: 8px !important;
+}
 """
