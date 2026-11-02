@@ -3,14 +3,8 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* 🌟 ตัดปัญหาเรื่อง cover แอบทับ โดยการแยกคำสั่ง background ให้ชัดเจน */
 body, .gradio-container {
-    background-image: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
-                      url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama-v2.png') !important;
-    background-size: 100% 100% !important;
-    background-position: center center !important;
-    background-repeat: no-repeat !important;
-    background-attachment: fixed !important;
+    background: linear-gradient(135deg, #090d16 0%, #0f172a 50%, #111827 100%) !important;
     font-family: 'Prompt', sans-serif !important;
     color: #f8fafc !important;
 }
@@ -24,13 +18,12 @@ body, .gradio-container {
 
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, rgba(30, 27, 75, 0.85) 0%, rgba(49, 46, 129, 0.85) 50%, rgba(67, 56, 202, 0.85) 100%);
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
     padding: 30px 20px;
     border-radius: 18px;
     margin-bottom: 25px;
     box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.18);
-    backdrop-filter: blur(8px);
     font-family: 'Prompt', sans-serif !important;
 }
 
@@ -40,7 +33,7 @@ body, .gradio-container {
     font-weight: 800 !important;
     letter-spacing: -0.5px;
     margin-bottom: 8px !important;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     font-family: 'Prompt', sans-serif !important;
 }
 
@@ -52,13 +45,13 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* กรอบการ์ดใหญ่โปร่งแสงโมเดิร์น */
+/* กรอบการ์ดใหญ่ชิ้นเดียว (Unified Card) */
 .unified-card {
-    background: rgba(15, 23, 42, 0.78) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: rgba(30, 41, 59, 0.75) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
     border-radius: 20px !important;
     padding: 30px !important;
-    box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 10px 15px -5px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(12px);
 }
 
