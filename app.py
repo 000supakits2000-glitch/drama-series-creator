@@ -126,7 +126,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     with gr.Column(elem_classes="main-container"):
         gr.HTML("""
         <div class="header-box">
-            <h1 class="header-title">🎬 AI Drama Series Creator</h1>
+            <h1 class="header-title">AI Drama Series Creator</h1>
             <p class="header-subtitle">ระบบสมาชิกและเจเนอเรตบทซีรีส์มินิละครสั้นระดับโปรสำหรับ Google Flow</p>
         </div>
         """)
