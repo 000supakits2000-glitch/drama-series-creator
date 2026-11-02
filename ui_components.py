@@ -117,4 +117,17 @@ label span, div[data-testid="block-label"] span {
     color: #38bdf8 !important;
     border-bottom: 2px solid #38bdf8 !important;
 }
+
+/* ตกแต่งหัวข้อ Tab ให้ตัวหนังสือชัดเจนบนพื้นหลังมืด */
+.tab-nav button {
+    color: #cbd5e1 !important;
+    font-family: 'Prompt', sans-serif !important;
+    font-weight: 600 !important;
+}
+
+/* สีของแท็บที่กำลังถูกเลือก (Active Tab) */
+.tab-nav button.selected {
+    color: #38bdf8 !important;
+    border-bottom: 2px solid #38bdf8 !important;
+}
 """
