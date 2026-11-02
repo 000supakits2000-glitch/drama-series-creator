@@ -117,6 +117,21 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         
     except Exception as e:
         yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>""", None
+        # เพิ่ม JavaScript สำหรับฟังก์ชัน toggle ดูรหัสผ่าน
+show_pass_js = """
+<script>
+function togglePasswordVisibility(inputId) {
+    const input = document.querySelector('#' + inputId + ' input');
+    if (input) {
+        if (input.type === "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    }
+}
+</script>
+"""
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
@@ -140,6 +155,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     gr.Markdown("### 🔑 เข้าสู่ระบบ (Login)")
                     login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
                     login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                    toggle_login_btn = gr.Button("👁️", elem_id="toggle_login_btn")
+toggle_login_btn.click(None, None, None, js="() => togglePasswordVisibility('login_pass')")
                     gr.Markdown("""
     <div style="text-align: right; margin-top: 6px; margin-bottom: 12px;">
         <a href="#" style="color: #38bdf8; font-size: 0.85rem; text-decoration: none; font-family: 'Prompt', sans-serif;">Forgot Password?</a>
@@ -161,6 +178,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     gr.Markdown("### 📝 สมัครสมาชิกใหม่ (Register - ฟรี 10 เครดิต)")
                     reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
                     reg_pass_input = gr.Textbox(label="ตั้งรหัสผ่าน (Password)", type="password")
+                    toggle_reg_btn = gr.Button("👁️", elem_id="toggle_reg_btn")
+toggle_reg_btn.click(None, None, None, js="() => togglePasswordVisibility('reg_pass')")
                     reg_btn = gr.Button("✨ สมัครสมาชิก", variant="secondary")
             
             auth_status = gr.Markdown("")
