@@ -89,29 +89,50 @@ def deduct_credit(username):
     return False, 0
 
 
-# --- 2. Custom CSS ตกแต่งเว็บแอป ---
+# --- 2. Custom CSS ตกแต่งเว็บแอป (ปรับดีไซน์ส่วน Header ให้พรีเมียมยิ่งขึ้น) ---
 custom_css = """
 footer {visibility: hidden}
-.main-container { max-width: 1250px !important; margin: auto !important; padding: 20px !important; }
+.main-container { max-width: 1250px !important; margin: auto !important; padding: 20px !important; font-family: 'Inter', sans-serif !important; }
+
 .header-box {
     text-align: center;
-    background: linear-gradient(135deg, rgba(30, 27, 75, 0.95) 0%, rgba(49, 46, 129, 0.95) 50%, rgba(67, 56, 202, 0.95) 100%);
-    padding: 25px; border-radius: 16px; margin-bottom: 25px;
-    box-shadow: 0 10px 25px -5px rgba(67, 56, 202, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+    padding: 30px 20px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
-.header-title { color: #ffffff !important; font-size: 2.2rem !important; font-weight: 800 !important; margin-bottom: 8px !important; }
-.header-subtitle { color: #c7d2fe !important; font-size: 1.05rem !important; }
+
+.header-title {
+    color: #ffffff !important;
+    font-size: 2.5rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.5px;
+    margin-bottom: 10px !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.header-subtitle {
+    color: #e0e7ff !important;
+    font-size: 1.15rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.2px;
+}
+
 label span, div[data-testid="block-label"] { color: #e2e8f0 !important; font-weight: 600 !important; }
+
 .primary-btn {
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
     border: none !important; color: white !important; font-weight: 700 !important;
     font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
 .admin-btn {
     background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
     border: none !important; color: white !important; font-weight: 700 !important;
     font-size: 1.05rem !important; padding: 10px 20px !important; border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
 }
 """
 
@@ -231,10 +252,11 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     user_credits = gr.State(0)
 
     with gr.Column(elem_classes="main-container"):
+        # 🌟 ปรับปรุง Header ให้สวยงามพรีเมียมตามเรฟ
         gr.HTML("""
         <div class="header-box">
             <h1 class="header-title">🎬 AI Drama Series Creator</h1>
-            <p class="header-subtitle">ระบบสมาชิกและเจเนอเรตบทซีรีส์มินิละครสั้นระดับโปร</p>
+            <p class="header-subtitle">ระบบสมาชิกและเจเนอเรตบทซีรีส์มินิละครสั้นระดับโปรสำหรับ Google Flow</p>
         </div>
         """)
         
@@ -319,5 +341,5 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[output_html, image_output]
     )
 
-port = int(os.environ.get("PORT", 7860))
+port = int(os.environ.0.get("PORT", 7860)) if "PORT" in os.environ else 7860
 app.launch(server_name="0.0.0.0", server_port=port)
