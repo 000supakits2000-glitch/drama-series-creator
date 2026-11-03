@@ -258,7 +258,14 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
     submit_btn.click(
         fn=generate_dynamic_series,
-        inputs=[logged_in_user, api_key_input, genre_choice, package_input, detail_input, avoid_input],
+        inputs=[
+        logged_in_user, 
+        api_key_input, 
+        genre_choice, 
+        package_input, 
+        detail_input, 
+        avoid_input
+        ],
         outputs=output_html
     )
 
