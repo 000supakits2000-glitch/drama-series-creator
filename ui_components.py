@@ -190,4 +190,18 @@ input[type="range"] {
     opacity: 1 !important;
     visibility: visible !important;
 }
+
+/* ปรับแต่งกล่องเมนู Dropdown ให้พื้นหลังสีขาว ตัวหนังสือสีดำ ชัดเจน */
+.gr-dropdown-list, ul.options, .options {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+.gr-dropdown-list li, ul.options li, .options li {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+.gr-dropdown-list li:hover, ul.options li:hover, .options li:hover {
+    background-color: #f1f5f9 !important;
+    color: #000000 !important;
+}
 """
