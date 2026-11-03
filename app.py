@@ -12,7 +12,20 @@ from ui_components import CUSTOM_CSS
 init_db()
 
 # ฟังก์ชันหลักสร้างซีรีส์
-def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custom_detail, avoided_topics):
+def generate_dynamic_series(current_user, api_key, genre_choice, package_choice, custom_detail, avoided_topics):
+    # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนตอน
+    if "1 เครดิต" in package_choice:
+        ep_count = 2
+        scenes_per_ep = 4
+    elif "3 เครดิต" in package_choice:
+        ep_count = 6
+        scenes_per_ep = 4
+    elif "5 เครดิต" in package_choice:
+        ep_count = 10
+        scenes_per_ep = 4
+    else:
+        ep_count = 6
+        scenes_per_ep = 4
     if not current_user:
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
         return
@@ -27,7 +40,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
         return
 
     try:
-        num_episodes = int(ep_count)
+        num_episodes = ep_count
         yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", None
 
         client = genai.Client(api_key=api_key.strip())
@@ -244,8 +257,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     )
 
     submit_btn.click(
-        fn=generate_dynamic_series,
-        inputs=[logged_in_user, api_key_input, genre_input, ep_count_input, detail_input, avoid_input],
+        fn=generate_drama_series,
+        inputs=[logged_in_user, api_key_input, genre_input, package_input,  # <--- ต้องเป็น package_inputdetail_input, avoid_input],
         outputs=[output_html]
     )
 
