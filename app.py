@@ -16,16 +16,16 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนตอน
     if "1 เครดิต" in package_choice:
         ep_count = 2
-        scenes_per_ep = 4
+        scenes_per_episode = 4
     elif "3 เครดิต" in package_choice:
         ep_count = 6
-        scenes_per_ep = 4
+        scenes_per_episode = 4
     elif "5 เครดิต" in package_choice:
         ep_count = 10
-        scenes_per_ep = 4
+        scenes_per_episode = 4
     else:
         ep_count = 6
-        scenes_per_ep = 4
+        scenes_per_episode = 4
     if not current_user:
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
         return
@@ -257,9 +257,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     )
 
     submit_btn.click(
-        fn=generate_drama_series,
-        inputs=[logged_in_user, api_key_input, genre_input, package_input,  # <--- ต้องเป็น package_inputdetail_input, avoid_input],
-        outputs=[output_html]
+        fn=generate_dynamic_series,
+        inputs=[logged_in_user, api_key_input, genre_choice, package_input, detail_input, avoid_input],
+        outputs=output_html
     )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
