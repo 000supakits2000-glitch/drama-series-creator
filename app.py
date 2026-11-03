@@ -261,7 +261,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         inputs=[
         logged_in_user, 
         api_key_input, 
-        genre_choice, 
+        genre_input, 
         package_input, 
         detail_input, 
         avoid_input
