@@ -205,7 +205,7 @@ input[type="range"] {
     color: #000000 !important;
 }
 
-package_input = gr.Dropdown(
+package_input = gr.Dropdown{
     choices=[
         "🚀 แพ็กเกจเริ่มต้น: 1 เครดิต (2 ตอน / 8 ฉาก) - คลิปสั้น/วิว (TikTok / Reels / Shopee Video)",
         "🌟 แพ็กเกจยอดฮิต: 3 เครดิต (6 ตอน / 24 ฉาก) - ซีรีส์ดราม่าเนื้อหาเข้มข้น",
@@ -213,5 +213,5 @@ package_input = gr.Dropdown(
     ],
     value="🌟 แพ็กเกจยอดฮิต: 3 เครดิต (6 ตอน / 24 ฉาก) - ซีรีส์ดราม่าเนื้อหาเข้มข้น",
     label="เลือกแพ็กเกจซีรีส์"
-)
+}
 """
