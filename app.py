@@ -118,7 +118,26 @@ def generate_dynamic_series(current_user, api_key, genre_choice, ep_count, custo
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
-with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
+extra_css = """
+.gr-box, .gr-panel, .markdown-text, div[data-testid="block-markdown"] {
+    word-wrap: break-word !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+}
+div[data-testid="block-markdown"] p, 
+div[data-testid="block-markdown"] span, 
+div[data-testid="block-markdown"] li,
+div[data-testid="block-markdown"] strong {
+    color: #F3F4F6 !important;
+}
+div[data-testid="block-markdown"] h1, 
+div[data-testid="block-markdown"] h2, 
+div[data-testid="block-markdown"] h3 {
+    color: #60A5FA !important;
+}
+"""
+with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS + extra_css) as app:
     
     logged_in_user = gr.State("")
     user_credits = gr.State(0)
