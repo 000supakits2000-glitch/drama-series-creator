@@ -245,9 +245,14 @@ button.secondary-btn {
     transition: all 0.2s ease-in-out !important;
 }
 
-button.secondary-btn:hover {
-    background-color: #334155 !important;
-    color: #ffffff !important;
-    border-color: #64748b !important;
+.secondary-btn {
+    background: #1e293b !important;
+    border: 1px solid #475569 !important;
+    color: #cbd5e1 !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    font-family: 'Prompt', sans-serif !important;
 }
 """
