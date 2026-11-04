@@ -186,7 +186,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         yield html_out
         
     except Exception as e:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาด: {str(e)}</div>"""
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">เกิดข้อผิดพลาดในการสร้างซีรีส์: {str(e)}</div>"""
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
