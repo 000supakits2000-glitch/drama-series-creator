@@ -64,6 +64,14 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", None
 
         client = genai.Client(api_key=api_key.strip())
+        system_prompt = """
+        คุณเป็นนักเขียนบทซีรีส์มืออาชีพ กรุณาสร้างบทซีรีส์โดยแบ่งเป็นฉาก ๆ และในแต่ละฉากต้องมีรูปแบบดังนี้เป๊ะ ๆ:
+        - ฉากที่ [X]
+        - มุมกล้อง: [ระบุรายละเอียดมุมกล้อง/การเคลื่อนกล้อง]
+        - บทพากย์: [บทสนทนาของตัวละคร]
+        - Google Flow Prompt: [คีย์เวิร์ดภาษาอังกฤษสำหรับเจนภาพ เช่น cinematic lighting, 4k...]
+        """
+        full_prompt = f"{system_prompt}\n\nแนวเรื่อง: {selected_genre}\nรายละเอียด: {custom_detail}"
         
         genre_map = {
             "ดราม่าโรแมนติก / ซึ้งกินใจ": "Romance Drama",
