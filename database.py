@@ -7,7 +7,7 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             username TEXT PRIMARY KEY,
             password TEXT NOT NULL,
-            credits INTEGER DEFAULT 10
+            credits INTEGER DEFAULT 0
         )
     ''')
     conn.commit()
@@ -23,7 +23,7 @@ def register_user(username, password):
     try:
         conn = sqlite3.connect("users.db", check_same_thread=False)
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO users (username, password, credits) VALUES (?, ?, 10)", (username.strip(), password))
+        cursor.execute("INSERT INTO users (username, password, credits) VALUES (?, ?, 0)", (username.strip(), password))
         conn.commit()
         conn.close()
         return "✓ สมัครสมาชิกสำเร็จ! สามารถเข้าสู่ระบบ 'เข้าสู่ระบบ' ได้เลยครับ"
