@@ -71,16 +71,17 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         - บทพากย์: [บทสนทนาของตัวละคร]
         - Google Flow Prompt: [คีย์เวิร์ดภาษาอังกฤษสำหรับเจนภาพ เช่น cinematic lighting, 4k...]
         """
-        full_prompt = f"{system_prompt}\n\nแนวเรื่อง: {selected_genre}\nรายละเอียด: {custom_detail}"
-        
+
         genre_map = {
             "ดราม่าโรแมนติก / ซึ้งกินใจ": "Romance Drama",
             "สยองขวัญ / ระทึกขวัญ / ลึกลับ": "Horror / Thriller",
-            "คอมเมดี้ / ตลก / ฮาๆ": "Comedy",
-            "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ": "Inspirational / Plot Twist",
-            "แฟนตาซี / ย้อนยุค / ไซไฟ": "Fantasy / Sci-Fi"
+            "คอมเมดี้ / ตลก / ฮา": "Comedy",
+            "ผู้ชีวิต / 10คม / สร้างแรงบันดาลใจ": "Inspirational / Plot Twist",
+            "แฟนตาซี / ประยุค / ไซไฟ": "Fantasy / Sci-Fi"
         }
+    
         selected_genre = genre_map.get(genre_choice, "Romance Drama")
+        full_prompt = f"{system_prompt}\n\nแนวเรื่อง: {selected_genre}\nรายละเอียด: {custom_detail}"
         
         prompt = f"""
         Create a {num_episodes}-Episode Drama Mini-Series Script for TikTok / YouTube Shorts.
