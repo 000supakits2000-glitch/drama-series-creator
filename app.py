@@ -137,11 +137,11 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
-            <h2 style="color: #38bdf8; margin-top: 0;"> ซีรีส์: {data.get('series_title', '')}</h2>
+            <h2 style='color: #38bdf8; margin-top: 8px;'>{data.get('series_title', '')}</h2>
             <p><b>แนวเรื่อง:</b> {data.get('genre', '')} | <b>Logline:</b> {data.get('logline', '')}</p>
             <p><b> Logline:</b> {data.get('logline_th', '')}</p>
             <hr style="border-color: #334155; margin: 20px 0;">
-            <h3 style="color: #818cf8;">คลังตัวละครหลัก</h3>
+            <h3 style='color: #818cf8;'>ตัวละครหลัก</h3>
         """
         for char in data.get('main_characters', []):
             html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #6366f1;">
