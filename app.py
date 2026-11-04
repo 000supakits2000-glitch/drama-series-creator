@@ -199,7 +199,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                             value="ดราม่าโรแมนติก / ซึ้งกินใจ", # ค่าเริ่มต้นที่เลือกไว้ label="🎬 เลือกแนวซีรีส์"
                             label="เลือกแนวละคร"
                         )
-                        package_input = gr.Dropdown(
+                        package_input = gr.Radio(
                             choices=[
                                 "1 เครดิต (2 ตอน / 8 ฉาก)",
                                 "3 เครดิต (6 ตอน / 24 ฉาก)",
