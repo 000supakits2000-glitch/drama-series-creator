@@ -137,37 +137,51 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
-            <h2 style="color: #38bdf8; margin-top: 8px;">{data.get('series_title', '')}</h2>
-            <p><b>แนวเรื่อง:</b> {data.get('genre', '')} | <b>Logline:</b> {data.get('logline', '')}</p>
-            <p><b></b> {data.get('logline_th', '')}</p>
+            <h2 style="color: #38bdf8; margin-top: 8px;">{series_title}</h2>
+            <p><b>แนวเรื่อง:</b> {genre} | <b>Logline:</b> {logline}</p>
+            <p>{logline_th}</p>
             <hr style="border-color: #334155; margin: 20px 0;">
             <h3 style="color: #818cf8;">ตัวละครหลัก</h3>
         </div>
         """
 
         for char in data.get('main_characters', []):
-            html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 18px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #6366f1;">
-                <b>{char.get('name_th', '')}</b> ({char.get('role_th', '')})<br>
-                <span style="color: #94a3b8; font-size: 0.9rem;">Prompt: <code>{char.get('visual_prompt_en', '')}</code></span></div>"""
-                
-        html_out += "<hr style='border-color: #334155; margin: 20px 0;'>"
-        for ep in data.get('episodes', []):
-            html_out += f"<h3 style='color: #38bdf8;'>📺 EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}</h3>"
-            html_out += f"<p><b>📖 เรื่องย่อ:</b> {ep.get('ep_synopsis_th', '')}</p>"
+            c_name = char.get('name_th', '')
+            c_role = char.get('role_th', '')
+            c_prompt = char.get('visual_prompt_en', '')
+            html_out += f"""
+            <div style="background: #f8fafc; color: #1e293b; padding: 18px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #6366f1;">
+                <b>{c_name}</b> ({c_role})<br>
+                <span style="color: #94a3b8; font-size: 0.9rem;">Prompt: <code>{c_prompt}</code></span>
+            </div>
+            """
+
+    for ep in data.get('episodes', []):
+        ep_num = ep.get('ep_number', 1)
+        ep_title = ep.get('ep_title_th', '')
+        ep_syn = ep.get('ep_synopsis_th', '')
+        
+        html_out += f"""
+        <hr style="border-color: #334155; margin: 20px 0;">
+        <h3 style="color: #38bdf8;">EP {ep_num}: {ep_title}</h3>
+        <p><b>เรื่องย่อ:</b> {ep_syn}</p>
+        """
+        
         for scene in ep.get('scenes', []):
-            scene_num = scene.get('scene_number', 1)
-            prompt_text = scene.get('viden_prompt_en', '')
-            html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
-                <b>Scene {scene_num}</b><br>
-                <b>มุมกล้อง:</b> {scene.get('camera_and_action th', '')}<br>
-                <b>บทพากย์:</b> {scene.get('voiceover_th', '')}<br>
-                <b>Google Flow Prompt:</b>
-                <pre id="prompt-{scene_num}" style="background: #f1f5f9; color: #1e293b; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{prompt_text}</pre>
-                <button onclick="navigator.clipboard.writeText(document.getElementById('prompt-{scene_num}').innerText); alert('คัดลอก Prompt เรียบร้อย!');" 
-                        style="background: #6366f1; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-top: 8px;">
-                    📋 Copy Prompt
-                </button>
-            </div>"""
+            s_num = scene.get('scene_num', 1)
+            s_cam = scene.get('camera_and_action_th', '')
+            s_voice = scene.get('voiceover_th', '')
+            s_prompt = scene.get('viden_prompt_en', '')
+            
+            html_out += f"""
+            <div style="background: #F8FAFC; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
+                <b>ฉากที่ {s_num}</b><br>
+                <b>มุมกล้อง:</b> {s_cam}<br>
+                <b>บทพากย์:</b> {s_voice}<br>
+                <b>Google Flow Prompt:</b><br>
+                <pre style="background: #f1f5f9; color: #1e293b; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{s_prompt}</pre>
+            </div>
+            """
         
         yield html_out
         
