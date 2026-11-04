@@ -3,7 +3,7 @@ CUSTOM_CSS = """
 
 footer {visibility: hidden}
 
-/* ดึงภาพผ่าน GitHub Raw URL ชัวร์ 100% ไม่ติดบล็อกของ Gradio */
+/* พื้นหลังและฟอนต์หลัก */
 body, .gradio-container {
     background-image: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
                         url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama.png') !important;
@@ -75,12 +75,38 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important; 
 }
 
-.primary-btn {
-    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
-    border: none !important; color: white !important; font-weight: 700 !important;
-    font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+/* 🟢 บังคับให้ปุ่มคู่ล่างสุดกว้างเท่ากันเป๊ะ 50/50 เต็ม 100% */
+.primary-btn, .secondary-btn, 
+.primary-btn button, .secondary-btn button {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.primary-btn button, .secondary-btn button {
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
     font-family: 'Prompt', sans-serif !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* ปุ่ม Submit (สร้างซีรีส์) */
+.primary-btn button {
+    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+}
+
+/* ปุ่ม ออกจากระบบ */
+.secondary-btn button {
+    background: #1e293b !important;
+    border: 1px solid #475569 !important;
+    color: #cbd5e1 !important;
 }
 
 .admin-btn {
@@ -91,47 +117,32 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* จัดรูปแบบข้อความแจ้งเตือนสถานะให้เป็นฟอนต์และสีเดียวกับหัวข้อล็อกอิน */
+/* จัดรูปแบบข้อความแจ้งเตือนสถานะ */
 .auth-status, .auth-status * {
     color: #38bdf8 !important;
     font-family: 'Prompt', sans-serif !important;
     font-weight: 600 !important;
 }
 
-/* จัดรูปแบบข้อความต้อนรับและเครดิตผู้ใช้ให้เป็นสีฟ้าและฟอนต์ Prompt เดียวกัน */
 .welcome-text, .welcome-text * {
     color: #38bdf8 !important;
     font-family: 'Prompt', sans-serif !important;
     font-weight: 600 !important;
 }
 
-/* ตกแต่งหัวข้อ Tab ให้ตัวหนังสือชัดเจนบนพื้นหลังมืด */
+/* ตกแต่งหัวข้อ Tab */
 .tab-nav button {
     color: #cbd5e1 !important;
     font-family: 'Prompt', sans-serif !important;
     font-weight: 600 !important;
 }
 
-/* สีของแท็บที่กำลังถูกเลือก (Active Tab) */
 .tab-nav button.selected {
     color: #38bdf8 !important;
     border-bottom: 2px solid #38bdf8 !important;
 }
 
-/* ตกแต่งหัวข้อ Tab ให้ตัวหนังสือชัดเจนบนพื้นหลังมืด */
-.tab-nav button {
-    color: #cbd5e1 !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 600 !important;
-}
-
-/* สีของแท็บที่กำลังถูกเลือก (Active Tab) */
-.tab-nav button.selected {
-    color: #38bdf8 !important;
-    border-bottom: 2px solid #38bdf8 !important;
-}
-
-/* บังคับให้แถบเลื่อน Slider สามารถคลิกและลากได้ปกติ */
+/* Slider และ Overflow */
 input[type="range"] {
     pointer-events: auto !important;
     cursor: pointer !important;
@@ -141,88 +152,15 @@ input[type="range"] {
     pointer-events: auto !important;
 }
 
-/* ปลดล็อกให้กล่องการ์ดและฟอร์มแสดงผลเนื้อหาที่ลอยออกมาได้เต็มที่ ไม่โดนตัดขอบ */
 .unified-card, .unified-card div {
     overflow: visible !important;
 }
 
-/* ล็อกตำแหน่งช่องดรอปดาวน์ */
 .gr-dropdown {
     position: relative !important;
     z-index: 50 !important;
 }
 
-/* ให้รายการดรอปดาวน์กางออกมาเต็มๆ ไม่โดนตัด และอยู่บนสุด */
-.gr-dropdown ul, .gr-dropdown-options, .options {
-    position: absolute !important;
-    top: 100% !important;
-    left: 0 !important;
-    width: 100% !important;
-    max-height: 250px !important;
-    overflow-y: auto !important;
-    z-index: 99999 !important;
-    background-color: #1f2937 !important;
-    border: 1px solid #374151 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
-}
-
-/* บังคับให้ช่องกรอกตัวเลขทุกช่องแสดงปุ่มลูกศรขึ้น-ลงตลอดเวลาอย่างถาวร */
-.gr-number input[type="number"]::-webkit-inner-spin-button,
-.gr-number input[type="number"]::-webkit-outer-spin-button {
-    opacity: 1 !important;
-    display: block !important;
-    cursor: pointer !important;
-}
-
-/* บังคับให้ปุ่มเพิ่ม/ลด และไอคอนลูกศรด้านในของช่องตัวเลขทุกช่องแสดงผลครบถ้วน */
-.gr-number button, 
-.gr-number .wrap button,
-.gr-input-row button {
-    display: flex !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.gr-number button svg,
-.gr-number .wrap button svg {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* ปรับแต่งกล่องเมนู เลือกแนวละคร ให้พื้นหลังสีขาว ตัวหนังสือสีดำ ชัดเจน */
-.gr-dropdown-list, ul.options, .options {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-}
-.gr-dropdown-list li, ul.options li, .options li {
-    background-color: #ffffff !important;
-    color: #000000 !important;
-}
-.gr-dropdown-list li:hover, ul.options li:hover, .options li:hover {
-    background-color: #f1f5f9 !important;
-    color: #000000 !important;
-}
-
-.gr-dropdown-list, ul.options, .options {
-    z-index: 99999 !important;
-    position: absolute !important;
-    background-color: #ffffff !important;
-    color: #000000 !important;
-}
-
-package_input = gr.Dropdown(
-    choices=[
-        "1 เครดิต (2 ตอน / 8 ฉาก)",
-        "3 เครดิต (6 ตอน / 24 ฉาก)",
-        "5 เครดิต (10 ตอน / 40 ฉาก)"
-    ],
-    value="3 เครดิต (6 ตอน / 24 ฉาก)",
-    label="เลือกแพ็กเกจซีรีส์"
-)
-
-/* ปลดล็อกให้กล่องดรอปดาวน์แสดงผลทับทุกเลเยอร์และไม่ถูกตัดขอบ */
 .gr-dropdown-list, ul.options, .options, div[role="listbox"], .wrap-inner {
     z-index: 999999 !important;
     position: absolute !important;
@@ -230,18 +168,7 @@ package_input = gr.Dropdown(
     color: #000000 !important;
 }
 
-/* ป้องกันไม่ให้คอนเทนเนอร์รอบนอกตัดกรอบตัวเลือก */
 .gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
     overflow: visible !important;
-}
-
-/* ตกแต่งปุ่มออกจากระบบให้เป็นกล่องปุ่มกดชัดเจน */
-button.secondary-btn {
-    background-color: #1e293b !important;
-    color: #cbd5e1 !important;
-    border: 5px solid #475569 !important;
-    border-radius: 8px !important;
-    font-weight: 500 !important;
-    transition: all 0.2s ease-in-out !important;
 }
 """
