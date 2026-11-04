@@ -51,8 +51,8 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             if not success:
                 yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิตก่อนสร้างซีรีส์</div>"""
                 return
-    if not current_user:
-        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
+    except Exception as e:
+        yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาดในการตรวจสอบเครดิต: {str(e)}</div>"""
         return
         
     if not api_key or api_key.strip() == "":
