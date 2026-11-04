@@ -1,5 +1,3 @@
-app.pyอัพเดทล่าสุด
-
 import gradio as gr
 import json
 import urllib.parse
