@@ -26,7 +26,7 @@ def register_user(username, password):
         cursor.execute("INSERT INTO users (username, password, credits) VALUES (?, ?, 10)", (username.strip(), password))
         conn.commit()
         conn.close()
-        return "✅ สมัครสมาชิกสำเร็จ! (ได้รับฟรี 10 เครดิต) สามารถสลับไปแท็บ 'เข้าสู่ระบบ' ได้เลยครับ"
+        return "✓ สมัครสมาชิกสำเร็จ! สามารถเข้าสู่ระบบ 'เข้าสู่ระบบ' ได้เลยครับ"
     except sqlite3.IntegrityError:
         return "❌ ชื่อผู้ใช้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
 
