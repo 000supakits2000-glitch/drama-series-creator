@@ -234,4 +234,20 @@ package_input = gr.Dropdown(
 .gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
     overflow: visible !important;
 }
+
+/* ตกแต่งปุ่มออกจากระบบให้เป็นกล่องปุ่มกดชัดเจน */
+button.secondary-btn {
+    background-color: #1e293b !important;
+    color: #cbd5e1 !important;
+    border: 1px solid #475569 !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+button.secondary-btn:hover {
+    background-color: #334155 !important;
+    color: #ffffff !important;
+    border-color: #64748b !important;
+}
 """
