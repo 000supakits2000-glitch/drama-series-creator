@@ -136,7 +136,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             html_out += f"<h3 style='color: #38bdf8;'>📺 EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}</h3>"
             html_out += f"<p><b>📖 เรื่องย่อ:</b> {ep.get('ep_synopsis_th', '')}</p>"
             for scene in ep.get('scenes', []):
-                html_out += f"""<div style="background: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #334155;">
+                html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
                     <b style="color: #fbbf24;">🎥 Scene {scene.get('scene_number', 1)}</b><br>
                     🎬 <b>มุมกล้อง:</b> {scene.get('camera_and_action_th', '')}<br>
                     🗣️ <b>บทพากย์:</b> {scene.get('voiceover_th', '')}<br>
