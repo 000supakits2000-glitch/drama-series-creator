@@ -250,10 +250,4 @@ button.secondary-btn:hover {
     color: #ffffff !important;
     border-color: #64748b !important;
 }
-
-/* บังคับให้ปุ่มที่มีคลาส equal-btn ขยายความกว้างเท่ากันพอดีในแถวเดียว */
-.equal-btn {
-    flex: 1 !important;
-    width: 100% !important;
-}
 """
