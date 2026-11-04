@@ -10,13 +10,6 @@ from database import init_db, register_user, verify_user, get_or_create_admin, c
 from ui_components import CUSTOM_CSS
 user_cooldowns = {}
 COOLDOWN_SECONDS = 15
-credit_cost = 1  # ค่าเริ่มต้น
-    if "3 เครดิต" in package_choice:
-        credit_cost = 3
-    elif "5 เครดิต" in package_choice:
-        credit_cost = 5
-    else:
-        credit_cost = 1
 
 # เริ่มต้นฐานข้อมูล
 init_db()
