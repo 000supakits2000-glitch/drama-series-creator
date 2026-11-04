@@ -84,14 +84,22 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         full_prompt = f"{system_prompt}\n\nแนวเรื่อง: {selected_genre}\nรายละเอียด: {custom_detail}"
         
         prompt = f"""
-        Create a {num_episodes}-Episode Drama Mini-Series Script for TikTok / YouTube Shorts.
-        Genre: {selected_genre}
-        Total Episodes Required: EXACTLY {num_episodes} EPISODES.
-        Each episode MUST contain EXACTLY 4 to 5 detailed scenes.
-        Additional Details: {custom_detail if custom_detail else 'Create a unique storyline.'}
-        Avoided topics: {avoided_topics if avoided_topics else 'None'}
-        
-        Provide response strictly in JSON format:
+    Create a {num_episodes}-Episode Drama Mini-Series Script for TikTok / YouTube Shorts.
+    Genre: {selected_genre}
+    Total Episodes Required: EXACTLY {num_episodes} EPISODES.
+    Each episode MUST contain EXACTLY 4 to 5 detailed scenes.
+    Additional Details: {custom_detail if custom_detail else "Create a unique storyline."}
+    Avoided topics: {avoided_topics if avoided_topics else "None"}
+
+    *** สำคัญมาก! ในแต่ละฉาก (Scene) ต้องมีรูปแบบตามนี้ทุกประการ ห้ามขาดเด็ดขาด: ***
+    - ฉากที่ [X]
+    - มุมกล้อง: [ระบุรายละเอียดมุมกล้อง เช่น Close-up, Wide shot, Moving shot เป็นต้น]
+    - บทพากย์: [บทสนทนาหรือเสียงบรรยาย]
+    - Google Flow Prompt: [คีย์เวิร์ดภาษาอังกฤษสำหรับเจนภาพ เช่น cinematic lighting, 4k, hyperrealistic...]
+
+    Provide response strictly in JSON format:
+    ...
+    """
         {{
           "series_title": "Title (Thai / English)",
           "genre": "{selected_genre}",
