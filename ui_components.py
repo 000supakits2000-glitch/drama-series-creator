@@ -106,7 +106,6 @@ CUSTOM_CSS = """
     border: 1px solid #475569 !important;
     color: #cbd5e1 !important;
 }
-"""
 
 .admin-btn {
     background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
