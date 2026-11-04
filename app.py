@@ -176,7 +176,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     with gr.Tab("📝 สมัครสมาชิกใหม่"):
                         reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
                         reg_pass_input = gr.Textbox(label="ตั้งรหัสผ่าน (Password)", type="password")
-                        register_btn = gr.Button("✨ สมัครสมาชิก", variant="primary")
+                        reg_btn = gr.Button("✨ สมัครสมาชิก", variant="primary") = gr.Button("✨ สมัครสมาชิก", variant="primary")
             
         # ปุ่ม Admin Bypass ทางลัด และกล่องแสดงสถานะ
         admin_btn = gr.Button("🔑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
