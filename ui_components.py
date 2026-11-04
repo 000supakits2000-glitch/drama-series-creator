@@ -75,12 +75,27 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important; 
 }
 
+.primary-btn, .secondary-btn {
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    font-family: 'Prompt', sans-serif !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
 .primary-btn {
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
-    border: none !important; color: white !important; font-weight: 700 !important;
-    font-size: 1.1rem !important; padding: 12px 24px !important; border-radius: 12px !important;
+    border: none !important;
+    color: white !important;
     box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-    font-family: 'Prompt', sans-serif !important;
+}
+
+.secondary-btn {
+    background: #1e293b !important;
+    border: 1px solid #475569 !important;
+    color: #cbd5e1 !important;
 }
 
 .admin-btn {
@@ -243,39 +258,5 @@ button.secondary-btn {
     border-radius: 8px !important;
     font-weight: 500 !important;
     transition: all 0.2s ease-in-out !important;
-}
-
-.secondary-btn {
-    background: #1e293b !important;
-    border: 1px solid #475569 !important;
-    color: #cbd5e1 !important;
-    font-weight: 700 !important;
-    font-size: 1.1rem !important;
-    padding: 12px 24px !important;
-    border-radius: 12px !important;
-    font-family: 'Prompt', sans-serif !important;
-}
-
-.primary-btn, .secondary-btn {
-    font-weight: 700 !important;
-    font-size: 1.1rem !important;
-    padding: 12px 24px !important;
-    border-radius: 12px !important;
-    font-family: 'Prompt', sans-serif !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-.primary-btn {
-    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
-    border: none !important;
-    color: white !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-}
-
-.secondary-btn {
-    background: #1e293b !important;
-    border: 1px solid #475569 !important;
-    color: #cbd5e1 !important;
 }
 """
