@@ -145,7 +145,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         """
         for char in data.get('main_characters', []):
             html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #6366f1;">
-                <b>🎭 {char.get('name_th', '')} ({char.get('role_th', '')}):</b> {char.get('personality_th', '')}<br>
+                <b> {char.get('name_th', '')} ({char.get('role_th', '')}):</b> {char.get('personality_th', '')}<br>
                 <span style="color: #94a3b8; font-size: 0.9rem;">Prompt: <code>{char.get('visual_prompt_en', '')}</code></span></div>"""
                 
         html_out += "<hr style='border-color: #334155; margin: 20px 0;'>"
