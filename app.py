@@ -121,8 +121,9 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         }}
         """
 
+        # ✨ ปรับแก้โมเดลกลับมาใช้ 3.5-flash ตามคำขอของพี่ก๊อดครับ ✨
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
@@ -169,7 +170,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
                 s_num = scene.get('scene_number', 1)
                 s_cam = scene.get('camera_and_action_th', '')
                 s_voice = scene.get('voiceover_th', '')
-                s_prompt = scene.get('video_prompt_en', '') # แก้ไขให้ตรงกับ Key ที่สั่ง JSON
+                s_prompt = scene.get('video_prompt_en', '') # ดึง Key JSON ให้ตรง
                 
                 html_out += f"""
                 <div style="background: #F8FAFC; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
