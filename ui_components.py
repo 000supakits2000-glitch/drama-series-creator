@@ -52,7 +52,6 @@ body, .gradio-container {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* กรอบการ์ดใหญ่โปร่งแสงโมเดิร์น */
 .unified-card {
     background: rgba(15, 23, 42, 0.78) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -60,9 +59,9 @@ body, .gradio-container {
     padding: 30px !important;
     box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.6), 0 10px 15px -5px rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(12px);
+    overflow: visible !important;
 }
 
-/* สีหัวข้อและป้าย Label */
 .auth-title h3, .auth-title span, .welcome-text h3 {
     color: #38bdf8 !important;
     font-family: 'Prompt', sans-serif !important;
@@ -75,7 +74,7 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important; 
 }
 
-/* 🟢 บังคับให้ปุ่มคู่ล่างสุดกว้างเท่ากันเป๊ะ 50/50 เต็ม 100% */
+/* บังคับปุ่มคู่ล่างสุดกว้าง 50/50 และแต่งสีสวยงาม */
 .primary-btn, .secondary-btn, 
 .primary-btn button, .secondary-btn button {
     width: 100% !important;
@@ -92,21 +91,33 @@ label span, div[data-testid="block-label"] span {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    transition: all 0.3s ease !important;
 }
 
-/* ปุ่ม Submit (สร้างซีรีส์) */
 .primary-btn button {
-    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
     border: none !important;
-    color: white !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
 }
 
-/* ปุ่ม ออกจากระบบ */
+.primary-btn button:hover {
+    background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%) !important;
+    transform: translateY(-1px);
+}
+
 .secondary-btn button {
-    background: #1e293b !important;
-    border: 1px solid #475569 !important;
-    color: #cbd5e1 !important;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1px solid rgba(244, 63, 94, 0.4) !important;
+    color: #fca5a5 !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.secondary-btn button:hover {
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
+    border-color: rgba(244, 63, 94, 0.8) !important;
+    color: #fee2e2 !important;
+    transform: translateY(-1px);
 }
 
 .admin-btn {
@@ -117,20 +128,12 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important;
 }
 
-/* จัดรูปแบบข้อความแจ้งเตือนสถานะ */
-.auth-status, .auth-status * {
+.auth-status, .auth-status *, .welcome-text, .welcome-text * {
     color: #38bdf8 !important;
     font-family: 'Prompt', sans-serif !important;
     font-weight: 600 !important;
 }
 
-.welcome-text, .welcome-text * {
-    color: #38bdf8 !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 600 !important;
-}
-
-/* ตกแต่งหัวข้อ Tab */
 .tab-nav button {
     color: #cbd5e1 !important;
     font-family: 'Prompt', sans-serif !important;
@@ -142,30 +145,30 @@ label span, div[data-testid="block-label"] span {
     border-bottom: 2px solid #38bdf8 !important;
 }
 
-/* Slider และ Overflow */
-input[type="range"] {
-    pointer-events: auto !important;
-    cursor: pointer !important;
-}
-
-.gr-slider {
-    pointer-events: auto !important;
-}
-
-.unified-card, .unified-card div {
-    overflow: visible !important;
-}
-
+/* จัดการกล่องดรอปดาวน์ */
 .gr-dropdown {
     position: relative !important;
-    z-index: 50 !important;
+    z-index: 100 !important;
 }
 
-.gr-dropdown-list, ul.options, .options, div[role="listbox"], .wrap-inner {
+.gr-dropdown ul, .gr-dropdown-options, .options, div[role="listbox"] {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    border: 1px solid #475569 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
     z-index: 999999 !important;
-    position: absolute !important;
-    background-color: #ffffff !important;
-    color: #000000 !important;
+}
+
+.gr-dropdown ul li, .gr-dropdown-options li, .options li, div[role="option"] {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    padding: 10px 14px !important;
+}
+
+.gr-dropdown ul li:hover, .gr-dropdown-options li:hover, .options li:hover, div[role="option"]:hover {
+    background-color: #334155 !important;
+    color: #38bdf8 !important;
 }
 
 .gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
