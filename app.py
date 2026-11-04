@@ -154,10 +154,10 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             </div>
             """
 
-    for ep in data.get('episodes', []):
-        ep_num = ep.get('ep_number', 1)
-        ep_title = ep.get('ep_title_th', '')
-        ep_syn = ep.get('ep_synopsis_th', '')
+        for ep in data.get('episodes', []):
+            ep_num = ep.get('ep_number', 1)
+            ep_title = ep.get('ep_title_th', '')
+            ep_syn = ep.get('ep_synopsis_th', '')
         
         html_out += f"""
         <hr style="border-color: #334155; margin: 20px 0;">
