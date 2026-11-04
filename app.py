@@ -98,8 +98,6 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     - Google Flow Prompt: [คีย์เวิร์ดภาษาอังกฤษสำหรับเจนภาพ เช่น cinematic lighting, 4k, hyperrealistic...]
 
     Provide response strictly in JSON format:
-    ...
-    """
         {{
           "series_title": "Title (Thai / English)",
           "genre": "{selected_genre}",
