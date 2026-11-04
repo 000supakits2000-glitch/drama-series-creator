@@ -239,7 +239,7 @@ package_input = gr.Dropdown(
 button.secondary-btn {
     background-color: #1e293b !important;
     color: #cbd5e1 !important;
-    border: 1px solid #475569 !important;
+    border: 5px solid #475569 !important;
     border-radius: 8px !important;
     font-weight: 500 !important;
     transition: all 0.2s ease-in-out !important;
