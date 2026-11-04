@@ -141,7 +141,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             <p><b>แนวเรื่อง:</b> {data.get('genre', '')} | <b>Logline:</b> {data.get('logline', '')}</p>
             <p><b> Logline:</b> {data.get('logline_th', '')}</p>
             <hr style="border-color: #334155; margin: 20px 0;">
-            <h3 style="color: #818cf8;">📌 คลังตัวละครหลัก</h3>
+            <h3 style="color: #818cf8;">คลังตัวละครหลัก</h3>
         """
         for char in data.get('main_characters', []):
             html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #6366f1;">
