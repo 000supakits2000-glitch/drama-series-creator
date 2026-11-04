@@ -256,9 +256,11 @@ with gr.Blocks(
             )
 
             with gr.Row():
+              with gr.Column(scale=1):
               logout_btn = gr.Button("🚪 ออกจากระบบ", elem_classes="secondary-btn")
+              with gr.Column(scale=1):
               submit_btn = gr.Button(
-                  "🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn"
+              "🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn"
               )
 
         with gr.Column(scale=5):
