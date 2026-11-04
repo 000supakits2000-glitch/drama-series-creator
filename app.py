@@ -318,7 +318,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         fn=handle_admin,
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
-        fn=lambda u, c: f"### 👑 ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | 💳 เครดิต: **ไม่จำกัด (999)** ครั้ง",
+        fn=lambda u, c: f"### ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | เครดิต: **ไม่จำกัด (999)** ครั้ง",
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
