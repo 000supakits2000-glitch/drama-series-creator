@@ -170,13 +170,25 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     with gr.Tab("🔑 เข้าสู่ระบบ"):
                         login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
                         login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                        login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                        login_show_pass.change(
+                            fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                            inputs=login_show_pass,
+                            outputs=login_pass_input
+                        )
                         login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
             
             # พาร์ท 2: หน้าสมัครสมาชิก
-                    with gr.Tab("📝 สมัครสมาชิกใหม่"):
+                    with gr.Tab("💖สมัครสมาชิกใหม่"):
                         reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
-                        reg_pass_input = gr.Textbox(label="ตั้งรหัสผ่าน (Password)", type="password")
-                        reg_btn = gr.Button("✨ สมัครสมาชิก", variant="primary")
+                        reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                        reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                        reg_show_pass.change(
+                            fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                            inputs=reg_show_pass,
+                            outputs=reg_pass_input
+                        )
+                        reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
             
         # ปุ่ม Admin Bypass ทางลัด และกล่องแสดงสถานะ
         admin_btn = gr.Button("🔑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
