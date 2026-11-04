@@ -10,6 +10,13 @@ from database import init_db, register_user, verify_user, get_or_create_admin, c
 from ui_components import CUSTOM_CSS
 user_cooldowns = {}
 COOLDOWN_SECONDS = 15
+credit_cost = 1  # ค่าเริ่มต้น
+    if "3 เครดิต" in package_choice:
+        credit_cost = 3
+    elif "5 เครดิต" in package_choice:
+        credit_cost = 5
+    else:
+        credit_cost = 1
 
 # เริ่มต้นฐานข้อมูล
 init_db()
@@ -32,26 +39,31 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     if "1 เครดิต" in package_choice:
         ep_count = 2
         scenes_per_episode = 4
+        credit_cost = 1
     elif "3 เครดิต" in package_choice:
         ep_count = 6
         scenes_per_episode = 4
+        credit_cost = 3
     elif "5 เครดิต" in package_choice:
         ep_count = 10
         scenes_per_episode = 4
+        credit_cost = 5
     else:
         ep_count = 6
         scenes_per_episode = 4
+        credit_cost = 1
+    if current_user and current_user != "GodAdmin":
+        success, message = check_and_deduct_credit(current_user, credit_cost)
+        if not success:
+            gr.Warning(f"❌ เครดิตไม่เพียงพอ: {message}")
+            yield f"""<div style="background-color: #1e293b; color: #fca5a5; padding: 25px; border-radius: 12px; border: 1px solid #ef4444; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณไม่เพียงพอสำหรับการสร้างซีรีส์แพ็กเกจนี้ กรุณาเติมเครดิตก่อนใช้งานครับ</div>"""
+            return
     if not current_user:
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
         return
         
     if not api_key or api_key.strip() == "":
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
-        return
-        
-    has_credit, remaining = check_and_deduct_credit(current_user)
-    if not has_credit:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิต</div>""", None
         return
 
     try:
