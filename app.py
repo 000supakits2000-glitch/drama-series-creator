@@ -270,17 +270,18 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     )
 
     submit_btn.click(
-        fn=generate_dynamic_series,
-        inputs=[
-        logged_in_user, 
-        api_key_input, 
-        genre_input, 
-        package_input, 
-        detail_input, 
-        avoid_input
-        ],
-        outputs=output_html
-    )
+    fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
+    outputs=[submit_btn],
+    queue=False
+).then(
+    fn=generate_dynamic_series,
+    inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
+    outputs=[output_html]
+).then(
+    fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
+    outputs=[submit_btn],
+    queue=False
+)
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
 app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
