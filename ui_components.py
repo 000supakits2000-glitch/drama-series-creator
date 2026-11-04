@@ -221,4 +221,17 @@ package_input = gr.Dropdown(
     value="🌟 แพ็กเกจยอดฮิต: 3 เครดิต (6 ตอน / 24 ฉาก) - ซีรีส์ดราม่าเนื้อหาเข้มข้น",
     label="เลือกแพ็กเกจซีรีส์"
 )
+
+/* ปลดล็อกให้กล่องดรอปดาวน์แสดงผลทับทุกเลเยอร์และไม่ถูกตัดขอบ */
+.gr-dropdown-list, ul.options, .options, div[role="listbox"], .wrap-inner {
+    z-index: 999999 !important;
+    position: absolute !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* ป้องกันไม่ให้คอนเทนเนอร์รอบนอกตัดกรอบตัวเลือก */
+.gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
+    overflow: visible !important;
+}
 """
