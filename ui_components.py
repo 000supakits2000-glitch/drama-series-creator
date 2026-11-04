@@ -92,36 +92,21 @@ label span, div[data-testid="block-label"] span {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
-    transition: all 0.3s ease !important;
 }
 
-/* 🎨 ปุ่ม Submit (สร้างซีรีส์): ม่วง-น้ำเงินเรืองแสงหรูหรา */
+/* ปุ่ม Submit (สร้างซีรีส์) */
 .primary-btn button {
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+    background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
     border: none !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
 
-.primary-btn button:hover {
-    background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%) !important;
-    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6) !important;
-    transform: translateY(-1px);
-}
-
-/* 🎨 ปุ่ม ออกจากระบบ: โทนเข้มตัดขอบแดงระเรื่อ สไตล์ปุ่มออกระบบพรีเมียม */
+/* ปุ่ม ออกจากระบบ */
 .secondary-btn button {
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
-    border: 1px solid rgba(244, 63, 94, 0.4) !important;
-    color: #fca5a5 !important;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
-}
-
-.secondary-btn button:hover {
-    background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
-    border-color: rgba(244, 63, 94, 0.8) !important;
-    color: #fee2e2 !important;
-    transform: translateY(-1px);
+    background: #1e293b !important;
+    border: 1px solid #475569 !important;
+    color: #cbd5e1 !important;
 }
 
 .admin-btn {
