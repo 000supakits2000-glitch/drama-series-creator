@@ -57,7 +57,7 @@ def get_or_create_admin():
     conn.close()
     return admin_name, 999
 
-def check_and_deduct_credit(username):
+def check_and_deduct_credit(username, cost=1):
     if username == "GodAdmin":
         return True, 999
     conn = sqlite3.connect("users.db", check_same_thread=False)
