@@ -8,6 +8,7 @@ from google.genai import types
 
 from database import init_db, register_user, verify_user, get_or_create_admin, check_and_deduct_credit
 from ui_components import CUSTOM_CSS
+
 user_cooldowns = {}
 COOLDOWN_SECONDS = 15
 
@@ -28,26 +29,24 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             return
     
     user_cooldowns[user_key] = current_time
+
     # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนตอน
     if "1 เครดิต" in package_choice:
         ep_count = 2
-        scenes_per_episode = 4
         credit_cost = 1
     elif "3 เครดิต" in package_choice:
         ep_count = 6
-        scenes_per_episode = 4
         credit_cost = 3
     elif "5 เครดิต" in package_choice:
         ep_count = 10
-        scenes_per_episode = 4
         credit_cost = 5
     else:
         ep_count = 6
-        scenes_per_episode = 4
         credit_cost = 1
+
     try:
         if current_user and current_user != "GodAdmin":
-            success, message = check_and_deduct_credit(current_user, credit_cost)
+            success, message = check_and_deduct_credit(current_user)
             if not success:
                 yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิตก่อนสร้างซีรีส์</div>"""
                 return
@@ -56,12 +55,12 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         return
         
     if not api_key or api_key.strip() == "":
-        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", None
+        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>"""
         return
 
     try:
         num_episodes = ep_count
-        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", None
+        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>"""
 
         client = genai.Client(api_key=api_key.strip())
         system_prompt = """
@@ -76,12 +75,11 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             "ดราม่าโรแมนติก / ซึ้งกินใจ": "Romance Drama",
             "สยองขวัญ / ระทึกขวัญ / ลึกลับ": "Horror / Thriller",
             "คอมเมดี้ / ตลก / ฮา": "Comedy",
-            "ผู้ชีวิต / 10คม / สร้างแรงบันดาลใจ": "Inspirational / Plot Twist",
-            "แฟนตาซี / ประยุค / ไซไฟ": "Fantasy / Sci-Fi"
+            "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ": "Inspirational / Plot Twist",
+            "แฟนตาซี / ย้อนยุค / ไซไฟ": "Fantasy / Sci-Fi"
         }
     
         selected_genre = genre_map.get(genre_choice, "Romance Drama")
-        full_prompt = f"{system_prompt}\n\nแนวเรื่อง: {selected_genre}\nรายละเอียด: {custom_detail}"
         
         prompt = f"""
     Create a {num_episodes}-Episode Drama Mini-Series Script for TikTok / YouTube Shorts.
@@ -99,48 +97,50 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
     Provide response strictly in JSON format:
         {{
-          "series_title": "Title (Thai / English)",
-          "genre": "{selected_genre}",
-          "total_episodes": {num_episodes},
-          "logline_th": "Logline in Thai",
-          "main_characters": [
-            {{
-              "name_th": "ชื่อตัวละคร", "role_th": "บทบาท", "personality_th": "นิสัย",
-              "visual_prompt_en": "Detailed English visual prompt"
-            }}
-          ],
-          "episodes": [
-            {{
-              "ep_number": 1, "ep_title_th": "ชื่อตอน", "ep_synopsis_th": "เรื่องย่อ",
-              "scenes": [
-                {{
-                  "scene_number": 1, "camera_and_action_th": "มุมกล้อง",
-                  "voiceover_th": "บทพากย์", "video_prompt_en": "Video prompt in English"
-                }}
-              ]
-            }}
-          ]
+         "series_title": "Title (Thai / English)",
+         "genre": "{selected_genre}",
+         "total_episodes": {num_episodes},
+         "logline_th": "Logline in Thai",
+         "main_characters": [
+           {{
+             "name_th": "ชื่อตัวละคร", "role_th": "บทบาท", "personality_th": "นิสัย",
+             "visual_prompt_en": "Detailed English visual prompt"
+           }}
+         ],
+         "episodes": [
+           {{
+             "ep_number": 1, "ep_title_th": "ชื่อตอน", "ep_synopsis_th": "เรื่องย่อ",
+             "scenes": [
+               {{
+                 "scene_number": 1, "camera_and_action_th": "มุมกล้อง",
+                 "voiceover_th": "บทพากย์", "video_prompt_en": "Video prompt in English"
+               }}
+             ]
+           }}
+         ]
         }}
         """
 
         response = client.models.generate_content(
-            model="gemini-3.5-flash",
+            model="gemini-2.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
         
         data = json.loads(response.text)
-        main_char = data.get('main_characters', [{}])[0]
         
+        # ดึงข้อมูลหัวเรื่องจาก JSON อย่างปลอดภัย
+        s_title = data.get('series_title', 'Untitled Series')
+        s_genre = data.get('genre', selected_genre)
+        s_logline = data.get('logline_th', '')
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
-            <h2 style="color: #38bdf8; margin-top: 8px;">{series_title}</h2>
-            <p><b>แนวเรื่อง:</b> {genre} | <b>Logline:</b> {logline}</p>
-            <p>{logline_th}</p>
+            <h2 style="color: #38bdf8; margin-top: 8px;">{s_title}</h2>
+            <p><b>แนวเรื่อง:</b> {s_genre}</p>
+            <p>{s_logline}</p>
             <hr style="border-color: #334155; margin: 20px 0;">
             <h3 style="color: #818cf8;">ตัวละครหลัก</h3>
-        </div>
         """
 
         for char in data.get('main_characters', []):
@@ -159,28 +159,29 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
             ep_title = ep.get('ep_title_th', '')
             ep_syn = ep.get('ep_synopsis_th', '')
         
-        html_out += f"""
-        <hr style="border-color: #334155; margin: 20px 0;">
-        <h3 style="color: #38bdf8;">EP {ep_num}: {ep_title}</h3>
-        <p><b>เรื่องย่อ:</b> {ep_syn}</p>
-        """
-        
-        for scene in ep.get('scenes', []):
-            s_num = scene.get('scene_num', 1)
-            s_cam = scene.get('camera_and_action_th', '')
-            s_voice = scene.get('voiceover_th', '')
-            s_prompt = scene.get('viden_prompt_en', '')
-            
             html_out += f"""
-            <div style="background: #F8FAFC; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
-                <b>ฉากที่ {s_num}</b><br>
-                <b>มุมกล้อง:</b> {s_cam}<br>
-                <b>บทพากย์:</b> {s_voice}<br>
-                <b>Google Flow Prompt:</b><br>
-                <pre style="background: #f1f5f9; color: #1e293b; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{s_prompt}</pre>
-            </div>
+            <hr style="border-color: #334155; margin: 20px 0;">
+            <h3 style="color: #38bdf8;">EP {ep_num}: {ep_title}</h3>
+            <p><b>เรื่องย่อ:</b> {ep_syn}</p>
             """
+            
+            for scene in ep.get('scenes', []):
+                s_num = scene.get('scene_number', 1)
+                s_cam = scene.get('camera_and_action_th', '')
+                s_voice = scene.get('voiceover_th', '')
+                s_prompt = scene.get('video_prompt_en', '') # แก้ไขให้ตรงกับ Key ที่สั่ง JSON
+                
+                html_out += f"""
+                <div style="background: #F8FAFC; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
+                    <b>ฉากที่ {s_num}</b><br>
+                    <b>มุมกล้อง:</b> {s_cam}<br>
+                    <b>บทพากย์:</b> {s_voice}<br>
+                    <b>Google Flow Prompt:</b><br>
+                    <pre style="background: #f1f5f9; color: #1e293b; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{s_prompt}</pre>
+                </div>
+                """
         
+        html_out += "</div>"
         yield html_out
         
     except Exception as e:
@@ -188,26 +189,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
-extra_css = """
-.gr-box, .gr-panel, .markdown-text, div[data-testid="block-markdown"] {
-    word-wrap: break-word !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-    max-width: 100% !important;
-}
-div[data-testid="block-markdown"] p, 
-div[data-testid="block-markdown"] span, 
-div[data-testid="block-markdown"] li,
-div[data-testid="block-markdown"] strong {
-    color: #F3F4F6 !important;
-}
-div[data-testid="block-markdown"] h1, 
-div[data-testid="block-markdown"] h2, 
-div[data-testid="block-markdown"] h3 {
-    color: #60A5FA !important;
-}
-"""
-with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS ) as app:
+with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
     
     logged_in_user = gr.State("")
     user_credits = gr.State(0)
@@ -223,31 +205,28 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
             with gr.Tabs():
-            # พาร์ท 1: หน้าเข้าสู่ระบบ
-                    with gr.Tab("🔑 เข้าสู่ระบบ"):
-                        login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
-                        login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-                        login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
-                        login_show_pass.change(
-                            fn=lambda show: gr.Textbox(type="text" if show else "password"),
-                            inputs=login_show_pass,
-                            outputs=login_pass_input
-                        )
-                        login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
-            
-            # พาร์ท 2: หน้าสมัครสมาชิก
-                    with gr.Tab("💖สมัครสมาชิกใหม่"):
-                        reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
-                        reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-                        reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
-                        reg_show_pass.change(
-                            fn=lambda show: gr.Textbox(type="text" if show else "password"),
-                            inputs=reg_show_pass,
-                            outputs=reg_pass_input
-                        )
-                        reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
-            
-        # ปุ่ม Admin Bypass ทางลัด และกล่องแสดงสถานะ
+                with gr.Tab("🔑 เข้าสู่ระบบ"):
+                    login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
+                    login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                    login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                    login_show_pass.change(
+                        fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                        inputs=login_show_pass,
+                        outputs=login_pass_input
+                    )
+                    login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
+        
+                with gr.Tab("💖สมัครสมาชิกใหม่"):
+                    reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
+                    reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                    reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                    reg_show_pass.change(
+                        fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                        inputs=reg_show_pass,
+                        outputs=reg_pass_input
+                    )
+                    reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
+        
         admin_btn = gr.Button("🔑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
         auth_status = gr.Markdown("", elem_classes="auth-status")
 
@@ -265,7 +244,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                                 "ดราม่าโรแมนติก / ซึ้งกินใจ", "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
                                 "คอมเมดี้ / ตลก / ฮาๆ", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"
                             ],
-                            value="ดราม่าโรแมนติก / ซึ้งกินใจ", # ค่าเริ่มต้นที่เลือกไว้ label="🎬 เลือกแนวซีรีส์"
+                            value="ดราม่าโรแมนติก / ซึ้งกินใจ",
                             label="เลือกแนวละคร"
                         )
                         package_input = gr.Radio(
@@ -285,7 +264,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
                         
                 with gr.Column(scale=5):
-                    
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
 
     # เชื่อมโยงระบบล็อกอิน
@@ -327,18 +305,18 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     )
 
     submit_btn.click(
-    fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
-    outputs=[submit_btn],
-    queue=False
-).then(
-    fn=generate_dynamic_series,
-    inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
-    outputs=[output_html]
-).then(
-    fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
-    outputs=[submit_btn],
-    queue=False
-)
+        fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
+        outputs=[submit_btn],
+        queue=False
+    ).then(
+        fn=generate_dynamic_series,
+        inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
+        outputs=[output_html]
+    ).then(
+        fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
+        outputs=[submit_btn],
+        queue=False
+    )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
 app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
