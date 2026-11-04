@@ -48,8 +48,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     if current_user and current_user != "GodAdmin":
         success, message = check_and_deduct_credit(current_user, credit_cost)
         if not success:
-            gr.Warning(f"❌ เครดิตไม่เพียงพอ: {message}")
-            yield f"""<div style="background-color: #1e293b; color: #fca5a5; padding: 25px; border-radius: 12px; border: 1px solid #ef4444; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณไม่เพียงพอสำหรับการสร้างซีรีส์แพ็กเกจนี้ กรุณาเติมเครดิตก่อนใช้งานครับ</div>"""
+            yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ {message}</div>"""
             return
     if not current_user:
         yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณาเข้าสู่ระบบก่อนใช้งาน</div>""", None
