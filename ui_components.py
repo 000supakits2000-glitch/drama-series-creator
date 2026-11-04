@@ -191,7 +191,7 @@ input[type="range"] {
     visibility: visible !important;
 }
 
-/* ปรับแต่งกล่องเมนู เลือกแนวละคร ให้พื้นหลังสีขาว ตัวหนังสือสีดำ ชัดเจน */
+/* ปรับแต่งกล่องเมนู Dropdown ให้พื้นหลังสีขาว ตัวหนังสือสีดำ ชัดเจน */
 .gr-dropdown-list, ul.options, .options {
     background-color: #ffffff !important;
     color: #000000 !important;
@@ -204,4 +204,16 @@ input[type="range"] {
     background-color: #f1f5f9 !important;
     color: #000000 !important;
 }
+
+genre_input = gr.Dropdown(
+    choices=[
+        "ดราม่าโรแมนติก / ซึ้งกินใจ",
+        "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
+        "ตลก / สนุก / ผ่อนคลาย",
+        "ดราม่า / ชีวิต / สร้างแรงบันดาลใจ",
+        "แฟนตาซี / ไซไฟ / สร้างสรรค์จินตนาการ"
+    ],
+    value="ดราม่าโรแมนติก / ซึ้งกินใจ",
+    label="เลือกแนวละคร"
+)
 """
