@@ -82,6 +82,8 @@ label span, div[data-testid="block-label"] span {
     border-radius: 12px !important;
     font-family: 'Prompt', sans-serif !important;
     width: 100% !important;
+    max-width: 100% !important;
+    flex-grow: 1 !important;
     box-sizing: border-box !important;
 }
 
