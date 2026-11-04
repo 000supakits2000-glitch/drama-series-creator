@@ -2,17 +2,32 @@ import gradio as gr
 import json
 import urllib.parse
 import os
+import time
 from google import genai
 from google.genai import types
 
 from database import init_db, register_user, verify_user, get_or_create_admin, check_and_deduct_credit
 from ui_components import CUSTOM_CSS
+user_cooldowns = {}
+COOLDOWN_SECONDS = 15
 
 # เริ่มต้นฐานข้อมูล
 init_db()
 
 # ฟังก์ชันหลักสร้างซีรีส์
 def generate_dynamic_series(current_user, api_key, genre_choice, package_choice, custom_detail, avoided_topics):
+    user_key = current_user if current_user else "guest"
+    current_time = time.time()
+    
+    if user_key in user_cooldowns:
+        elapsed_time = current_time - user_cooldowns[user_key]
+        if elapsed_time < COOLDOWN_SECONDS:
+            remaining = int(COOLDOWN_SECONDS - elapsed_time)
+            gr.Warning(f"⏳ กรุณารอสักครู่... ระบบจำกัดการใช้งาน 1 ครั้งต่อ {COOLDOWN_SECONDS} วินาที (เหลือเวลาอีก {remaining} วินาที)")
+            yield f"""<div style="background-color: #1e293b; color: #fca5a5; padding: 25px; border-radius: 12px; border: 1px solid #ef4444; font-family: 'Prompt', sans-serif;">❌ กรุณารออีก {remaining} วินาทีก่อนกดสร้างซีรีส์ใหม่อีกครั้งครับ</div>"""
+            return
+    
+    user_cooldowns[user_key] = current_time
     # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนตอน
     if "1 เครดิต" in package_choice:
         ep_count = 2
