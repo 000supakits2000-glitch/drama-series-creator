@@ -135,7 +135,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         for ep in data.get('episodes', []):
             html_out += f"<h3 style='color: #38bdf8;'>📺 EP {ep.get('ep_number', 1)}: {ep.get('ep_title_th', '')}</h3>"
             html_out += f"<p><b>📖 เรื่องย่อ:</b> {ep.get('ep_synopsis_th', '')}</p>"
-            for scene in ep.get('scenes', []):
+        for scene in ep.get('scenes', []):
             scene_num = scene.get('scene_number', 1)
             prompt_text = scene.get('viden_prompt_en', '')
             html_out += f"""<div style="background: #f8fafc; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
