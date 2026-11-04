@@ -150,7 +150,7 @@ div[data-testid="block-markdown"] h3 {
     color: #60A5FA !important;
 }
 """
-with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS + extra_css) as app:
+with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
     
     logged_in_user = gr.State("")
     user_credits = gr.State(0)
