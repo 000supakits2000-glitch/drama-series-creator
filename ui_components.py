@@ -191,7 +191,7 @@ input[type="range"] {
     visibility: visible !important;
 }
 
-/* ปรับแต่งกล่องเมนู Dropdown ให้พื้นหลังสีขาว ตัวหนังสือสีดำ ชัดเจน */
+/* ปรับแต่งกล่องเมนู เลือกแนวละคร ให้พื้นหลังสีขาว ตัวหนังสือสีดำ ชัดเจน */
 .gr-dropdown-list, ul.options, .options {
     background-color: #ffffff !important;
     color: #000000 !important;
