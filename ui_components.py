@@ -145,13 +145,18 @@ label span, div[data-testid="block-label"] span {
     border-bottom: 2px solid #38bdf8 !important;
 }
 
-/* จัดการกล่องดรอปดาวน์ */
+/* จัดการกล่องดรอปดาวน์ให้ชิดติดกับช่องเลือกพอดี ไม่ลอยห่าง */
 .gr-dropdown {
     position: relative !important;
     z-index: 100 !important;
 }
 
 .gr-dropdown ul, .gr-dropdown-options, .options, div[role="listbox"] {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin-top: 4px !important;
     background-color: #1e293b !important;
     color: #ffffff !important;
     border: 1px solid #475569 !important;
@@ -169,9 +174,5 @@ label span, div[data-testid="block-label"] span {
 .gr-dropdown ul li:hover, .gr-dropdown-options li:hover, .options li:hover, div[role="option"]:hover {
     background-color: #334155 !important;
     color: #38bdf8 !important;
-}
-
-.gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
-    overflow: visible !important;
 }
 """
