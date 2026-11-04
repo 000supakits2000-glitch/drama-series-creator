@@ -75,30 +75,38 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important; 
 }
 
-.primary-btn, .secondary-btn {
+CUSTOM_CSS = """
+/* บังคับให้ปุ่มทั้งสองขยายเต็มความกว้างของคอลัมน์แบบ 100% */
+.primary-btn.gr-button, .secondary-btn.gr-button {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
     font-weight: 700 !important;
     font-size: 1.1rem !important;
     padding: 12px 24px !important;
     border-radius: 12px !important;
     font-family: 'Prompt', sans-serif !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    flex-grow: 1 !important;
-    box-sizing: border-box !important;
 }
 
-.primary-btn {
+/* สีและเอฟเฟกต์ปุ่ม Submit */
+.primary-btn.gr-button {
     background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%) !important;
     border: none !important;
     color: white !important;
     box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
 }
 
-.secondary-btn {
+/* สีและเอฟเฟกต์ปุ่ม ออกจากระบบ */
+.secondary-btn.gr-button {
     background: #1e293b !important;
     border: 1px solid #475569 !important;
     color: #cbd5e1 !important;
 }
+"""
 
 .admin-btn {
     background: linear-gradient(90deg, #f59e0b 0%, #ef4444 100%) !important;
