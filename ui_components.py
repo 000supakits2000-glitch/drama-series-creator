@@ -74,7 +74,7 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important; 
 }
 
-/* 🟢 บังคับปุ่มคู่ล่างสุดกว้าง 50/50 และแต่งสีสวยงาม */
+/* บังคับปุ่มคู่ล่างสุดกว้าง 50/50 และแต่งสีสวยงาม */
 .primary-btn, .secondary-btn, 
 .primary-btn button, .secondary-btn button {
     width: 100% !important;
@@ -145,8 +145,18 @@ label span, div[data-testid="block-label"] span {
     border-bottom: 2px solid #38bdf8 !important;
 }
 
-/* 🟢 จัดการกล่องดรอปดาวน์ให้แสดงผลถูกต้องตามระบบ Gradio */
+/* จัดการกล่องดรอปดาวน์ ระยะห่าง และตำแหน่งพอดีเป๊ะ */
+.gr-dropdown {
+    position: relative !important;
+    z-index: 100 !important;
+}
+
 .gr-dropdown ul, .gr-dropdown-options, .options, div[role="listbox"] {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    width: 100% !important;
+    margin-top: 6px !important;
     background-color: #1e293b !important;
     color: #ffffff !important;
     border: 1px solid #475569 !important;
