@@ -197,6 +197,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                                 "คอมเมดี้ / ตลก / ฮาๆ", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"
                             ],
                             value="ดราม่าโรแมนติก / ซึ้งกินใจ", # ค่าเริ่มต้นที่เลือกไว้ label="🎬 เลือกแนวซีรีส์"
+                            label="เลือกแนวละคร"
                         )
                         package_input = gr.Dropdown(
                             choices=[
