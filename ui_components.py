@@ -204,4 +204,11 @@ input[type="range"] {
     background-color: #f1f5f9 !important;
     color: #000000 !important;
 }
+
+.gr-dropdown-list, ul.options, .options {
+    z-index: 99999 !important;
+    position: absolute !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
 """
