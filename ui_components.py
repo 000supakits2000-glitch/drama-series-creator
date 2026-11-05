@@ -62,12 +62,6 @@ body, .gradio-container {
     overflow: visible !important;
 }
 
-.auth-title h3, .auth-title span, .welcome-text h3 {
-    color: #38bdf8 !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 700 !important;
-}
-
 label span, div[data-testid="block-label"] span { 
     color: #38bdf8 !important; 
     font-weight: 600 !important; 
