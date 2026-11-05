@@ -282,11 +282,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         fn=handle_login,
         inputs=[login_user_input, login_pass_input],
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
-    ).then(
-        fn=lambda u, c: f"<span style='color: #38bdf8; font-weight: 600;'>👤 ผู้ใช้งาน: {u} | 💳 เครดิตคงเหลือ: {c} ครั้ง</span>",
-        inputs=[logged_in_user, user_credits],
-        outputs=[user_welcome_label]
-    )
 
     def handle_admin():
         u, c = get_or_create_admin()
@@ -300,7 +295,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             "",                        # เคลียร์ logged_in_user
             0,                         # เคลียร์ user_credits
             '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>', # เคลียร์ output_html
-            gr.update(value="", visible=False), # <--- สั่งเคลียร์ค่าและซ่อนป้ายต้อนรับแบบเบ็ดเสร็จตรงนี้ครับ
             "",                        # ล้างค่าช่องชื่อผู้ใช้ (login_user_input)
             ""                         # ล้างค่าช่องรหัสผ่าน (login_pass_input)
         ),
@@ -310,7 +304,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             logged_in_user, 
             user_credits, 
             output_html, 
-            user_welcome_label, 
             login_user_input, 
             login_pass_input
         ]
