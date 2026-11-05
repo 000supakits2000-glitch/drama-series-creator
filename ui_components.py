@@ -167,4 +167,20 @@ label span, div[data-testid="block-label"] span {
 .gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
     overflow: visible !important;
 }
+
+.auth-status {
+    color: #38bdf8 !important; /* ใช้สีฟ้าโทนเดียวกับ Label */
+    font-family: 'Prompt', sans-serif !important; /* ฟอนต์เดียวกัน */
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    width: 100% !important;
+    margin-bottom: 15px !important;
+}
+
+.auth-status:empty {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 """
