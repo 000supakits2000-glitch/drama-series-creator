@@ -51,7 +51,7 @@ def get_or_create_admin():
         if not row:
             cursor.execute("INSERT OR REPLACE INTO users (username, password, credits) VALUES (?, ?, ?)", (admin_name, "godpass123", 999))
         else:
-            cursor.execute("UPDATE users SET password = ?, credits = ? WHERE username = ?", ("godpass123", 999, admin_name))
+            cursor.execute("UPDATE users SET credits = 999 WHERE username = ?", (admin_name,))
         conn.commit()
     return admin_name, 999
 
@@ -70,5 +70,3 @@ def check_and_deduct_credit(username):
             return True, new_credits
             
     return False, 0
-init_db()
-get_or_create_admin()
