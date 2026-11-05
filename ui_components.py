@@ -171,24 +171,9 @@ label span, div[data-testid="block-label"] span {
 .auth-status {
     text-align: center !important;
     color: #00ffcc !important;
-    background: rgba(15, 23, 42, 0.85) !important;
-    padding: 12px 20px !important;
-    border-radius: 10px !important;
-    margin: 15px auto !important;
     font-size: 1.1rem !important;
     font-weight: 600 !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* ซ่อนกล่องอัตโนมัติเมื่อยังไม่มีข้อความตอนหน้า Login */
-.auth-status:empty {
-    display: none !important;
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    margin: 10px 0 !important;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
 }
 """
