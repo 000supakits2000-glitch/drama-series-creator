@@ -169,29 +169,13 @@ label span, div[data-testid="block-label"] span {
 }
 
 .auth-status, 
-.auth-status > div, 
-.auth-status .wrap, 
-.auth-status .prose {
+.auth-status.gr-box, 
+.auth-status > div {
     background: transparent !important;
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
-    margin: 0 0 12px 0 !important;
-}
-
-.auth-status p {
-    color: #38bdf8 !important; /* สีข้อความ (สามารถเปลี่ยนเป็นสีอื่นได้ครับ) */
-    font-size: 1.1rem !important;
-    font-weight: 600 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-}
-
-.auth-status:empty {
-    display: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0 0 10px 0 !important;
 }
 """
