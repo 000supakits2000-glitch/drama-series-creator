@@ -170,10 +170,17 @@ label span, div[data-testid="block-label"] span {
 
 .auth-status {
     text-align: center !important;
-    color: #00ffcc !important;
-    font-size: 1.1rem !important;
-    font-weight: 600 !important;
-    margin: 10px 0 !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6) !important;
+    color: #00ffcc !important; /* สีเขียวมิ้นต์เรืองแสง สดใส เด่นชัด */
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 15px !important;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9) !important;
+    width: 100% !important;
+}
+
+.auth-status:empty {
+    display: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 """
