@@ -169,11 +169,17 @@ label span, div[data-testid="block-label"] span {
 }
 
 .auth-status {
-    text-align: center;
-    color: #ffffff !important;
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    text-align: center !important;
+    color: #00ffcc !important;
+    background: rgba(15, 23, 42, 0.85) !important;
+    padding: 12px 20px !important;
+    border-radius: 10px !important;
+    margin: 15px auto !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
 }
 """
