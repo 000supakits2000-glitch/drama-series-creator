@@ -31,7 +31,6 @@ def register_user(username, password):
         return "❌ ชื่อผู้ใช้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
 
 def verify_user(username, password):
-    def verify_user(username, password):
     # เพิ่มเงื่อนไขพิเศษตรงนี้เพื่อให้ GodAdmin ล็อกอินผ่านได้ทันที
     if username == "GodAdmin" and password == "godpass123":
         return True, 999
