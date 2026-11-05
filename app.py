@@ -313,7 +313,7 @@ logout_btn.click(
         ]
     )
 
-    submit_btn.click(
+submit_btn.click(
         fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
         outputs=[submit_btn],
         queue=False
