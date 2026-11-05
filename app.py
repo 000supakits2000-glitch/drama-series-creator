@@ -178,7 +178,8 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
                     <b>มุมกล้อง:</b> {s_cam}<br>
                     <b>บทพากย์:</b> {s_voice}<br>
                     <b>Google Flow Prompt:</b><br>
-                    <pre style="background: #f1f5f9; color: #1e293b; padding: 8px; border-radius: 6px; white-space: pre-wrap;">{s_prompt}</pre>
+                    <pre style="background: #f1f5f9; color: #1e293b; padding: 8px; border-radius: 6px; white-space: pre-wrap; margin-bottom: 8px;">{s_prompt}</pre>
+                    <button onclick="navigator.clipboard.writeText(`{s_prompt}`); alert('คัดลอก Prompt เรียบร้อยแล้ว!');" style="background: #6366f1; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-family: 'Prompt', sans-serif; font-weight: 600;">📋 คัดลอก Prompt นี้</button>
                 </div>
                 """
         
