@@ -292,7 +292,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         u, c = get_or_create_admin()
         return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", u, c
 
-logout_btn.click(
+    logout_btn.click(
         fn=lambda: (
             gr.update(visible=True),   # แสดงหน้าล็อกอิน
             gr.update(visible=False),  # ซ่อนหน้าหลัก
@@ -313,19 +313,19 @@ logout_btn.click(
         ]
     )
 
-submit_btn.click(
-    fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
-        outputs=[submit_btn],
-        queue=False
-    ).then(
-        fn=generate_dynamic_series,
-        inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
-        outputs=[output_html]
-    ).then(
-        fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
-        outputs=[submit_btn],
-        queue=False
-    )
+    submit_btn.click(
+        fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
+            outputs=[submit_btn],
+            queue=False
+        ).then(
+            fn=generate_dynamic_series,
+            inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
+            outputs=[output_html]
+        ).then(
+            fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
+            outputs=[submit_btn],
+            queue=False
+        )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
 app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
