@@ -292,8 +292,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         u, c = get_or_create_admin()
         return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", u, c
 
-
-    logout_btn.click(
+logout_btn.click(
         fn=lambda: (
             gr.update(visible=True),   # แสดงหน้าล็อกอิน
             gr.update(visible=False),  # ซ่อนหน้าหลัก
