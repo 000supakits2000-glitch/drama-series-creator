@@ -231,7 +231,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     
     auth_status = gr.Markdown("", elem_classes="auth-status")
 
-    # เชื่อมโยงระบบสมัครสมาชิก
+    # เชื่อมโยงระบบสมัครสมาชิกและเข้าสู่ระบบ
     reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
 
     def handle_login(u, p):
