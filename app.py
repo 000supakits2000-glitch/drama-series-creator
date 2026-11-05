@@ -232,10 +232,10 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
         # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False, elem_classes="unified-card") as app_section:
+            auth_status = gr.Markdown("", elem_classes="auth-status")
             with gr.Row():
                 with gr.Column(scale=4):
                     with gr.Group():
-                        auth_status = gr.Markdown("", elem_classes="auth-status")
                         api_key_input = gr.Textbox(type="password", placeholder="วาง Gemini API Key ที่นี่...", label="🔑 Gemini API Key")
                         genre_input = gr.Dropdown(
                             choices=[
