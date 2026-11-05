@@ -270,7 +270,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     def handle_login(u, p):
         success, credits = verify_user(u, p)
         if success:
-            return gr.update(visible=False), gr.update(visible=True), f"🎉 ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)", u, credits
+            return gr.update(visible=False), gr.update(visible=True), gr.update(value=f"<div style='text-align: center; color: #38bdf8; font-size: 1.1rem; font-weight: 600;'>ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)</div>", visible=True), u, credits
         else:
             return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
 
@@ -282,7 +282,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
     def handle_admin():
         u, c = get_or_create_admin()
-        return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!",
+        return gr.update(visible=False), gr.update(visible=True), gr.update(value=f"<div style='text-align: center; color: #38bdf8; font-size: 1.1rem; font-weight: 600;'>เข้าสู่ระบบในฐานะ (Admin) สำเร็จ! (เครดิตคงเหลือ: {credits} ครั้ง)</div>", visible=True)
 
     logout_btn.click(
         fn=lambda: (
