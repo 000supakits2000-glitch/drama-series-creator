@@ -229,7 +229,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         outputs=reg_pass_input
                     )
                     reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
-                    auth_status = gr.Markdown("", elem_classes="auth-status")
         
 
         # --- หน้าที่ 2: หน้าแอปหลัก ---
