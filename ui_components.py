@@ -169,13 +169,15 @@ label span, div[data-testid="block-label"] span {
 }
 
 .auth-status {
-    color: #38bdf8 !important; /* ใช้สีฟ้าโทนเดียวกับ Label */
-    font-family: 'Prompt', sans-serif !important; /* ฟอนต์เดียวกัน */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 5px 0 15px 0 !important;
+    text-align: center !important;
+    color: #38bdf8 !important; /* ใช้สีฟ้าโทนเดียวกับ Label หรือเปลี่ยนเป็นสีที่ต้องการได้เลยครับ */
     font-size: 1.1rem !important;
     font-weight: 600 !important;
-    text-align: center !important;
-    width: 100% !important;
-    margin-bottom: 15px !important;
 }
 
 .auth-status:empty {
