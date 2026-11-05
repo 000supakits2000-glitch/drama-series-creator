@@ -190,7 +190,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">เกิดข้อผิดพลาดในการสร้างซีรีส์: {str(e)}</div>"""
 
 
-    # --- โครงสร้างหน้าเว็บ Gradio ---
+# --- โครงสร้างหน้าเว็บ Gradio ---
 with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
     
     logged_in_user = gr.State("")
@@ -204,66 +204,77 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         </div>
         ''')
         
-    # --- หน้าที่ 1: หน้า Login / Register ---
-    with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
-        with gr.Tabs():
-            with gr.Tab("🔑 เข้าสู่ระบบ"):
-                login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
-                login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-                login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
-                login_show_pass.change(
-                    fn=lambda show: gr.Textbox(type="text" if show else "password"),
-                    inputs=login_show_pass,
-                    outputs=login_pass_input
-                )
-                login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
-    
-            with gr.Tab("💖สมัครสมาชิกใหม่"):
-                reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
-                reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-                reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
-                reg_show_pass.change(
-                    fn=lambda show: gr.Textbox(type="text" if show else "password"),
-                    inputs=reg_show_pass,
-                    outputs=reg_pass_input
-                )
-                reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
-    
-    auth_status = gr.Markdown("", elem_classes="auth-status")
-
-    # --- หน้าที่ 2: หน้าหลักแอปพลิเคชันหลังเข้าสู่ระบบ ---
-    with gr.Column(visible=False, elem_classes="unified-card") as app_section:
-        with gr.Row(elem_classes="welcome-text"):
-            user_welcome_label = gr.Markdown("ยินดีต้อนรับ")
+        # --- หน้าที่ 1: หน้า Login / Register ---
+        with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
+            with gr.Tabs():
+                with gr.Tab("🔑 เข้าสู่ระบบ"):
+                    login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
+                    login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                    login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                    login_show_pass.change(
+                        fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                        inputs=login_show_pass,
+                        outputs=login_pass_input
+                    )
+                    login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
         
-        with gr.Row():
-            with gr.Column(scale=3):
-                api_key_input = gr.Textbox(type="password", placeholder="วาง Gemini API Key ที่นี่...", label="Gemini API Key")
-                genre_input = gr.Dropdown(
-                    choices=["ดราม่าโรงเรียน / ชู้รักในใจ", "สองอารมณ์ / รสรักรสวิญญาณ / ลึกลับ", "คอมเมดี้ / ตลก / ฮาฮะ", "ชีวิต / ชีวิตคน / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"],
-                    value="ดราม่าโรงเรียน / ชู้รักในใจ",
-                    label="เลือกแนวละคร"
-                )
-                package_input = gr.Radio(
-                    choices=["1 เครดิต (2ตอน / 8 ฉาก)", "3 เครดิต (6 ตอน / 24 ฉาก)", "5 เครดิต (18ตอน / 48 ฉาก)"],
-                    value="3 เครดิต (6 ตอน / 24 ฉาก)",
-                    label="เลือกแพ็กเกจซีรีส์"
-                )
-                detail_input = gr.Textbox(lines=3, placeholder="ไอเดียเพิ่มเติมฉากหลัก...", label="พล็อตหลัก (Optional)")
-                avoid_input = gr.Textbox(lines=2, placeholder="เนื้อหาที่ไม่ต้องการ...", label="พล็อตที่ควรหลีกเลี่ยง")
-                
-                submit_btn = gr.Button("🚀 เริ่มสร้างซีรีส์ดราม่า", elem_classes="primary-btn")
-                logout_btn = gr.Button("🚪 ออกจากระบบ", variant="stop")
-
-        output_html = gr.HTML('<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
+                with gr.Tab("💖สมัครสมาชิกใหม่"):
+                    reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
+                    reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                    reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                    reg_show_pass.change(
+                        fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                        inputs=reg_show_pass,
+                        outputs=reg_pass_input
+                    )
+                    reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
         
-    # --- ส่วนเชื่อมโยง Event และการทำงานของปุ่มต่างๆ ---
+        admin_btn = gr.Button("🔑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
+        auth_status = gr.Markdown("", elem_classes="auth-status")
+
+        # --- หน้าที่ 2: หน้าแอปหลัก ---
+        with gr.Column(visible=False, elem_classes="unified-card") as app_section:
+            with gr.Row(elem_classes="welcome-text"):
+                user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
+            
+            with gr.Row():
+                with gr.Column(scale=4):
+                    with gr.Group():
+                        api_key_input = gr.Textbox(type="password", placeholder="วาง Gemini API Key ที่นี่...", label="🔑 Gemini API Key")
+                        genre_input = gr.Dropdown(
+                            choices=[
+                                "ดราม่าโรแมนติก / ซึ้งกินใจ", "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
+                                "คอมเมดี้ / ตลก / ฮาๆ", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"
+                            ],
+                            value="ดราม่าโรแมนติก / ซึ้งกินใจ",
+                            label="เลือกแนวละคร"
+                        )
+                        package_input = gr.Radio(
+                            choices=[
+                                "1 เครดิต (2 ตอน / 8 ฉาก)",
+                                "3 เครดิต (6 ตอน / 24 ฉาก)",
+                                "5 เครดิต (10 ตอน / 40 ฉาก)"
+                            ],
+                            value="3 เครดิต (6 ตอน / 24 ฉาก)",
+                            label="เลือกแพ็กเกจซีรีส์"
+                        )
+                        detail_input = gr.Textbox(lines=3, placeholder="ไอเดียหรือพล็อตหลัก...", label="💡 พล็อตหลัก (Optional)")
+                        avoid_input = gr.Textbox(lines=2, placeholder="พล็อตที่ห้ามซ้ำ...", label="🚫 พล็อตที่เคยทำแล้ว")
+                    
+                    with gr.Row():
+                        logout_btn = gr.Button("🚪 ออกจากระบบ", variant="secondary")
+                        submit_btn = gr.Button("🚀 Submit (สร้างซีรีส์)", elem_classes="primary-btn")
+                        
+                with gr.Column(scale=5):
+                    output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
+
+    # เชื่อมโยงระบบล็อกอิน
     reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
-
+    
     def handle_login(u, p):
         success, credits = verify_user(u, p)
         if success:
-            return gr.update(visible=False), gr.update(visible=True), "", u, credits
+            return gr.update(visible=False), gr.update(visible=True), f"🎉 ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)", u, credits
         else:
             return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
 
@@ -273,6 +284,19 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
         fn=lambda u, c: f"<span style='color: #38bdf8; font-weight: 600;'>👤 ผู้ใช้งาน: {u} | 💳 เครดิตคงเหลือ: {c} ครั้ง</span>",
+        inputs=[logged_in_user, user_credits],
+        outputs=[user_welcome_label]
+    )
+
+    def handle_admin():
+        u, c = get_or_create_admin()
+        return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", u, c
+
+    admin_btn.click(
+        fn=handle_admin,
+        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
+    ).then(
+        fn=lambda u, c: f"### ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | เครดิต: **ไม่จำกัด (999)** ครั้ง",
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
@@ -302,5 +326,5 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         queue=False
     )
 
-port = int(os.environ.get("PORT", 7860))
-app.launch(server_name="0.0.0.0", server_port=port)
+port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
+app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
