@@ -231,11 +231,32 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     
     auth_status = gr.Markdown("", elem_classes="auth-status")
 
-    # --- หน้าที่ 2: หน้าหลักแอปพลิเคชันหลังเข้าสู่ระบบ (ประกาศไว้ก่อนนำไปใช้งาน) ---
+    # --- หน้าที่ 2: หน้าหลักแอปพลิเคชันหลังเข้าสู่ระบบ ---
     with gr.Column(visible=False, elem_classes="unified-card") as app_section:
         with gr.Row(elem_classes="welcome-text"):
             user_welcome_label = gr.Markdown("ยินดีต้อนรับ")
+        
+        with gr.Row():
+            with gr.Column(scale=3):
+                api_key_input = gr.Textbox(type="password", placeholder="วาง Gemini API Key ที่นี่...", label="Gemini API Key")
+                genre_input = gr.Dropdown(
+                    choices=["ดราม่าโรงเรียน / ชู้รักในใจ", "สองอารมณ์ / รสรักรสวิญญาณ / ลึกลับ", "คอมเมดี้ / ตลก / ฮาฮะ", "ชีวิต / ชีวิตคน / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"],
+                    value="ดราม่าโรงเรียน / ชู้รักในใจ",
+                    label="เลือกแนวละคร"
+                )
+                package_input = gr.Radio(
+                    choices=["1 เครดิต (2ตอน / 8 ฉาก)", "3 เครดิต (6 ตอน / 24 ฉาก)", "5 เครดิต (18ตอน / 48 ฉาก)"],
+                    value="3 เครดิต (6 ตอน / 24 ฉาก)",
+                    label="เลือกแพ็กเกจซีรีส์"
+                )
+                detail_input = gr.Textbox(lines=3, placeholder="ไอเดียเพิ่มเติมฉากหลัก...", label="พล็อตหลัก (Optional)")
+                avoid_input = gr.Textbox(lines=2, placeholder="เนื้อหาที่ไม่ต้องการ...", label="พล็อตที่ควรหลีกเลี่ยง")
+                
+                submit_btn = gr.Button("🚀 เริ่มสร้างซีรีส์ดราม่า", elem_classes="primary-btn")
+                logout_btn = gr.Button("🚪 ออกจากระบบ", variant="stop")
 
+        output_html = gr.HTML('<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
+        
     # --- ส่วนเชื่อมโยง Event และการทำงานของปุ่มต่างๆ ---
     reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
 
