@@ -205,32 +205,38 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         ''')
         
         # --- หน้าที่ 1: หน้า Login / Register ---
-        with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
-            with gr.Tabs():
-                with gr.Tab("🔑 เข้าสู่ระบบ"):
-                    login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
-                    login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-                    login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
-                    login_show_pass.change(
-                        fn=lambda show: gr.Textbox(type="text" if show else "password"),
-                        inputs=login_show_pass,
-                        outputs=login_pass_input
-                    )
-                    login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
-        
-                with gr.Tab("💖สมัครสมาชิกใหม่"):
-                    reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
-                    reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
-                    reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
-                    reg_show_pass.change(
-                        fn=lambda show: gr.Textbox(type="text" if show else "password"),
-                        inputs=reg_show_pass,
-                        outputs=reg_pass_input
-                    )
-                    reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
-        
-        admin_btn = gr.Button("🔑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
-        auth_status = gr.Markdown("", elem_classes="auth-status")
+        # เชื่อมโยงระบบสมัครสมาชิก
+    reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
+    
+    def handle_login(u, p):
+        success, credits = verify_user(u, p)
+        if success:
+            return gr.update(visible=False), gr.update(visible=True), "", u, credits
+        else:
+            return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
+
+    login_btn.click(
+        fn=handle_login,
+        inputs=[login_user_input, login_pass_input],
+        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
+    ).then(
+        fn=lambda u, c: f"<span style='color: #38bdf8; font-weight: 600;'>👤 ผู้ใช้งาน: {u} | 💳 เครดิตคงเหลือ: {c} ครั้ง</span>",
+        inputs=[logged_in_user, user_credits],
+        outputs=[user_welcome_label]
+    )
+
+    # ❌ ลบฟังก์ชัน handle_admin และ admin_btn.click ทิ้งเรียบร้อย
+
+    logout_btn.click(
+        fn=lambda: (
+            gr.update(visible=True), 
+            gr.update(visible=False), 
+            "", 
+            0, 
+            '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>'
+        ),
+        outputs=[auth_section, app_section, logged_in_user, user_credits, output_html]
+    )
 
         # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False, elem_classes="unified-card") as app_section:
@@ -284,19 +290,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
         fn=lambda u, c: f"<span style='color: #38bdf8; font-weight: 600;'>👤 ผู้ใช้งาน: {u} | 💳 เครดิตคงเหลือ: {c} ครั้ง</span>",
-        inputs=[logged_in_user, user_credits],
-        outputs=[user_welcome_label]
-    )
-
-    def handle_admin():
-        u, c = get_or_create_admin()
-        return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", u, c
-
-    admin_btn.click(
-        fn=handle_admin,
-        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
-    ).then(
-        fn=lambda u, c: f"### ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | เครดิต: **ไม่จำกัด (999)** ครั้ง",
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
