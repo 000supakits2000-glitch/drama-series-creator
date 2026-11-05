@@ -280,7 +280,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         inputs=[login_user_input, login_pass_input],
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
     ).then(
-        fn=lambda u, c: f'<div style="color: #38bdf8; font-weight: 600; font-size: 15px; margin-bottom: 10px;">👤 ผู้ใช้งาน: {u} | 🪙 เครดิตคงเหลือ: {c} ครั้ง</div>',
+        fn=lambda u, c: f'<div style="color: #38bdf8; font-weight: 600; font-size: 15px; margin-bottom: 10px;"> ผู้ใช้งาน: {u} | เครดิตคงเหลือ: {c} ครั้ง</div>',
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
