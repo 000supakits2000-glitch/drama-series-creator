@@ -205,9 +205,35 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         ''')
         
         # --- หน้าที่ 1: หน้า Login / Register ---
-        # เชื่อมโยงระบบสมัครสมาชิก
-    reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
+    with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
+        with gr.Tabs():
+            with gr.Tab("🔑 เข้าสู่ระบบ"):
+                login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
+                login_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                login_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                login_show_pass.change(
+                    fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                    inputs=login_show_pass,
+                    outputs=login_pass_input
+                )
+                login_btn = gr.Button("🔑 เข้าสู่ระบบ", elem_classes="primary-btn")
     
+            with gr.Tab("💖สมัครสมาชิกใหม่"):
+                reg_user_input = gr.Textbox(label="ตั้งชื่อผู้ใช้ (Username)")
+                reg_pass_input = gr.Textbox(label="รหัสผ่าน (Password)", type="password")
+                reg_show_pass = gr.Checkbox(label="👁️ แสดงรหัสผ่าน", value=False)
+                reg_show_pass.change(
+                    fn=lambda show: gr.Textbox(type="text" if show else "password"),
+                    inputs=reg_show_pass,
+                    outputs=reg_pass_input
+                )
+                reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
+    
+    auth_status = gr.Markdown("", elem_classes="auth-status")
+
+    # เชื่อมโยงระบบสมัครสมาชิก
+    reg_btn.click(fn=register_user, inputs=[reg_user_input, reg_pass_input], outputs=[auth_status])
+
     def handle_login(u, p):
         success, credits = verify_user(u, p)
         if success:
@@ -224,8 +250,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         inputs=[logged_in_user, user_credits],
         outputs=[user_welcome_label]
     )
-
-    # ❌ ลบฟังก์ชัน handle_admin และ admin_btn.click ทิ้งเรียบร้อย
 
     logout_btn.click(
         fn=lambda: (
