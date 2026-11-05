@@ -279,6 +279,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         fn=handle_login,
         inputs=[login_user_input, login_pass_input],
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
+    )
 
     def handle_admin():
         u, c = get_or_create_admin()
