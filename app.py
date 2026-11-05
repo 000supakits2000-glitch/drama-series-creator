@@ -203,10 +203,10 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             <p class="header-subtitle">ระบบสมาชิกและเจเนอเรตบทซีรีส์มินิละครสั้นระดับโปรสำหรับ Google Flow</p>
         </div>
         ''')
-        auth_status = gr.Markdown("", elem_classes="auth-status")
         
         # --- หน้าที่ 1: หน้า Login / Register ---
         with gr.Column(visible=True, elem_classes="unified-card") as auth_section:
+            auth_status = gr.Markdown("", elem_classes="auth-status")
             with gr.Tabs():
                 with gr.Tab("🔑 เข้าสู่ระบบ"):
                     login_user_input = gr.Textbox(label="ชื่อผู้ใช้ (Username)")
