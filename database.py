@@ -70,4 +70,5 @@ def check_and_deduct_credit(username):
             return True, new_credits
             
     return False, 0
-    get_or_create_admin()
+init_db()
+get_or_create_admin()
