@@ -7,20 +7,12 @@ footer {visibility: hidden}
 body, .gradio-container {
     background-image: linear-gradient(135deg, rgba(9, 13, 22, 0.45) 0%, rgba(15, 23, 42, 0.40) 50%, rgba(17, 24, 39, 0.45) 100%),
                         url('https://raw.githubusercontent.com/000supakits2000-glitch/drama-series-creator/main/bg-drama.png') !important;
-    background-size: cover !important; /* แก้จาก 100% 100% เป็น cover เพื่อรักษาสัดส่วนเดิมไม่ให้ภาพยืดเบี้ยว */
+    background-size: 100% 100% !important;
     background-position: center center !important;
     background-repeat: no-repeat !important;
     background-attachment: fixed !important;
     font-family: 'Prompt', sans-serif !important;
     color: #f8fafc !important;
-}
-
-/* เพิ่มการรองรับหน้าจอมือถือไม่ให้ภาพพื้นหลังเพี้ยน */
-@media (max-width: 768px) {
-    body, .gradio-container {
-        background-size: cover !important;
-        background-position: center top !important;
-    }
 }
 
 .main-container { 
