@@ -251,19 +251,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[user_welcome_label]
     )
 
-    logout_btn.click(
-        fn=lambda: (
-            gr.update(visible=True), 
-            gr.update(visible=False), 
-            "", 
-            0, 
-            '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>'
-        ),
-        outputs=[auth_section, app_section, logged_in_user, user_credits, output_html]
-    )
-
-        # --- หน้าที่ 2: หน้าแอปหลัก ---
-        with gr.Column(visible=False, elem_classes="unified-card") as app_section:
+    # --- หน้าที่ 2: หน้าหลักแอปพลิเคชันหลังเข้าสู่ระบบ ---
+    with gr.Column(visible=False, elem_classes="unified-card") as app_section:
             with gr.Row(elem_classes="welcome-text"):
                 user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
             
