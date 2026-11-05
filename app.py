@@ -294,15 +294,26 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
 
     logout_btn.click(
-    fn=lambda: (
-        gr.update(visible=True),
-        gr.update(visible=False),
-        "",                        # เคลียร์ logged_in_user
-        0,                         # เคลียร์ user_credits
-        '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>', # เคลียร์ output_html
-        ""                         
-    ),
-    outputs=[auth_section, app_section, logged_in_user, user_credits, output_html, user_welcome_label] # <--- และอย่าลืมเติม user_welcome_label ไว้ท้ายสุดตรงนี้ด้วยครับ
+        fn=lambda: (
+            gr.update(visible=True),   # แสดงหน้าล็อกอิน (auth_section)
+            gr.update(visible=False),  # ซ่อนหน้าหลัก (app_section)
+            "",                        # เคลียร์ logged_in_user
+            0,                         # เคลียร์ user_credits
+            '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>', # เคลียร์ output_html
+            gr.update(value="", visible=False), # เคลียร์และซ่อนป้ายข้อความต้อนรับ
+            "",                        # <--- ล้างค่าในช่องกรอกชื่อผู้ใช้ (login_user_input)
+            ""                         # <--- ล้างค่าในช่องกรอกรหัสผ่าน (login_pass_input)
+        ),
+        outputs=[
+            auth_section, 
+            app_section, 
+            logged_in_user, 
+            user_credits, 
+            output_html, 
+            user_welcome_label, 
+            login_user_input,  # <--- เพิ่มตัวแปรช่องชื่อผู้ใช้ตรงนี้
+            login_pass_input   # <--- เพิ่มตัวแปรช่องรหัสผ่านตรงนี้
+        ]
     )
 
     submit_btn.click(
