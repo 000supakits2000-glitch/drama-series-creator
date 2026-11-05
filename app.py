@@ -191,7 +191,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
 
     # --- โครงสร้างหน้าเว็บ Gradio ---
-    with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
+with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS) as app:
     
         logged_in_user = gr.State("")
         user_credits = gr.State(0)
