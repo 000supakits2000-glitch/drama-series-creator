@@ -168,16 +168,21 @@ label span, div[data-testid="block-label"] span {
     overflow: visible !important;
 }
 
-.auth-status {
+.auth-status, .auth-status > div, .auth-status .prose {
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 5px 0 15px 0 !important;
     text-align: center !important;
-    color: #38bdf8 !important; /* ใช้สีฟ้าโทนเดียวกับ Label หรือเปลี่ยนเป็นสีที่ต้องการได้เลยครับ */
+}
+
+.auth-status p {
+    color: #38bdf8 !important; /* สีข้อความ (เปลี่ยนเป็นสีที่ชอบได้เลยครับ) */
     font-size: 1.1rem !important;
     font-weight: 600 !important;
+    margin: 0 !important;
 }
 
 .auth-status:empty {
