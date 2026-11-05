@@ -167,20 +167,4 @@ label span, div[data-testid="block-label"] span {
 .gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
     overflow: visible !important;
 }
-
-.auth-status {
-    text-align: center !important;
-    color: #00ffcc !important; /* สีเขียวมิ้นต์เรืองแสง สดใส เด่นชัด */
-    font-size: 1.2rem !important;
-    font-weight: 700 !important;
-    margin-bottom: 15px !important;
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.9) !important;
-    width: 100% !important;
-}
-
-.auth-status:empty {
-    display: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
 """
