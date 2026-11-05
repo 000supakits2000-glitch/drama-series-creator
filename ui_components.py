@@ -182,4 +182,13 @@ label span, div[data-testid="block-label"] span {
     width: 100% !important;
     box-sizing: border-box !important;
 }
+
+/* ซ่อนกล่องอัตโนมัติเมื่อยังไม่มีข้อความตอนหน้า Login */
+.auth-status:empty {
+    display: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
 """
