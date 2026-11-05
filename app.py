@@ -253,8 +253,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
     # --- หน้าที่ 2: หน้าหลักแอปพลิเคชันหลังเข้าสู่ระบบ ---
     with gr.Column(visible=False, elem_classes="unified-card") as app_section:
-            with gr.Row(elem_classes="welcome-text"):
-                user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
+        with gr.Row(elem_classes="welcome-text"):
+            user_welcome_label = gr.Markdown("### ยินดีต้อนรับ")
             
             with gr.Row():
                 with gr.Column(scale=4):
