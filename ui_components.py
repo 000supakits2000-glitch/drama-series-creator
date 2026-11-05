@@ -167,4 +167,13 @@ label span, div[data-testid="block-label"] span {
 .gradio-container, .block, .form, .gr-form, .gr-row, .gr-column {
     overflow: visible !important;
 }
+
+.auth-status {
+    text-align: center;
+    color: #ffffff !important;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
 """
