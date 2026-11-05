@@ -229,8 +229,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     )
                     reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
         
-        admin_btn = gr.Button("🔑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin Bypass)", elem_classes="admin-btn")
-        auth_status = gr.Markdown("", elem_classes="auth-status")
 
         # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False, elem_classes="unified-card") as app_section:
@@ -292,14 +290,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         u, c = get_or_create_admin()
         return gr.update(visible=False), gr.update(visible=True), f"👑 เข้าสู่ระบบในฐานะผู้สร้าง (Admin) สำเร็จ!", u, c
 
-    admin_btn.click(
-        fn=handle_admin,
-        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
-    ).then(
-        fn=lambda u, c: f"### ผู้ใช้งาน: **{u} (ผู้สร้างระบบ)** | เครดิต: **ไม่จำกัด (999)** ครั้ง",
-        inputs=[logged_in_user, user_credits],
-        outputs=[user_welcome_label]
-    )
 
     logout_btn.click(
         fn=lambda: (
