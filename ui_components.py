@@ -122,12 +122,6 @@ label span, div[data-testid="block-label"] span {
     font-family: 'Prompt', sans-serif !important;
 }
 
-.auth-status, .auth-status *, .welcome-text, .welcome-text * {
-    color: #38bdf8 !important;
-    font-family: 'Prompt', sans-serif !important;
-    font-weight: 600 !important;
-}
-
 .tab-nav button {
     color: #cbd5e1 !important;
     font-family: 'Prompt', sans-serif !important;
