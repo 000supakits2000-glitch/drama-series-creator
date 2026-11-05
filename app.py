@@ -281,5 +281,5 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         queue=False
     )
 
-port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
-app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
+port = int(os.environ.get("PORT", 7860))
+app.launch(server_name="0.0.0.0", server_port=port)
