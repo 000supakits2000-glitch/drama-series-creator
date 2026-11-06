@@ -110,27 +110,34 @@ def get_or_create_admin():
     conn.close()
     return admin_name, 999
 
-def check_and_deduct_credit(username):
-    """ตรวจสอบและหักเครดิตผู้ใช้เมื่อเจนบทละคร"""
+def check_and_deduct_credit(username, cost=1):
+    """ตรวจสอบและหักเครดิตตามจำนวนที่ใช้งานจริง"""
     if username == "GodAdmin":
         return True, 999
-    
+        
     conn = get_db_connection()
     if not conn:
-        return False, 0
-    
-    with conn.cursor() as cur:
-        cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
-        row = cur.fetchone()
-        if row and row[0] > 0:
-            new_credits = row[0] - 1
-            cur.execute("UPDATE users SET credits = %s WHERE username = %s", (new_credits, username))
-            conn.commit()
-            conn.close()
-            return True, new_credits
+        return False, "ไม่สามารถเชื่อมต่อฐานข้อมูลได้"
+        
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
+            row = cur.fetchone()
             
-    conn.close()
-    return False, 0
+            # ตรวจสอบว่ามีผู้ใช้จริง และเครดิตพอที่จะหักตาม cost หรือไม่
+            if row and row[0] >= cost:
+                new_credits = row[0] - cost
+                cur.execute("UPDATE users SET credits = %s WHERE username = %s", (new_credits, username))
+                conn.commit()
+                conn.close()
+                return True, new_credits
+            else:
+                conn.close()
+                return False, "เครดิตของคุณไม่เพียงพอ กรุณาเติมเครดิตก่อนสร้างซีรีส์"
+    except Exception as e:
+        if conn:
+            conn.close()
+        return False, str(e)
 
 def save_drama_history(user_id, title, content):
     """บันทึกประวัติบทละคร (จำกัดไม่เกิน 10 เรื่องล่าสุด)"""
