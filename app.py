@@ -351,17 +351,32 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         ]
     )
 
+    # ผูก Event ปุ่มกด พร้อมล็อกอินพุตทั้งหมดขณะกำลังสร้างซีรีส์
     submit_btn.click(
-        fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
-        outputs=[submit_btn],
+        fn=lambda: (
+            gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
+            gr.update(interactive=False), # api_key_input
+            gr.update(interactive=False), # genre_input
+            gr.update(interactive=False), # package_input
+            gr.update(interactive=False), # detail_input
+            gr.update(interactive=False), # avoid_input
+        ),
+        outputs=[submit_btn, api_key_input, genre_input, package_input, detail_input, avoid_input],
         queue=False
     ).then(
         fn=generate_dynamic_series,
         inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
         outputs=[output_html]
     ).then(
-        fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
-        outputs=[submit_btn],
+        fn=lambda: (
+            gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
+            gr.update(interactive=True),  # api_key_input
+            gr.update(interactive=True),  # genre_input
+            gr.update(interactive=True),  # package_input
+            gr.update(interactive=True),  # detail_input
+            gr.update(interactive=True),  # avoid_input
+        ),
+        outputs=[submit_btn, api_key_input, genre_input, package_input, detail_input, avoid_input],
         queue=False
     )
 
