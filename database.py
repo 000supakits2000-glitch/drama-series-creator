@@ -215,3 +215,25 @@ def save_user_history_by_username(username, title, content):
     except Exception as e:
         print(f"Error saving history: {e}")
         return False
+
+def get_user_history_by_username(username):
+    """ดึงประวัติบทละครเฉพาะของผู้ใช้คนปัจจุบัน 10 เรื่องล่าสุด"""
+    conn = get_db_connection()
+    if not conn:
+        return []
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                SELECT title, content 
+                FROM drama_history 
+                WHERE user_id = %s 
+                ORDER BY created_at DESC 
+                LIMIT 10
+            """, (username,))
+            rows = cur.fetchall()
+            conn.close()
+            return rows
+    except Exception as e:
+        if conn:
+            conn.close()
+        return []
