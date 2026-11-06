@@ -286,7 +286,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         with gr.Row():
             history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
             load_hist_btn = gr.Button("🔄 โหลดรายชื่อ", scale=1)
-        
         history_content_box = gr.Textbox(label="เนื้อหาบทละคร / ซีนที่เคยสร้าง", lines=10, interactive=False)
 
     # ฟังก์ชันดึงประวัติเข้า Dropdown
