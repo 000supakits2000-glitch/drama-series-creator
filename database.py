@@ -111,29 +111,35 @@ def get_or_create_admin():
     return admin_name, 999
 
 def check_and_deduct_credit(username, cost=1):
-    """ตรวจสอบและหักเครดิตตามจำนวนที่ใช้งานจริง"""
-    if username == "GodAdmin":
-        return True, 999
-        
     conn = get_db_connection()
     if not conn:
         return False, "ไม่สามารถเชื่อมต่อฐานข้อมูลได้"
         
     try:
         with conn.cursor() as cur:
+            # 1. ดึงข้อมูลเครดิตปัจจุบันของผู้ใช้
             cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
-            row = cur.fetchone()
+            result = cur.fetchone()
             
-            # ตรวจสอบว่ามีผู้ใช้จริง และเครดิตพอที่จะหักตาม cost หรือไม่
-            if row and row[0] >= cost:
-                new_credits = row[0] - cost
-                cur.execute("UPDATE users SET credits = %s WHERE username = %s", (new_credits, username))
-                conn.commit()
+            if not result:
                 conn.close()
-                return True, new_credits
-            else:
+                return False, "ไม่พบข้อมูลผู้ใช้"
+                
+            current_credits = result[0]
+            
+            # 2. เช็คว่าเครดิตน้อยกว่าค่าใช้จ่ายหรือไม่ (ต้องใช้เครื่องหมาย < เท่านั้น)
+            if current_credits < cost:
                 conn.close()
-                return False, "เครดิตของคุณไม่เพียงพอ กรุณาเติมเครดิตก่อนสร้างซีรีส์"
+                return False, "เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิตก่อนสร้างซีรีส์"
+                
+            # 3. หักเครดิตตามจริง
+            new_credits = current_credits - cost
+            cur.execute("UPDATE users SET credits = %s WHERE username = %s", (new_credits, username))
+            conn.commit()
+            conn.close()
+            
+            return True, f"หักเครดิตสำเร็จ เหลือ {new_credits} เครดิต"
+            
     except Exception as e:
         if conn:
             conn.close()
