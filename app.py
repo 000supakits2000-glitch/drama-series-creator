@@ -232,13 +232,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             with gr.Row():
                 with gr.Column(scale=4):
                     with gr.Group():
-                        api_key_input = gr.Textbox(type="password", placeholder="วาง Gemini API Key ที่นี่...", label="🔑 Gemini API Key")
+                        api_key_input = gr.Textbox(type="password", value="", placeholder="วาง Gemini API Key ที่นี่...", label="🔑 Gemini API Key")
                         genre_input = gr.Dropdown(
                             choices=[
                                 "ดราม่าโรแมนติก / ซึ้งกินใจ", "สยองขวัญ / ระทึกขวัญ / ลึกลับ",
                                 "คอมเมดี้ / ตลก / ฮาๆ", "สู้ชีวิต / หักมุม / สร้างแรงบันดาลใจ", "แฟนตาซี / ย้อนยุค / ไซไฟ"
                             ],
-                            value="ดราม่าโรแมนติก / ซึ้งกินใจ",
+                            value="ดราม่าโรแมนติก / ซึ้งกินใจ", # ค่าเริ่มต้น
                             label="เลือกแนวละคร"
                         )
                         package_input = gr.Radio(
@@ -247,11 +247,11 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                                 "3 เครดิต (6 ตอน / 24 ฉาก)",
                                 "5 เครดิต (10 ตอน / 40 ฉาก)"
                             ],
-                            value="3 เครดิต (6 ตอน / 24 ฉาก)",
+                            value="1 เครดิต (2 ตอน / 8 ฉาก)", # กำหนดค่าเริ่มต้นเป็น 1 เครดิต
                             label="เลือกแพ็กเกจซีรีส์"
                         )
-                        detail_input = gr.Textbox(lines=3, placeholder="ไอเดียหรือพล็อตหลัก...", label="💡 พล็อตหลัก (Optional)")
-                        avoid_input = gr.Textbox(lines=2, placeholder="พล็อตที่ห้ามซ้ำ...", label="🚫 พล็อตที่เคยทำแล้ว")
+                        detail_input = gr.Textbox(lines=3, value="", placeholder="ไอเดียหรือพล็อตหลัก...", label="💡 พล็อตหลัก (Optional)")
+                        avoid_input = gr.Textbox(lines=2, value="", placeholder="พล็อตที่ห้ามซ้ำ...", label="🚫 พล็อตที่เคยทำแล้ว")
                     
                     with gr.Row():
                         logout_btn = gr.Button("🚪 ออกจากระบบ", variant="secondary")
@@ -311,21 +311,33 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             histories = get_user_history_by_username(u)
             choices = [f"{h[0]} | {h[1]}" for h in histories] if histories else []
             return (
-                gr.update(visible=False),
-                gr.update(visible=True),
+                gr.update(visible=False), # ซ่อนหน้า Auth
+                gr.update(visible=True),  # แสดงหน้า App
                 gr.update(value=f'<div style="text-align: center; color: #58b6fb; font-size: 1.1rem; font-weight: 600;">ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits})</div>'),
                 u,
                 credits,
                 gr.update(visible=True),
-                gr.update(choices=choices)
+                gr.update(choices=choices),
+                # --- รีเซ็ตค่าเริ่มต้นของอินพุตต่างๆ ---
+                gr.update(value=""),                                   # api_key_input
+                gr.update(value="ดราม่าโรแมนติก / ซึ้งกินใจ"),            # genre_input
+                gr.update(value="1 เครดิต (2 ตอน / 8 ฉาก)"),             # package_input
+                gr.update(value=""),                                   # detail_input
+                gr.update(value="")                                    # avoid_input
             )
         else:
-            return gr.update(visible=True), gr.update(visible=False), "✕ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0, gr.update(visible=False), gr.update(choices=[])
+            return (
+                gr.update(visible=True), gr.update(visible=False), "✕ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0, gr.update(visible=False), gr.update(choices=[]),
+                gr.update(), gr.update(), gr.update(), gr.update(), gr.update()
+            )
 
     login_btn.click(
         fn=handle_login,
         inputs=[login_user_input, login_pass_input],
-        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits, history_container]
+        outputs=[
+            auth_section, app_section, auth_status, logged_in_user, user_credits, history_container, history_dropdown,
+            api_key_input, genre_input, package_input, detail_input, avoid_input # เพิ่มตัวแปรอินพุตสำหรับรีเซ็ต
+        ]
     )
 
     logout_btn.click(
@@ -337,7 +349,13 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>',
             "",
             "",
-            gr.update(visible=False)
+            gr.update(visible=False),
+            # --- รีเซ็ตค่าเมื่อออกจากระบบ ---
+            gr.update(value=""),                                  # api_key_input
+            gr.update(value="ดราม่าโรแมนติก / ซึ้งกินใจ"),           # genre_input
+            gr.update(value="1 เครดิต (2 ตอน / 8 ฉาก)"),            # package_input
+            gr.update(value=""),                                  # detail_input
+            gr.update(value="")                                   # avoid_input
         ),
         outputs=[
             auth_section, 
@@ -347,7 +365,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             output_html, 
             login_user_input, 
             login_pass_input,
-            history_container
+            history_container,
+            api_key_input, genre_input, package_input, detail_input, avoid_input
         ]
     )
 
