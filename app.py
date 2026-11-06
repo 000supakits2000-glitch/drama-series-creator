@@ -280,6 +280,38 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         
                 with gr.Column(scale=5):
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
+                    # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง 10 เรื่องล่าสุด
+    with gr.Accordion("📜 ประวัติบทละครย้อนหลังของคุณ (10 เรื่องล่าสุด)", open=False):
+        with gr.Row():
+            history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
+            load_hist_btn = gr.Button("🔄 โหลดรายชื่อ", scale=1)
+        
+        history_content_box = gr.Textbox(label="เนื้อหาบทละคร / ซีนที่เคยสร้าง", lines=10, interactive=False)
+
+    # ฟังก์ชันดึงประวัติเข้า Dropdown
+    def fetch_user_history(username):
+        if not username or username == "GodAdmin":
+            return gr.Dropdown(choices=[])
+        from database import get_user_history_by_username
+        histories = get_user_history_by_username(username)
+        choices = [f"{h['created_at']} | {h['title']}" for h in histories]
+        return gr.Dropdown(choices=choices)
+
+    # ฟังก์ชันแสดงเนื้อหาเต็มเมื่อเลือกชื่อเรื่อง
+    def show_selected_history(selected_choice, username):
+        if not selected_choice or not username:
+            return "ยังไม่ได้เลือกรายการ"
+        from database import get_user_history_by_username
+        histories = get_user_history_by_username(username)
+        for h in histories:
+            label = f"{h['created_at']} | {h['title']}"
+            if label == selected_choice:
+                return h['content']
+        return "ไม่พบเนื้อหา"
+
+    # ผูก Event ปุ่มกดและการเลือกใน Dropdown
+    load_hist_btn.click(fn=fetch_user_history, inputs=[logged_in_user], outputs=[history_dropdown])
+    history_dropdown.change(fn=show_selected_history, inputs=[history_dropdown, logged_in_user], outputs=[history_content_box])
 
     # เชื่อมโยงระบบล็อกอิน
     reg_btn.click(
