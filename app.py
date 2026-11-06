@@ -317,9 +317,20 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     def handle_login(u, p):
         success, credits = verify_user(u, p)
         if success:
-            return gr.update(visible=False), gr.update(visible=True), gr.update(value=f"<div style='text-align: center; color: #58b6fb; font-size: 1.1rem; font-weight: 600;'>ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)</div>"), u, credits, gr.update(visible=True)
+            from database import get_user_history_by_username
+            histories = get_user_history_by_username(u)
+            choices = [f"{h['created_at']} | {h['title']}" for h in histories] if histories else []
+            return (
+                gr.update(visible=False),
+                gr.update(visible=True),
+                gr.update(value=f'<div style="text-align: center; color: #58b6fb; font-size: 1.1rem; font-weight: 600;">ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits})</div>'),
+                u,
+                credits,
+                gr.update(visible=True),
+                gr.update(choices=choices)  # โหลดรายชื่อใส่ Dropdown ทันที
+            )
         else:
-            return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0, gr.update(visible=False)
+            return gr.update(visible=True), gr.update(visible=False), "✕ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0, gr.update(visible=False), gr.update(choices=[])
 
     login_btn.click(
         fn=handle_login,
