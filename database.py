@@ -3,7 +3,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 # ดึง Connection String จาก Environment Variable หรือใส่ลิงก์ตรงนี้ (อย่าลืมเปลี่ยนรหัสผ่านจริง)
-DB_URL = os.getenv("DATABASE_URL", "postgresql://postgres:YOUR_ACTUAL_abdsh893654@db.xxxx.supabase.co:5432/postgres")
+DB_URL = os.getenv("DATABASE_URL")
 
 def get_db_connection():
     """สร้างและคืนค่าการเชื่อมต่อฐานข้อมูล PostgreSQL (Supabase)"""
