@@ -1,3 +1,4 @@
 gradio
 google-genai
 uvicorn
+psycopg2-binary
