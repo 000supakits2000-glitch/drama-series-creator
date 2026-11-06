@@ -2,8 +2,7 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-# ดึง Connection String จาก Environment Variable หรือใช้ลิงก์โดยตรง
-# แนะนำให้ตั้งค่า DB_URL บน Render หรือใส่ Direct Connection URI ของ Supabase ที่เปลี่ยนรหัสผ่านแล้วตรงนี้
+# ดึง Connection String จาก Environment Variable หรือใส่ลิงก์ตรงนี้ (อย่าลืมเปลี่ยนรหัสผ่านจริง)
 DB_URL = os.getenv("DATABASE_URL", "postgresql://postgres:YOUR_ACTUAL_abdsh893654@db.xxxx.supabase.co:5432/postgres")
 
 def get_db_connection():
@@ -16,13 +15,13 @@ def get_db_connection():
         return None
 
 def init_db():
-    """สร้างตารางที่จำเป็นใน Supabase หากยังไม่มี"""
+    """สร้างตาราง users และ drama_history หากยังไม่มี"""
     conn = get_db_connection()
     if not conn:
         return
     
     with conn.cursor() as cur:
-        # ตารางผู้ใช้งาน (Users)
+        # ตารางผู้ใช้งาน
         cur.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id SERIAL PRIMARY KEY,
@@ -33,7 +32,7 @@ def init_db():
             );
         """)
         
-        # ตารางประวัติบทละคร (Drama History - บันทึกย่อ/เนื้อหา)
+        # ตารางประวัติบทละคร (FIFO เก็บ 10 เรื่องล่าสุด)
         cur.execute("""
             CREATE TABLE IF NOT EXISTS drama_history (
                 id SERIAL PRIMARY KEY,
@@ -46,98 +45,104 @@ def init_db():
         conn.commit()
     conn.close()
 
-# --- ระบบจัดการสมาชิก & เครดิต ---
-
 def register_user(username, password):
-    """ลงทะเบียนผู้ใช้ใหม่ (แจกฟรี 10 เครดิต)"""
+    """ลงทะเบียนผู้ใช้ใหม่ พร้อมตรวจสอบความยาว"""
+    if not username or len(username.strip()) < 3:
+        return "❌ ชื่อผู้ใช้ (Username) ต้องมีความยาวอย่างน้อย 3 ตัวอักษรขึ้นไปครับ"
+    if not password or len(password.strip()) < 6:
+        return "❌ รหัสผ่าน (Password) ต้องมีความยาวอย่างน้อย 6 ตัวอักษรขึ้นไปครับ"
+    
     conn = get_db_connection()
     if not conn:
-        return False, "ไม่สามารถเชื่อมต่อฐานข้อมูลได้"
+        return "❌ ไม่สามารถเชื่อมต่อฐานข้อมูลได้"
     
     try:
         with conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO users (username, password, credits) VALUES (%s, %s, 10)",
-                (username, password)
+                (username.strip(), password)
             )
             conn.commit()
-        return True, "ลงทะเบียนสำเร็จ! ได้รับฟรี 10 เครดิต"
+        return "✓ สมัครสมาชิกสำเร็จ! สามารถเข้าสู่ระบบได้เลยครับ"
     except psycopg2.IntegrityError:
-        return False, "ชื่อผู้ใช้นี้มีในระบบแล้ว"
+        return "❌ ชื่อผู้ใช้ถูกใช้งานไปแล้ว กรุณาใช้ชื่ออื่น"
     except Exception as e:
-        return False, f"เกิดข้อผิดพลาด: {str(e)}"
+        return f"❌ เกิดข้อผิดพลาด: {str(e)}"
     finally:
         conn.close()
 
-def login_user(username, password):
-    """ตรวจสอบการล็อกอิน"""
+def verify_user(username, password):
+    """ตรวจสอบการล็อกอิน (รองรับ GodAdmin bypass)"""
+    if username == "GodAdmin" and password == "godpass123":
+        return True, 999
+        
     conn = get_db_connection()
     if not conn:
-        return False, "ไม่สามารถเชื่อมต่อฐานข้อมูลได้"
+        return False, 0
     
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute(
-            "SELECT * FROM users WHERE username = %s AND password = %s",
-            (username, password)
-        )
-        user = cur.fetchone()
+        cur.execute("SELECT credits FROM users WHERE username = %s AND password = %s", (username, password))
+        row = cur.fetchone()
     conn.close()
     
-    if user:
-        return True, user
-    return False, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง"
+    if row:
+        return True, row['credits']
+    return False, 0
 
-def get_user_credits(username):
-    """ดึงจำนวนเครดิตคงเหลือ"""
+def get_or_create_admin():
+    """สร้างหรือรีเซ็ตบัญชี GodAdmin"""
+    admin_name = "GodAdmin"
     conn = get_db_connection()
     if not conn:
-        return 0
+        return admin_name, 999
     
     with conn.cursor() as cur:
-        cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
-        result = cur.fetchone()
-    conn.close()
-    
-    return result[0] if result else 0
-
-def deduct_credit(username, amount=1):
-    """หักเครดิตผู้ใช้งานเมื่อเจนบทละคร"""
-    conn = get_db_connection()
-    if not conn:
-        return False
-    
-    with conn.cursor() as cur:
-        cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
-        result = cur.fetchone()
-        
-        if result and result[0] >= amount:
+        cur.execute("SELECT credits FROM users WHERE username = %s", (admin_name,))
+        row = cur.fetchone()
+        if not row:
             cur.execute(
-                "UPDATE users SET credits = credits - %s WHERE username = %s",
-                (amount, username)
+                "INSERT INTO users (username, password, credits) VALUES (%s, %s, %s) ON CONFLICT (username) DO UPDATE SET credits = 999",
+                (admin_name, "godpass123", 999)
             )
+        else:
+            cur.execute("UPDATE users SET credits = 999 WHERE username = %s", (admin_name,))
+        conn.commit()
+    conn.close()
+    return admin_name, 999
+
+def check_and_deduct_credit(username):
+    """ตรวจสอบและหักเครดิตผู้ใช้เมื่อเจนบทละคร"""
+    if username == "GodAdmin":
+        return True, 999
+    
+    conn = get_db_connection()
+    if not conn:
+        return False, 0
+    
+    with conn.cursor() as cur:
+        cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
+        row = cur.fetchone()
+        if row and row[0] > 0:
+            new_credits = row[0] - 1
+            cur.execute("UPDATE users SET credits = %s WHERE username = %s", (new_credits, username))
             conn.commit()
             conn.close()
-            return True
+            return True, new_credits
             
     conn.close()
-    return False
-
-# --- ระบบจัดการประวัติบทละคร (จำกัดไม่เกิน 10 เรื่องล่าสุด) ---
+    return False, 0
 
 def save_drama_history(user_id, title, content):
-    """บันทึกบทละครลงประวัติ และลบเรื่องที่เกิน 10 เรื่องให้อัตโนมัติ"""
+    """บันทึกประวัติบทละคร (จำกัดไม่เกิน 10 เรื่องล่าสุด)"""
     conn = get_db_connection()
     if not conn:
         return False
     
     with conn.cursor() as cur:
-        # 1. บันทึกบทละครเรื่องใหม่
         cur.execute(
             "INSERT INTO drama_history (user_id, title, content) VALUES (%s, %s, %s)",
             (user_id, title, content)
         )
-        
-        # 2. ลบเรื่องเก่าที่เกิน 10 เรื่องล่าสุดออกทันทีเพื่อประหยัดพื้นที่ Free Tier
         cur.execute("""
             DELETE FROM drama_history
             WHERE user_id = %s
@@ -148,25 +153,6 @@ def save_drama_history(user_id, title, content):
                 LIMIT 10
               );
         """, (user_id, user_id))
-        
         conn.commit()
     conn.close()
     return True
-
-def get_user_history(user_id):
-    """ดึงรายการประวัติบทละคร 10 เรื่องล่าสุดของผู้ใช้"""
-    conn = get_db_connection()
-    if not conn:
-        return []
-    
-    with conn.cursor(cursor_factory=RealDictCursor) as cur:
-        cur.execute("""
-            SELECT id, title, content, created_at 
-            FROM drama_history 
-            WHERE user_id = %s 
-            ORDER BY created_at DESC 
-            LIMIT 10
-        """, (user_id,))
-        history = cur.fetchall()
-    conn.close()
-    return history
