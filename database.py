@@ -156,3 +156,33 @@ def save_drama_history(user_id, title, content):
         conn.commit()
     conn.close()
     return True
+
+def get_user_history_by_username(username):
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return []
+        with conn.cursor() as cur:
+            # 1. ค้นหา user_id จากชื่อผู้ใช้
+            cur.execute("SELECT id FROM users WHERE username = %s", (username,))
+            user = cur.fetchone()
+            if not user:
+                conn.close()
+                return []
+            user_id = user[0] if isinstance(user, tuple) else user['id']
+            
+            # 2. ดึงประวัติการสร้างละคร 10 รายการล่าสุด
+            cur.execute("SELECT created_at, title, content FROM drama_histories WHERE user_id = %s ORDER BY created_at DESC LIMIT 10", (user_id,))
+            rows = cur.fetchall()
+            conn.close()
+            
+            histories = []
+            for row in rows:
+                if isinstance(row, tuple):
+                    histories.append({"created_at": str(row[0]), "title": row[1], "content": row[2]})
+                else:
+                    histories.append({"created_at": str(row['created_at']), "title": row['title'], "content": row['content']})
+            return histories
+    except Exception as e:
+        print(f"Error fetching history: {e}")
+        return []
