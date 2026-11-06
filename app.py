@@ -134,6 +134,22 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         s_title = data.get('series_title', 'Untitled Series')
         s_genre = data.get('genre', selected_genre)
         s_logline = data.get('logline_th', '')
+        # 💾 บันทึกประวัติบทละครลง Supabase แยกตามผู้ใช้ทันที
+        if current_user and current_user != "GodAdmin":
+            try:
+                from database import get_db_connection, save_drama_history
+                conn = get_db_connection()
+                if conn:
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT id FROM users WHERE username = %s", (current_user,))
+                        user = cur.fetchone()
+                        if user:
+                            user_id = user[0] if isinstance(user, tuple) else user['id']
+                            # บันทึกชื่อเรื่อง (s_title) และเนื้อหาทั้งหมด (response.text)
+                            save_drama_history(user_id, s_title, response.text)
+                    conn.close()
+            except Exception as e:
+                print(f"Error saving history: {e}")
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
