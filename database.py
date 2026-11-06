@@ -137,7 +137,6 @@ def save_drama_history(user_id, title, content):
     conn = get_db_connection()
     if not conn:
         return False
-    
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO drama_history (user_id, title, content) VALUES (%s, %s, %s)",
@@ -186,3 +185,26 @@ def get_user_history_by_username(username):
     except Exception as e:
         print(f"Error fetching history: {e}")
         return []
+
+def save_user_history_by_username(username, title, content):
+    try:
+        conn = get_db_connection()
+        if not conn:
+            return False
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM users WHERE username = %s", (username,))
+            user = cur.fetchone()
+            if not user:
+                conn.close()
+                return False
+            user_id = user[0] if isinstance(user, tuple) else user['id']
+            cur.execute(
+                "INSERT INTO drama_histories (user_id, title, content) VALUES (%s, %s, %s)",
+                (user_id, title, content)
+            )
+            conn.commit()
+            conn.close()
+            return True
+    except Exception as e:
+        print(f"Error saving history: {e}")
+        return False
