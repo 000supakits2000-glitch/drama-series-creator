@@ -32,17 +32,16 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
     # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนตอน
     if "1 เครดิต" in package_choice:
-        ep_count = 2
         credit_cost = 1
     elif "3 เครดิต" in package_choice:
-        ep_count = 6
         credit_cost = 3
     elif "5 เครดิต" in package_choice:
-        ep_count = 10
         credit_cost = 5
     else:
-        ep_count = 6
         credit_cost = 1
+
+    # ต้องส่ง credit_cost เข้าไปด้วย
+    success, message = check_and_deduct_credit(current_user, credit_cost)
 
     try:
         if current_user and current_user != "GodAdmin":
@@ -136,8 +135,8 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         s_logline = data.get('logline_th', '')
         # 💾 บันทึกประวัติบทละครลง Supabase แยกตามผู้ใช้ทันที
         if current_user:
-            from database import save_user_history_by_username
-            save_user_history_by_username(current_user, s_title, response.text)
+            from database import save_drama_history
+            save_drama_history(current_user, s_title, response.text)
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
