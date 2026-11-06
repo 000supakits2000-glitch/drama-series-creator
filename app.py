@@ -1,7 +1,6 @@
-import gradio as gr
+import os
 import json
 import urllib.parse
-import os
 import time
 from google import genai
 from google.genai import types
@@ -30,24 +29,26 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     
     user_cooldowns[user_key] = current_time
 
-    # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนตอน
+    # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนเครดิตและจำนวนตอน
     if "1 เครดิต" in package_choice:
         credit_cost = 1
+        num_episodes = 2
     elif "3 เครดิต" in package_choice:
         credit_cost = 3
+        num_episodes = 6
     elif "5 เครดิต" in package_choice:
         credit_cost = 5
+        num_episodes = 10
     else:
         credit_cost = 1
+        num_episodes = 2
 
-    # ต้องส่ง credit_cost เข้าไปด้วย
-    success, message = check_and_deduct_credit(current_user, credit_cost)
-
+    # ตรวจสอบและหักเครดิต (สำหรับผู้ใช้ทั่วไป)
     try:
         if current_user and current_user != "GodAdmin":
             success, message = check_and_deduct_credit(current_user, credit_cost)
             if not success:
-                yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิตก่อนสร้างซีรีส์</div>"""
+                yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ {message}</div>"""
                 return
     except Exception as e:
         yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาดในการตรวจสอบเครดิต: {str(e)}</div>"""
@@ -58,18 +59,10 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         return
 
     try:
-        num_episodes = ep_count
         yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>"""
 
         client = genai.Client(api_key=api_key.strip())
-        system_prompt = """
-        คุณเป็นนักเขียนบทซีรีส์มืออาชีพ กรุณาสร้างบทซีรีส์โดยแบ่งเป็นฉาก ๆ และในแต่ละฉากต้องมีรูปแบบดังนี้เป๊ะ ๆ:
-        - ฉากที่ [X]
-        - มุมกล้อง: [ระบุรายละเอียดมุมกล้อง/การเคลื่อนกล้อง]
-        - บทพากย์: [บทสนทนาของตัวละคร]
-        - Google Flow Prompt: [คีย์เวิร์ดภาษาอังกฤษสำหรับเจนภาพ เช่น cinematic lighting, 4k...]
-        """
-
+        
         genre_map = {
             "ดราม่าโรแมนติก / ซึ้งกินใจ": "Romance Drama",
             "สยองขวัญ / ระทึกขวัญ / ลึกลับ": "Horror / Thriller",
@@ -120,19 +113,18 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         }}
         """
 
-        # ✨ ปรับแก้โมเดลกลับมาใช้ 3.5-flash ตามคำขอของพี่ก๊อดครับ ✨
         response = client.models.generate_content(
-            model="gemini-3.5-flash",
+            model="gemini-2.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
         
         data = json.loads(response.text)
         
-        # ดึงข้อมูลหัวเรื่องจาก JSON อย่างปลอดภัย
         s_title = data.get('series_title', 'Untitled Series')
         s_genre = data.get('genre', selected_genre)
         s_logline = data.get('logline_th', '')
+
         # 💾 บันทึกประวัติบทละครลง Supabase แยกตามผู้ใช้ทันที
         if current_user:
             from database import save_drama_history
@@ -173,7 +165,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
                 s_num = scene.get('scene_number', 1)
                 s_cam = scene.get('camera_and_action_th', '')
                 s_voice = scene.get('voiceover_th', '')
-                s_prompt = scene.get('video_prompt_en', '') # ดึง Key JSON ให้ตรง
+                s_prompt = scene.get('video_prompt_en', '')
                 
                 html_out += f"""
                 <div style="background: #F8FAFC; color: #1e293b; padding: 18px; border-radius: 10px; margin-bottom: 18px; border: 1px solid #cbd5e1;">
@@ -232,7 +224,6 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                     )
                     reg_btn = gr.Button("💖สมัครสมาชิกใหม่", variant="primary")
                     reg_status = gr.HTML("", elem_classes="auth-status")
-        
 
         # --- หน้าที่ 2: หน้าแอปหลัก ---
         with gr.Column(visible=False, elem_classes="unified-card") as app_section:
@@ -267,8 +258,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         
                 with gr.Column(scale=5):
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
-                    # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง 10 เรื่องล่าสุด
-                    # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง (ซ่อนไว้ก่อนจนกว่าจะล็อกอิน)
+                    
                     with gr.Accordion("📜 ประวัติบทละครย้อนหลังของคุณ (10 เรื่องล่าสุด)", open=False, visible=False) as history_container:
                         with gr.Row():
                             history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
@@ -284,7 +274,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             histories = get_user_history_by_username(username)
             if not histories:
                 return gr.update(choices=[])
-            choices = [f"{h['created_at']} | {h['title']}" for h in histories]
+            choices = [f"{h[0]} | {h[1]}" for h in histories]
             return gr.update(choices=choices)
         except Exception as e:
             print(f"Error fetching history: {e}")
@@ -297,9 +287,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         from database import get_user_history_by_username
         histories = get_user_history_by_username(username)
         for h in histories:
-            label = f"{h['created_at']} | {h['title']}"
+            label = f"{h[0]} | {h[1]}"
             if label == selected_choice:
-                return h['content']
+                return h[2] # content อยู่ตำแหน่ง index 2
         return "ไม่พบเนื้อหา"
 
     # ผูก Event ปุ่มกดและการเลือกใน Dropdown
@@ -310,7 +300,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     reg_btn.click(
         fn=register_user, 
         inputs=[reg_user_input, reg_pass_input], 
-        outputs=[reg_status]  # เปลี่ยนมารับค่าแสดงผลตรงนี้
+        outputs=[reg_status]
     )
     
     def handle_login(u, p):
@@ -318,7 +308,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         if success:
             from database import get_user_history_by_username
             histories = get_user_history_by_username(u)
-            choices = [f"{h['created_at']} | {h['title']}" for h in histories] if histories else []
+            choices = [f"{h[0]} | {h[1]}" for h in histories] if histories else []
             return (
                 gr.update(visible=False),
                 gr.update(visible=True),
@@ -326,7 +316,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                 u,
                 credits,
                 gr.update(visible=True),
-                gr.update(choices=choices)  # โหลดรายชื่อใส่ Dropdown ทันที
+                gr.update(choices=choices)
             )
         else:
             return gr.update(visible=True), gr.update(visible=False), "✕ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0, gr.update(visible=False), gr.update(choices=[])
@@ -337,20 +327,16 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits, history_container]
     )
 
-    def handle_admin():
-        u, c = get_or_create_admin()
-        return gr.update(visible=False), gr.update(visible=True), gr.update(value=f"<div style='text-align: center; color: #38bdf8; font-size: 1.1rem; font-weight: 600;'>เข้าสู่ระบบในฐานะ (Admin) สำเร็จ! (เครดิตคงเหลือ: {credits} ครั้ง)</div>", visible=True)
-
     logout_btn.click(
         fn=lambda: (
-            gr.update(visible=True),   # แสดงหน้าล็อกอิน
-            gr.update(visible=False),  # ซ่อนหน้าหลัก
-            "",                        # เคลียร์ logged_in_user
-            0,                         # เคลียร์ user_credits
-            '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>', # เคลียร์ output_html
-            "",                        # ล้างค่าช่องชื่อผู้ใช้
-            "",                         # ล้างค่าช่องรหัสผ่าน
-            gr.update(visible=False) # ซ่อนกล่องประวัติเมื่อออกจากระบบ
+            gr.update(visible=True),
+            gr.update(visible=False),
+            "",
+            0,
+            '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>',
+            "",
+            "",
+            gr.update(visible=False)
         ),
         outputs=[
             auth_section, 
@@ -366,17 +352,17 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
     submit_btn.click(
         fn=lambda: gr.Button(value="⏳ กำลังสร้างซีรีส์...", interactive=False),
-            outputs=[submit_btn],
-            queue=False
-        ).then(
-            fn=generate_dynamic_series,
-            inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
-            outputs=[output_html]
-        ).then(
-            fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
-            outputs=[submit_btn],
-            queue=False
-        )
+        outputs=[submit_btn],
+        queue=False
+    ).then(
+        fn=generate_dynamic_series,
+        inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
+        outputs=[output_html]
+    ).then(
+        fn=lambda: gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
+        outputs=[submit_btn],
+        queue=False
+    )
 
 port = int(os.environ.get("PORT", 7860)) if "PORT" in os.environ else 7860
 app.launch(server_name="0.0.0.0", server_port=port, theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"), css=CUSTOM_CSS)
