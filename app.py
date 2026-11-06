@@ -281,12 +281,12 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                 with gr.Column(scale=5):
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
                     # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง 10 เรื่องล่าสุด
-    # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง (ซ่อนไว้ก่อนจนกว่าจะล็อกอิน)
-    with gr.Accordion("📜 ประวัติบทละครย้อนหลังของคุณ (10 เรื่องล่าสุด)", open=False, visible=False) as history_container:
-        with gr.Row():
-            history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
-            load_hist_btn = gr.Button("🔄 โหลดรายชื่อ", scale=1)
-        history_content_box = gr.Textbox(label="เนื้อหาบทละคร / ซีนที่เคยสร้าง", lines=10, interactive=False)
+                    # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง (ซ่อนไว้ก่อนจนกว่าจะล็อกอิน)
+                    with gr.Accordion("📜 ประวัติบทละครย้อนหลังของคุณ (10 เรื่องล่าสุด)", open=False, visible=False) as history_container:
+                        with gr.Row():
+                            history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
+                            load_hist_btn = gr.Button("🔄 โหลดรายชื่อ", scale=1)
+                        history_content_box = gr.Textbox(label="เนื้อหาบทละคร / ซีนที่เคยสร้าง", lines=10, interactive=False)
 
     # ฟังก์ชันดึงประวัติเข้า Dropdown
     def fetch_user_history(username):
