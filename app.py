@@ -290,7 +290,9 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
 
     # ฟังก์ชันดึงประวัติเข้า Dropdown
     def fetch_user_history(username):
+        if not username:
             return gr.Dropdown(choices=[])
+    
         from database import get_user_history_by_username
         histories = get_user_history_by_username(username)
         choices = [f"{h['created_at']} | {h['title']}" for h in histories]
