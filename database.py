@@ -237,3 +237,37 @@ def get_user_history_by_username(username):
         if conn:
             conn.close()
         return []
+
+def save_drama_history(user_id, title, content):
+    """บันทึกประวัติบทละครแยกตามรายชื่อผู้ใช้"""
+    conn = get_db_connection()
+    if not conn:
+        return False
+        
+    try:
+        with conn.cursor() as cur:
+            # 1. บันทึกข้อมูลบทละครใหม่ พร้อมระบุ user_id ของผู้ใช้ปัจจุบัน
+            cur.execute(
+                "INSERT INTO drama_history (user_id, title, content) VALUES (%s, %s, %s)",
+                (user_id, title, content)
+            )
+            
+            # 2. (Optional) ลบประวัติเก่าออก ลิมิตไว้ให้จำเฉพาะ 10 เรื่องล่าสุดของผู้ใช้คนนี้
+            cur.execute("""
+                DELETE FROM drama_history
+                WHERE user_id = %s
+                AND id NOT IN (
+                    SELECT id FROM drama_history
+                    WHERE user_id = %s
+                    ORDER BY created_at DESC
+                    LIMIT 10
+                )
+            """, (user_id, user_id))
+            
+            conn.commit()
+            conn.close()
+            return True
+    except Exception as e:
+        if conn:
+            conn.close()
+        return False
