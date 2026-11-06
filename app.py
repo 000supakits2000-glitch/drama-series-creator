@@ -113,9 +113,9 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
          ]
         }}
         """
-
+        # ✨ อัปเดตชื่อโมเดลเป็น gemini-3.8-flash ตามที่ Google API กำหนด ✨
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.8-flash",
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
