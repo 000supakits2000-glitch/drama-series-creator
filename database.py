@@ -2,7 +2,7 @@ import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-# ดึง Connection String จาก Environment Variable หรือใส่ลิงก์ตรงนี้ (อย่าลืมเปลี่ยนรหัสผ่านจริง)
+# ดึง Connection String จาก Environment Variable
 DB_URL = os.getenv("DATABASE_URL")
 
 def get_db_connection():
@@ -36,7 +36,7 @@ def init_db():
         cur.execute("""
             CREATE TABLE IF NOT EXISTS drama_history (
                 id SERIAL PRIMARY KEY,
-                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                user_id TEXT NOT NULL,
                 title TEXT NOT NULL,
                 content TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -111,13 +111,13 @@ def get_or_create_admin():
     return admin_name, 999
 
 def check_and_deduct_credit(username, cost=1):
+    """ตรวจสอบและหักเครดิตผู้ใช้"""
     conn = get_db_connection()
     if not conn:
         return False, "ไม่สามารถเชื่อมต่อฐานข้อมูลได้"
         
     try:
         with conn.cursor() as cur:
-            # 1. ดึงข้อมูลเครดิตปัจจุบันของผู้ใช้
             cur.execute("SELECT credits FROM users WHERE username = %s", (username,))
             result = cur.fetchone()
             
@@ -127,12 +127,10 @@ def check_and_deduct_credit(username, cost=1):
                 
             current_credits = result[0]
             
-            # 2. เช็คว่าเครดิตน้อยกว่าค่าใช้จ่ายหรือไม่ (ต้องใช้เครื่องหมาย < เท่านั้น)
             if current_credits < cost:
                 conn.close()
                 return False, "เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิตก่อนสร้างซีรีส์"
                 
-            # 3. หักเครดิตตามจริง
             new_credits = current_credits - cost
             cur.execute("UPDATE users SET credits = %s WHERE username = %s", (new_credits, username))
             conn.commit()
@@ -146,80 +144,37 @@ def check_and_deduct_credit(username, cost=1):
         return False, str(e)
 
 def save_drama_history(user_id, title, content):
-    """บันทึกประวัติบทละคร (จำกัดไม่เกิน 10 เรื่องล่าสุด)"""
+    """บันทึกประวัติบทละครแยกตามรายชื่อผู้ใช้ (จำกัดไม่เกิน 10 เรื่องล่าสุด)"""
     conn = get_db_connection()
     if not conn:
         return False
-    with conn.cursor() as cur:
-        cur.execute(
-            "INSERT INTO drama_history (user_id, title, content) VALUES (%s, %s, %s)",
-            (user_id, title, content)
-        )
-        cur.execute("""
-            DELETE FROM drama_history
-            WHERE user_id = %s
-              AND id NOT IN (
-                SELECT id FROM drama_history
-                WHERE user_id = %s
-                ORDER BY created_at DESC
-                LIMIT 10
-              );
-        """, (user_id, user_id))
-        conn.commit()
-    conn.close()
-    return True
-
-def get_user_history_by_username(username):
+        
     try:
-        conn = get_db_connection()
-        if not conn:
-            return []
         with conn.cursor() as cur:
-            # 1. ค้นหา user_id จากชื่อผู้ใช้
-            cur.execute("SELECT id FROM users WHERE username = %s", (username,))
-            user = cur.fetchone()
-            if not user:
-                conn.close()
-                return []
-            user_id = user[0] if isinstance(user, tuple) else user['id']
-            
-            # 2. ดึงประวัติการสร้างละคร 10 รายการล่าสุด
-            cur.execute("SELECT created_at, title, content FROM drama_histories WHERE user_id = %s ORDER BY created_at DESC LIMIT 10", (user_id,))
-            rows = cur.fetchall()
-            conn.close()
-            
-            histories = []
-            for row in rows:
-                if isinstance(row, tuple):
-                    histories.append({"created_at": str(row[0]), "title": row[1], "content": row[2]})
-                else:
-                    histories.append({"created_at": str(row['created_at']), "title": row['title'], "content": row['content']})
-            return histories
-    except Exception as e:
-        print(f"Error fetching history: {e}")
-        return []
-
-def save_user_history_by_username(username, title, content):
-    try:
-        conn = get_db_connection()
-        if not conn:
-            return False
-        with conn.cursor() as cur:
-            cur.execute("SELECT id FROM users WHERE username = %s", (username,))
-            user = cur.fetchone()
-            if not user:
-                conn.close()
-                return False
-            user_id = user[0] if isinstance(user, tuple) else user['id']
+            # 1. บันทึกข้อมูลบทละครใหม่
             cur.execute(
-                "INSERT INTO drama_histories (user_id, title, content) VALUES (%s, %s, %s)",
+                "INSERT INTO drama_history (user_id, title, content) VALUES (%s, %s, %s)",
                 (user_id, title, content)
             )
+            
+            # 2. ลบประวัติเก่าออก ให้เหลือแค่ 10 เรื่องล่าสุดของยูสเซอร์นี้
+            cur.execute("""
+                DELETE FROM drama_history
+                WHERE user_id = %s
+                AND id NOT IN (
+                    SELECT id FROM drama_history
+                    WHERE user_id = %s
+                    ORDER BY created_at DESC
+                    LIMIT 10
+                )
+            """, (user_id, user_id))
+            
             conn.commit()
             conn.close()
             return True
     except Exception as e:
-        print(f"Error saving history: {e}")
+        if conn:
+            conn.close()
         return False
 
 def get_user_history_by_username(username):
@@ -243,37 +198,3 @@ def get_user_history_by_username(username):
         if conn:
             conn.close()
         return []
-
-def save_drama_history(user_id, title, content):
-    """บันทึกประวัติบทละครแยกตามรายชื่อผู้ใช้"""
-    conn = get_db_connection()
-    if not conn:
-        return False
-        
-    try:
-        with conn.cursor() as cur:
-            # 1. บันทึกข้อมูลบทละครใหม่ พร้อมระบุ user_id ของผู้ใช้ปัจจุบัน
-            cur.execute(
-                "INSERT INTO drama_history (user_id, title, content) VALUES (%s, %s, %s)",
-                (user_id, title, content)
-            )
-            
-            # 2. (Optional) ลบประวัติเก่าออก ลิมิตไว้ให้จำเฉพาะ 10 เรื่องล่าสุดของผู้ใช้คนนี้
-            cur.execute("""
-                DELETE FROM drama_history
-                WHERE user_id = %s
-                AND id NOT IN (
-                    SELECT id FROM drama_history
-                    WHERE user_id = %s
-                    ORDER BY created_at DESC
-                    LIMIT 10
-                )
-            """, (user_id, user_id))
-            
-            conn.commit()
-            conn.close()
-            return True
-    except Exception as e:
-        if conn:
-            conn.close()
-        return False
