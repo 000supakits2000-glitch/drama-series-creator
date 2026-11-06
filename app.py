@@ -281,7 +281,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                 with gr.Column(scale=5):
                     output_html = gr.HTML(label="📄 ผลลัพธ์บทซีรีส์", value='<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: Prompt, sans-serif;">กรุณากดสร้างซีรีส์เพื่อดูผลลัพธ์ที่นี่</div>')
                     # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง 10 เรื่องล่าสุด
-    with gr.Accordion("📜 ประวัติบทละครย้อนหลังของคุณ (10 เรื่องล่าสุด)", open=False):
+    # 📜 ส่วนแสดงประวัติบทละครย้อนหลัง (ซ่อนไว้ก่อนจนกว่าจะล็อกอิน)
+    with gr.Accordion("📜 ประวัติบทละครย้อนหลังของคุณ (10 เรื่องล่าสุด)", open=False, visible=False) as history_container:
         with gr.Row():
             history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
             load_hist_btn = gr.Button("🔄 โหลดรายชื่อ", scale=1)
@@ -323,14 +324,14 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     def handle_login(u, p):
         success, credits = verify_user(u, p)
         if success:
-            return gr.update(visible=False), gr.update(visible=True), gr.update(value=f"<div style='text-align: center; color: #38bdf8; font-size: 1.1rem; font-weight: 600;'>ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)</div>", visible=True), u, credits
-        else:
-            return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0
+            return gr.update(visible=False), gr.update(visible=True), gr.update(value=f"<div style='text-align: center; color: #58b6fb; font-size: 1.1rem; font-weight: 600;'>ยินดีต้อนรับคุณ {u} (เครดิตคงเหลือ: {credits} ครั้ง)</div>"), u, credits, gr.update(visible=True)
+    else:
+            return gr.update(visible=True), gr.update(visible=False), "❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง", "", 0, gr.update(visible=False)
 
     login_btn.click(
         fn=handle_login,
         inputs=[login_user_input, login_pass_input],
-        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits]
+        outputs=[auth_section, app_section, auth_status, logged_in_user, user_credits, history_container]
     )
 
     def handle_admin():
@@ -346,6 +347,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>', # เคลียร์ output_html
             "",                        # ล้างค่าช่องชื่อผู้ใช้
             ""                         # ล้างค่าช่องรหัสผ่าน
+            gr.update(visible=False) # ซ่อนกล่องประวัติเมื่อออกจากระบบ
         ),
         outputs=[
             auth_section, 
@@ -355,6 +357,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             output_html, 
             login_user_input, 
             login_pass_input
+            history_container
         ]
     )
 
