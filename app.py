@@ -46,7 +46,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
 
     try:
         if current_user and current_user != "GodAdmin":
-            success, message = check_and_deduct_credit(current_user)
+            success, message = check_and_deduct_credit(current_user, credit_cost)
             if not success:
                 yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เครดิตของคุณหมดแล้ว! กรุณาเติมเครดิตก่อนสร้างซีรีส์</div>"""
                 return
