@@ -135,7 +135,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         s_genre = data.get('genre', selected_genre)
         s_logline = data.get('logline_th', '')
         # 💾 บันทึกประวัติบทละครลง Supabase แยกตามผู้ใช้ทันที
-        if current_user and current_user != "GodAdmin":
+        if current_user:
             try:
                 from database import get_db_connection, save_drama_history
                 conn = get_db_connection()
