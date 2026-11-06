@@ -346,7 +346,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             0,                         # เคลียร์ user_credits
             '<div style="background-color: #0f172a; color: #94a3b8; padding: 25px; border-radius: 12px; border: 1px solid #334155; min-height: 350px; display: flex; align-items: center; justify-content: center; font-family: inherit;">ระบบพร้อมใช้งาน กรุณาสร้างซีรีส์ใหม่</div>', # เคลียร์ output_html
             "",                        # ล้างค่าช่องชื่อผู้ใช้
-            ""                         # ล้างค่าช่องรหัสผ่าน
+            "",                         # ล้างค่าช่องรหัสผ่าน
             gr.update(visible=False) # ซ่อนกล่องประวัติเมื่อออกจากระบบ
         ),
         outputs=[
@@ -356,7 +356,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             user_credits, 
             output_html, 
             login_user_input, 
-            login_pass_input
+            login_pass_input,
             history_container
         ]
     )
