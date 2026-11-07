@@ -126,10 +126,6 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         s_genre = data.get('genre', selected_genre)
         s_logline = data.get('logline_th', '')
 
-        # 💾 บันทึกประวัติบทละครลง Supabase แยกตามผู้ใช้ทันที
-        if current_user:
-            from database import save_drama_history
-            save_drama_history(current_user, s_title, response.text)
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
@@ -180,6 +176,12 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
                 """
         
         html_out += "</div>"
+        
+        # 💾 บันทึกประวัติบทละครลง Supabase (บันทึกแบบ HTML ที่จัดหน้าสวยงามแล้ว)
+        if current_user:
+            from database import save_drama_history
+            save_drama_history(current_user, s_title, html_out)
+
         yield html_out
         
     except Exception as e:
@@ -264,7 +266,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
                         with gr.Row():
                             history_dropdown = gr.Dropdown(label="เลือกเรื่องที่ต้องการดูย้อนหลัง", choices=[], interactive=True, scale=4)
                             load_hist_btn = gr.Button("🔄 โหลดรายชื่อ", scale=1)
-                        history_content_box = gr.Textbox(label="เนื้อหาบทละคร / ซีนที่เคยสร้าง", lines=10, interactive=False)
+                        history_content_box = gr.HTML(label="เนื้อหาบทละครย้อนหลัง", value='<div style="background-color: #0f172a; padding: 25px; border-radius: 12px; text-align: center; color: #94a3b8; border: 1px solid #334155;">เลือกชื่อเรื่องจาก Dropdown ด้านบนเพื่อดูบทละครครับ</div>')
 
     # ฟังก์ชันดึงประวัติเข้า Dropdown
     def fetch_user_history(username):
@@ -275,7 +277,8 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             histories = get_user_history_by_username(username)
             if not histories:
                 return gr.update(choices=[])
-            choices = [f"{h[0]} | {h[1]}" for h in histories]
+            # แก้ไข: ให้แสดงแค่ "ลำดับที่. ชื่อเรื่อง" เท่านั้น
+            choices = [f"{i+1}. {h[0]}" for i, h in enumerate(histories)]
             return gr.update(choices=choices)
         except Exception as e:
             print(f"Error fetching history: {e}")
@@ -287,10 +290,10 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
             return "ยังไม่ได้เลือกรายการ"
         from database import get_user_history_by_username
         histories = get_user_history_by_username(username)
-        for h in histories:
-            label = f"{h[0]} | {h[1]}"
+        for i, h in enumerate(histories):
+            label = f"{i+1}. {h[0]}"
             if label == selected_choice:
-                return h[2] # content อยู่ตำแหน่ง index 2
+                return h[1] # แก้ไข: คืนค่า h[1] (เนื้อหา) แทน h[2] ที่ไม่มีอยู่จริง
         return "ไม่พบเนื้อหา"
 
     # ผูก Event ปุ่มกดและการเลือกใน Dropdown
@@ -309,7 +312,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
         if success:
             from database import get_user_history_by_username
             histories = get_user_history_by_username(u)
-            choices = [f"{h[0]} | {h[1]}" for h in histories] if histories else []
+            choices = [f"{i+1}. {h[0]}" for i, h in enumerate(histories)] if histories else []
             return (
                 gr.update(visible=False), # ซ่อนหน้า Auth
                 gr.update(visible=True),  # แสดงหน้า App
