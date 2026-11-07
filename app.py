@@ -78,7 +78,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     Create a {num_episodes}-Episode Drama Mini-Series Script for TikTok / YouTube Shorts.
     Genre: {selected_genre}
     Total Episodes Required: EXACTLY {num_episodes} EPISODES.
-    Each episode MUST contain EXACTLY 4 to 5 detailed scenes.
+    Each episode MUST contain EXACTLY 4 detailed scenes.
     Additional Details: {custom_detail if custom_detail else "Create a unique storyline."}
     Avoided topics: {avoided_topics if avoided_topics else "None"}
 
