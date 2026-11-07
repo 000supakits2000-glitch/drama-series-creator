@@ -123,7 +123,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         }}
         """
         response = client.models.generate_content(
-            model="gemini-1.5-flash-002", 
+            model="gemini-3.8-flash", 
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
