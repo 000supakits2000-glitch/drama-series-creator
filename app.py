@@ -71,7 +71,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     try:
         yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", auth_ui_update
 
-        client = genai.Client(api_key=api_key.strip())
+        client = genai.Client(api_key=api_key.strip(), http_options={'api_version': 'v1beta'})
         
         genre_map = {
             "ดราม่าโรแมนติก / ซึ้งกินใจ": "Romance Drama",
@@ -123,7 +123,7 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         }}
         """
         response = client.models.generate_content(
-            model="gemini-1.5-pro", 
+            model="gemini-1.5-flash", 
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
