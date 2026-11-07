@@ -221,3 +221,16 @@ def get_user_history_by_username(username):
         return []
     finally:
         release_db_connection(conn)
+
+def refund_credit(username, amount=1):
+    """คืนเครดิตให้ผู้ใช้กรณีเกิดข้อผิดพลาดในการรัน AI"""
+    conn = get_db_connection()
+    if not conn: return
+    try:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE users SET credits = credits + %s WHERE username = %s", (amount, username))
+            conn.commit()
+    except Exception as e:
+        print(f"Refund error: {e}")
+    finally:
+        release_db_connection(conn)
