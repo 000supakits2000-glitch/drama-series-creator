@@ -20,47 +20,56 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
     user_key = current_user if current_user else "guest"
     current_time = time.time()
     
+    # [1] สร้างตัวแปรเก็บการอัปเดตหน้า UI เครดิต
+    auth_ui_update = gr.update()
+    
     if user_key in user_cooldowns:
         elapsed_time = current_time - user_cooldowns[user_key]
         if elapsed_time < COOLDOWN_SECONDS:
             remaining = int(COOLDOWN_SECONDS - elapsed_time)
-            gr.Warning(f"⏳ กรุณารอสักครู่... ระบบจำกัดการใช้งาน 1 ครั้งต่อ {COOLDOWN_SECONDS} วินาที (เหลือเวลาอีก {remaining} วินาที)")
-            yield f"""<div style="background-color: #1e293b; color: #fca5a5; padding: 25px; border-radius: 12px; border: 1px solid #ef4444; font-family: 'Prompt', sans-serif;">❌ กรุณารออีก {remaining} วินาทีก่อนกดสร้างซีรีส์ใหม่อีกครั้งครับ</div>"""
+            yield f"""<div style="background-color: #1e293b; color: #fca5a5; padding: 25px; border-radius: 12px; border: 1px solid #ef4444; font-family: 'Prompt', sans-serif;">❌ กรุณารออีก {remaining} วินาทีก่อนกดสร้างซีรีส์ใหม่อีกครั้งครับ</div>""", auth_ui_update
             return
     
     user_cooldowns[user_key] = current_time
 
-    # แปลงข้อความแพ็กเกจเป็นตัวเลขจำนวนเครดิตและจำนวนตอน
+    # แปลงข้อความแพ็กเกจเป็นตัวเลข
     if "1 เครดิต" in package_choice:
-        credit_cost = 1
-        num_episodes = 2
+        credit_cost = 1; num_episodes = 2
     elif "3 เครดิต" in package_choice:
-        credit_cost = 3
-        num_episodes = 6
+        credit_cost = 3; num_episodes = 6
     elif "5 เครดิต" in package_choice:
-        credit_cost = 5
-        num_episodes = 10
+        credit_cost = 5; num_episodes = 10
     else:
-        credit_cost = 1
-        num_episodes = 2
+        credit_cost = 1; num_episodes = 2
 
-    # ตรวจสอบและหักเครดิต (สำหรับผู้ใช้ทั่วไป)
+    # ตรวจสอบและหักเครดิต
     try:
         if current_user and current_user != "GodAdmin":
+            from database import check_and_deduct_credit, get_db_connection, release_db_connection
             success, message = check_and_deduct_credit(current_user, credit_cost)
             if not success:
-                yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ {message}</div>"""
+                yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ {message}</div>""", auth_ui_update
                 return
+            else:
+                # [2] เมื่อหักเครดิตสำเร็จ ให้ดึงยอดล่าสุดจาก Database มาเตรียมแสดงผล
+                conn = get_db_connection()
+                if conn:
+                    with conn.cursor() as cur:
+                        cur.execute("SELECT credits FROM users WHERE username = %s", (current_user,))
+                        row = cur.fetchone()
+                        if row:
+                            auth_ui_update = gr.update(value=f'<div style="text-align: center; color: #58b6fb; font-size: 1.1rem; font-weight: 600;">ยินดีต้อนรับคุณ {current_user} (เครดิตคงเหลือ: {row[0]})</div>')
+                    release_db_connection(conn)
     except Exception as e:
-        yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาดในการตรวจสอบเครดิต: {str(e)}</div>"""
+        yield f"""<div style="background: #fee2e2; color: #991b1b; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาดในการตรวจสอบเครดิต: {str(e)}</div>""", auth_ui_update
         return
         
     if not api_key or api_key.strip() == "":
-        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>"""
+        yield """<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; font-family: 'Prompt', sans-serif;">❌ กรุณากรอก Gemini API Key ในช่องด้านซ้าย</div>""", auth_ui_update
         return
 
     try:
-        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>"""
+        yield f"""<div style="background-color: #0f172a; color: #38bdf8; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">⏳ กำลังประมวลผลบทซีรีส์ {num_episodes} ตอน พร้อมสร้างคลังตัวละคร... กรุณารอสักครู่ครับ</div>""", auth_ui_update
 
         client = genai.Client(api_key=api_key.strip())
         
@@ -113,9 +122,8 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
          ]
         }}
         """
-        # ✨ อัปเดตชื่อโมเดลเป็น gemini-3.8-flash ตามที่ Google API กำหนด ✨
         response = client.models.generate_content(
-            model="gemini-3.8-flash",
+            model="gemini-1.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(response_mime_type="application/json", temperature=0.85)
         )
@@ -125,7 +133,6 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         s_title = data.get('series_title', 'Untitled Series')
         s_genre = data.get('genre', selected_genre)
         s_logline = data.get('logline_th', '')
-
 
         html_out = f"""
         <div style="background-color: #ffffff; color: #111111; padding: 25px; border-radius: 12px; font-family: 'Prompt', sans-serif; line-height: 1.6; max-height: 600px; overflow-y: auto;">
@@ -177,15 +184,15 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         
         html_out += "</div>"
         
-        # 💾 บันทึกประวัติบทละครลง Supabase (บันทึกแบบ HTML ที่จัดหน้าสวยงามแล้ว)
         if current_user:
             from database import save_drama_history
             save_drama_history(current_user, s_title, html_out)
 
-        yield html_out
+        # [3] ส่งผลลัพธ์บทละคร คืนค่าคู่กับเครดิตที่อัปเดตแล้ว
+        yield html_out, auth_ui_update
         
     except Exception as e:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">เกิดข้อผิดพลาดในการสร้างซีรีส์: {str(e)}</div>"""
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">เกิดข้อผิดพลาดในการสร้างซีรีส์: {str(e)}</div>""", auth_ui_update
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
@@ -388,7 +395,7 @@ with gr.Blocks(theme=gr.themes.Default(primary_hue="indigo", neutral_hue="slate"
     ).then(
         fn=generate_dynamic_series,
         inputs=[logged_in_user, api_key_input, genre_input, package_input, detail_input, avoid_input],
-        outputs=[output_html]
+        outputs=[output_html, auth_status] 
     ).then(
         fn=lambda: (
             gr.Button(value="🚀 Submit (สร้างซีรีส์)", interactive=True),
