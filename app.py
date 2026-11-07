@@ -192,7 +192,22 @@ def generate_dynamic_series(current_user, api_key, genre_choice, package_choice,
         yield html_out, auth_ui_update
         
     except Exception as e:
-        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">เกิดข้อผิดพลาดในการสร้างซีรีส์: {str(e)}</div>""", auth_ui_update
+        # ระบบคืนเครดิตให้เมื่อเกิด Error ระหว่างเจน AI
+        if current_user and current_user != "GodAdmin":
+            from database import refund_credit, get_db_connection, release_db_connection
+            refund_credit(current_user, credit_cost)
+            
+            # อัปเดตตัวเลขเครดิตบนหน้าจอให้กลับมาเท่าเดิม
+            conn = get_db_connection()
+            if conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT credits FROM users WHERE username = %s", (current_user,))
+                    row = cur.fetchone()
+                    if row:
+                        auth_ui_update = gr.update(value=f'<div style="text-align: center; color: #58b6fb; font-size: 1.1rem; font-weight: 600;">ยินดีต้อนรับคุณ {current_user} (เครดิตคงเหลือ: {row[0]})</div>')
+                release_db_connection(conn)
+
+        yield f"""<div style="background-color: #0f172a; color: #f87171; padding: 25px; border-radius: 12px; border: 1px solid #334155; text-align: center; font-size: 1.1rem; font-family: 'Prompt', sans-serif;">❌ เกิดข้อผิดพลาดในการสร้างซีรีส์ (ระบบได้คืนเครดิตให้คุณแล้ว): {str(e)}</div>""", auth_ui_update
 
 
 # --- โครงสร้างหน้าเว็บ Gradio ---
